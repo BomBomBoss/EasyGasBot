@@ -1,0 +1,4 @@
+ext {
+    telegrambotVersion = '6.4.0'
+    springVersion = '3.1.0'
+}
