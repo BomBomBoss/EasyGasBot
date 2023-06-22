@@ -52,4 +52,10 @@ public class RabbitConfiguration {
     {
         return new Queue(ANSWER_EDITED_MESSAGE);
     }
+
+    @Bean
+    public Queue updateExceptionQueue()
+    {
+        return new Queue(UPDATE_EXCEPTION);
+    }
 }

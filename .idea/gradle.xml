@@ -9,7 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/GasStationsNode" />
             <option value="$PROJECT_DIR$/TelegramBot" />
+            <option value="$PROJECT_DIR$/common-utils" />
           </set>
         </option>
       </GradleProjectSettings>
