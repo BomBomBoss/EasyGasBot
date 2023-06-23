@@ -3,7 +3,6 @@
 /build/
 /TelegramBot/build/
 /TelegramBot/build/classes/java/main/
-.gradle
 **/build/
 !src/**/build/
 
