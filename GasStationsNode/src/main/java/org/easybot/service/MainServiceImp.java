@@ -1,7 +1,8 @@
 package org.easybot.service;
 
+import org.easybot.TelegramAnswer;
 import org.easybot.enums.GasStationTitle;
-import org.easybot.service.entity.GasStation;
+import org.easybot.entity.GasStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,11 +19,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class MainServiceImp implements MainService{
+
+    private final TelegramAnswer telegramAnswer;
+    private final ProduceService produceService;
+
+    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService)
+    {
+        this.telegramAnswer = telegramAnswer;
+        this.produceService = produceService;
+    }
+
     @Override
     public void processTextMessage(Update update, String command)
     {
         Optional<GasStationTitle> cd = Arrays.stream(GasStationTitle.values()).filter(x->x.getCommand().equalsIgnoreCase(command)).findFirst();
-        cd.ifPresent(this::retrieveGasStationInfo);
+        cd.ifPresent(gasStationTitle -> telegramAnswer.formatTextFromObject(retrieveGasStationInfo(gasStationTitle)));
+        telegramAnswer.setChatId(update.getMessage().getChatId().toString());
+        produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
+
 
     }
 
@@ -70,4 +84,5 @@ public class MainServiceImp implements MainService{
         }
         return list.stream().map(x->x.replace("EUR", "")).toList();
     }
+
 }

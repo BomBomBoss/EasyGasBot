@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static org.easybot.RabbitQueue.DOC_MESSAGE_UPDATE;
 import static org.easybot.RabbitQueue.PHOTO_MESSAGE_UPDATE;
@@ -16,11 +18,11 @@ import static org.easybot.RabbitQueue.UPDATE_EXCEPTION;
 @Service
 @Slf4j
 @Lazy
-public class ConsumerServiceImpl extends TelegramBotEntity implements UpdateService {
+public class TelegramBotService extends TelegramBotEntity implements UpdateService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public ConsumerServiceImpl(RabbitTemplate rabbitTemplate)
+    public TelegramBotService(RabbitTemplate rabbitTemplate)
     {
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -45,6 +47,16 @@ public class ConsumerServiceImpl extends TelegramBotEntity implements UpdateServ
             else if (message.hasPhoto()) return PHOTO_MESSAGE_UPDATE;
         }
         return UPDATE_EXCEPTION;
+    }
+
+    public void sendResponseToClient(SendMessage sendMessage)
+    {
+        try{
+        execute(sendMessage);
+        } catch (TelegramApiException e)
+        {
+            log.error("Error during sending response to client");
+        }
     }
 
 }
