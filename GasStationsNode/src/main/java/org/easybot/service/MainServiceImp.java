@@ -1,6 +1,6 @@
 package org.easybot.service;
 
-import org.easybot.TelegramAnswer;
+import org.easybot.entity.TelegramAnswer;
 import org.easybot.enums.GasStationTitle;
 import org.easybot.entity.GasStation;
 import org.jsoup.Jsoup;

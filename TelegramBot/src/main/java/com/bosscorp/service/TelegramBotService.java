@@ -31,7 +31,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
     public void onUpdateReceived(Update update)
     {
         String queue = distributeMessageType(update);
-        log.info("Received update Id = [{}] from chat Id = [{}]", update.getUpdateId(), update.getMessage().getChatId());
+        log.info("Received update from client {}", update.getMessage().getFrom());
         rabbitTemplate.convertAndSend(queue,update);
     }
 
@@ -56,6 +56,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         } catch (TelegramApiException e)
         {
             log.error("Error during sending response to client");
+            e.printStackTrace();
         }
     }
 
