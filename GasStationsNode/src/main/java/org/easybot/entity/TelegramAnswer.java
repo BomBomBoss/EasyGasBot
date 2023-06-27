@@ -47,13 +47,8 @@ public class TelegramAnswer {
             }
             sb.append(String.format("*%s*", gs.gasType())).append(", цена= ").append(String.format("*%s*", gs.price())).append(" *EUR*").append(", адрес= ").append(String.format("_%s_",location)).append("\n");
         }
-        setText(sb.toString().
-                replace("=", "\\=").
-                replace(".", "\\.").
-                replace("(","\\(").
-                replace(")","\\)").
-                replace("-", "\\-"));
     }
+
 
     public InlineKeyboardMarkup getButtons()
     {

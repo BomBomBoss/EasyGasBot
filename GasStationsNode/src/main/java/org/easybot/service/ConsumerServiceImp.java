@@ -11,7 +11,7 @@ import static org.easybot.RabbitQueue.*;
 @Service
 public class ConsumerServiceImp implements RabbitConsumer {
     private final MainService mainService;
-    String commonLogText = "Gas Station Node received \"{}\"";
+    String commonLogText = "Gas Station Node received: \"{}\"";
 
     public ConsumerServiceImp(MainService mainService)
     {

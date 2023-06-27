@@ -33,7 +33,8 @@ public class MainServiceImp implements MainService{
     public void processTextMessage(Update update, String command)
     {
         Optional<GasStationTitle> cd = Arrays.stream(GasStationTitle.values()).filter(x->x.getCommand().equalsIgnoreCase(command)).findFirst();
-        cd.ifPresent(gasStationTitle -> telegramAnswer.formatTextFromObject(retrieveGasStationInfo(gasStationTitle)));
+        cd.ifPresentOrElse(gasStationTitle -> telegramAnswer.formatTextFromObject(retrieveGasStationInfo(gasStationTitle)),
+                ()-> telegramAnswer.setText(String.format("Command %s *NOT FOUND*. Please try another command", command)));
         telegramAnswer.setChatId(update.getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
 

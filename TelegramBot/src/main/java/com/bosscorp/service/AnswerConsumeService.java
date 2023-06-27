@@ -1,5 +1,6 @@
 package com.bosscorp.service;
 
+import com.bosscorp.feature.TelegramFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -10,11 +11,14 @@ import static org.easybot.RabbitQueue.ANSWER_MESSAGE;
 @Slf4j
 public class AnswerConsumeService implements AnswerConsumer {
 
-    private final TelegramBotService telegramBotService;
 
-    public AnswerConsumeService(TelegramBotService telegramBotService)
+    private final TelegramBotService telegramBotService;
+    private final TelegramFormatter telegramFormatter;
+
+    public AnswerConsumeService(TelegramBotService telegramBotService, TelegramFormatter telegramFormatter)
     {
         this.telegramBotService = telegramBotService;
+        this.telegramFormatter = telegramFormatter;
     }
 
     @Override
@@ -22,6 +26,7 @@ public class AnswerConsumeService implements AnswerConsumer {
     public void consumeSimpleAnswer(SendMessage sendMessage)
     {
         log.info("Received answer from Rabbit");
+        telegramFormatter.checkForEscapeCharacters(sendMessage);
         telegramBotService.sendResponseToClient(sendMessage);
     }
 }
