@@ -1,8 +1,6 @@
 
 X
 (gradle/wrapper/gradle-wrapper.properties,f/b/fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
-H
-TelegramBot/build.gradle,6/5/65a226eb5ee43e1ed6a07eb252f2b461de7f54af
 i
 9.idea/modules/TelegramBot/EasyGasBot.TelegramBot.main.iml,2/a/2ae8653ffe7eb7a10836531a63f5bad839436a4b
 ;
@@ -13,10 +11,6 @@ A
 gradlew,5/b/5bbfa66edb4db3c7c33c5181f43510990d3307f9
 y
 ITelegramBot/src/main/java/com/bosscorp/config/TelegramBotInitializer.java,f/2/f2a3cce54995268faf0c4f6e7a0fe5bed0b08616
-?
-versions.gradle,a/8/a8e804beb3174b2650db161f81257656db32888b
-?
-settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 I
 common-utils/build.gradle,3/0/30e3c33e0633d8ccba20298a62c02bd15cc99530
 k

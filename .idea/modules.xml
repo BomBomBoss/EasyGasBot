@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/GasStationsNode/EasyGasBot.GasStationsNode.main.iml" filepath="$PROJECT_DIR$/.idea/modules/GasStationsNode/EasyGasBot.GasStationsNode.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Liquibase/EasyGasBot.Liquibase.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Liquibase/EasyGasBot.Liquibase.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/TelegramBot/EasyGasBot.TelegramBot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TelegramBot/EasyGasBot.TelegramBot.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common-utils/EasyGasBot.common-utils.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common-utils/EasyGasBot.common-utils.main.iml" />
     </modules>

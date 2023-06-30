@@ -13,6 +13,10 @@ dependencies {
     implementation project(":common-utils")
     implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
     implementation "org.springframework.boot:spring-boot-starter-amqp:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}"
+    implementation "org.postgresql:postgresql:${postgresVersion}"
+
+
     implementation 'org.jsoup:jsoup:1.16.1'
 
 

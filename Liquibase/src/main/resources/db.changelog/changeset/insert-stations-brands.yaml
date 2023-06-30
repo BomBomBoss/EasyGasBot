@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert_brands
+      author: Vlad
+      changes:
+        - insert:
+            tableName: gas_stations_brands
+            columns:
+              - column:
+                  name: brand_name
+                  value: "neste"
+        - insert:
+            tableName: gas_stations_brands
+            columns:
+              - column:
+                  name: brand_name
+                  value: "circle k"
+        - insert:
+            tableName: gas_stations_brands
+            columns:
+              - column:
+                      name: brand_name
+                      value: "viada"

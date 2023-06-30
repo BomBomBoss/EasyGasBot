@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: gas_stations_brands
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: gas_stations_brands
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_name
+                  type: varchar
+

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db.changelog/changeset/create-table-stations-brands.yaml
+  - include:
+      file: db.changelog/changeset/insert-stations-brands.yaml
+  - include:
+      file: db.changelog/changeset/create-neste-table.yaml
+  - include:
+      file: db.changelog/changeset/create-circlek-table.yaml
+  - include:
+      file: db.changelog/changeset/create-viada-table.yaml

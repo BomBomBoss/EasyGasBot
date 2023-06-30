@@ -26,7 +26,7 @@ public class AnswerConsumeService implements AnswerConsumer {
     public void consumeSimpleAnswer(SendMessage sendMessage)
     {
         log.info("Received answer from Rabbit");
-        telegramFormatter.checkForEscapeCharacters(sendMessage);
+        telegramFormatter.formatEscapeCharacters(sendMessage);
         telegramBotService.sendResponseToClient(sendMessage);
     }
 }
