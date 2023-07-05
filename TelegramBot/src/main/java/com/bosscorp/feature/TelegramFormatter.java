@@ -10,7 +10,7 @@ import java.util.function.Function;
 @Component
 public class TelegramFormatter {
 
-    static final List<String> escapeCharacters = Arrays.asList("_", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!");
+    static final List<String> escapeCharacters = Arrays.asList("[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!");
 
     public void formatEscapeCharacters(SendMessage sendMessage)
     {

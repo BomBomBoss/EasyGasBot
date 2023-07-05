@@ -45,8 +45,9 @@ public class TelegramAnswer {
             {
                 location = "Цены на всех заправках одинаковые";
             }
-            sb.append(String.format("*%s*", gs.gasType())).append(", цена= ").append(String.format("*%s*", gs.price())).append(" *EUR*").append(", адрес= ").append(String.format("_%s_",location)).append("\n");
+            sb.append(String.format("*%s*", gs.gasType())).append(", цена= ").append(String.format("*%s*", gs.price())).append(" *EUR*").append(", адрес= ").append(String.format("_%s_",location)).append(System.getProperty("line.separator"));
         }
+        setText(sb.toString());
     }
 
 
