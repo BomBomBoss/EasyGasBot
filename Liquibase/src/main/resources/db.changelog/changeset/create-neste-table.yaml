@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Vlad
       changes:
         - createTable:
-            tableName: Neste
+            tableName: neste
             columns:
               - column:
                   name: id
@@ -17,7 +17,7 @@ databaseChangeLog:
                   name: brand_id
                   type: bigint
                   constraints:
-                    nullable: false
+                    nullable: true
                     foreignKeyName: brand_id
                     references: gas_stations_brands(id)
               - column:

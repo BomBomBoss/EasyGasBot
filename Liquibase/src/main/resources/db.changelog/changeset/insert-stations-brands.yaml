@@ -14,7 +14,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: brand_name
-                  value: "circle k"
+                  value: "circle_k"
         - insert:
             tableName: gas_stations_brands
             columns:

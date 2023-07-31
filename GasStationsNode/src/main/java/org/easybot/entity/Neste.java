@@ -8,12 +8,7 @@ import jakarta.persistence.Table;
 import org.springframework.data.repository.cdi.Eager;
 
 @Entity
-@Table
+@Table(name = "neste")
 public class Neste extends CommonStation {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
 
 }

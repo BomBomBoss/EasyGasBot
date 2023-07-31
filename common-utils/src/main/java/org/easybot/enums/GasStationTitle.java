@@ -4,8 +4,8 @@ public enum GasStationTitle {
     NESTE("/neste",
             "https://www.neste.lv/lv/content/degvielas-cenas", "neste"),
 
-    CIRCLE("/circle",
-            "https://www.circlek.lv/privātpersonām/degvielas-cenas", "circle"),
+    CIRCLE("/circle_k",
+            "https://www.circlek.lv/privātpersonām/degvielas-cenas", "circle_k"),
 
     VIADA("/viada",
             "https://www.viada.lv/zemakas-degvielas-cenas/", "viada");
@@ -14,6 +14,8 @@ public enum GasStationTitle {
     private final String command;
     private final String url;
     private final String title;
+    private long id;
+
 
     GasStationTitle(String command, String url, String title)
     {
@@ -35,5 +37,26 @@ public enum GasStationTitle {
     public String getTitle()
     {
         return title;
+    }
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "GasStationTitle{" +
+                "command='" + command + '\'' +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", id=" + id +
+                '}';
     }
 }

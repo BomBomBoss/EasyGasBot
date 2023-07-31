@@ -1,8 +1,7 @@
 package org.easybot.service;
 
-import org.easybot.entity.TelegramAnswer;
+import org.easybot.entity.*;
 import org.easybot.enums.GasStationTitle;
-import org.easybot.entity.GasStation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,11 +21,15 @@ public class MainServiceImp implements MainService{
 
     private final TelegramAnswer telegramAnswer;
     private final ProduceService produceService;
+    private final CommonStationService<CommonStation> commonStationService;
+    private final GasStationService gasStationService;
 
-    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService)
+    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService, CommonStationService<CommonStation> commonStationService, GasStationService gasStationService)
     {
         this.telegramAnswer = telegramAnswer;
         this.produceService = produceService;
+        this.commonStationService = commonStationService;
+        this.gasStationService = gasStationService;
     }
 
     @Override
@@ -54,7 +57,19 @@ public class MainServiceImp implements MainService{
             List<String> list = modifyListIfNeeded(gasStationTitle, element);
             for (int i = 0; i< list.size()-3;)
             {
-                gasStationList.add(new GasStation(list.get(i++), list.get(i++), list.get(i++)));
+
+                String gasType = list.get(i++);
+                String price = list.get(i++);
+                String location = list.get(i++);
+
+                CommonStation station = createInstance(gasStationTitle);
+                station.setGasType(gasType);
+                station.setPrice(price);
+                station.setLocation(location);
+                station.setGasStationsBrands(gasStationService.findById(commands.getId()));
+                commonStationService.save(station);
+
+                gasStationList.add(new GasStation(gasType, price, location));
             }
         }
         catch (IOException e)
@@ -64,6 +79,23 @@ public class MainServiceImp implements MainService{
 
         return gasStationList;
     }
+
+
+    private CommonStation createInstance(String title)
+    {
+        switch (title)
+        {
+            case "neste":
+                return new Neste();
+            case "circle":
+                return new CircleK();
+            case "viada":
+                return new Viada();
+            default:
+                throw new RuntimeException("Can't create instance of gas station");
+        }
+    }
+
 
     private List<String> modifyListIfNeeded(String gasStation, Elements elements)
     {
