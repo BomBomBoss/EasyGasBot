@@ -2,7 +2,6 @@ package org.easybot.entity;
 
 import jakarta.persistence.*;
 
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @MappedSuperclass
 public abstract class CommonStation {
    @Id

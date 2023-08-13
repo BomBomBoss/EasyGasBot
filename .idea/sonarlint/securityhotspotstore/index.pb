@@ -23,8 +23,6 @@ g
 7common-utils/src/main/java/org/easybot/RabbitQueue.java,8/a/8a868881e571adec8e73fb8af3188a5fd1802c4f
 u
 EGasStationsNode/src/main/java/org/easybot/service/RabbitConsumer.java,d/b/db675f6d725c179c7d00d84ee8554b3d47a2141e
-y
-IGasStationsNode/src/main/java/org/easybot/service/ProduceServiceImpl.java,e/c/ecbe3ab6946e69ac27a4ac7d31350ad99246fa4e
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
@@ -34,16 +32,12 @@ BTelegramBot/src/main/java/com/bosscorp/service/AnswerConsumer.java,4/1/4140804
 settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 ?
 versions.gradle,a/8/a8e804beb3174b2650db161f81257656db32888b
-x
-HTelegramBot/src/main/java/com/bosscorp/service/AnswerConsumeService.java,6/f/6f65baaa79f6f555c60dcf50aa4e6a40e56035cc
 L
 GasStationsNode/build.gradle,c/3/c3840881e74bea54f6bb837220adc1ccdafc9f51
 H
 TelegramBot/build.gradle,6/5/65a226eb5ee43e1ed6a07eb252f2b461de7f54af
 F
 Liquibase/build.gradle,c/3/c321f9b0c77a48bd1864a53b5a2fff9fca42d929
-t
-DGasStationsNode/src/main/java/org/easybot/entity/TelegramAnswer.java,5/a/5a308365f7c2045364ffd25b792f30ac9625793c
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
 A
@@ -52,3 +46,19 @@ r
 BTelegramBot/src/main/java/com/bosscorp/TelegramBotApplication.java,e/9/e9514fb81cc5d135bf56e8d38767fbc8816dfb04
 i
 9Liquibase/src/main/java/org/easybot/LiquibaseStarter.java,9/0/909b613e7efe74c211ccbf09db2f07bf2a382af6
+r
+BGasStationsNode/src/main/java/org/easybot/service/MainService.java,b/5/b5b908cff3e5a325fd2edd7fd8ab4040053ce8f8
+u
+ETelegramBot/src/main/java/com/bosscorp/controller/TelegramBotAPI.java,5/6/5669e5e5dc6f5af311c849548f8f5737b8640af8
+q
+ATelegramBot/src/main/java/com/bosscorp/service/UpdateService.java,a/8/a8c6471930b041767c8d3acb7bc839024a5ac2ff
+y
+ITelegramBot/src/main/java/com/bosscorp/config/TelegramBotInitializer.java,f/2/f2a3cce54995268faf0c4f6e7a0fe5bed0b08616
+s
+CTelegramBot/src/main/java/com/bosscorp/model/TelegramBotEntity.java,b/3/b3a14559bf5d6f1c9c24855689e137190ef9f216
+g
+7common-utils/src/main/java/org/easybot/CommonTexts.java,4/b/4bf49445924c03a3e73f68b6b84b07bcda492eba
+€
+PGasStationsNode/src/main/java/org/easybot/configuration/CommonConfiguration.java,1/f/1f0dcd3433234cd5c9ce79756a88a9ebb4846157
+m
+=GasStationsNode/src/main/java/org/easybot/entity/CircleK.java,7/e/7e68987c8bc25dd68ab6b8981c141a1455552de8

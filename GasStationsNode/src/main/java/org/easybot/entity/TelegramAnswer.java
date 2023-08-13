@@ -34,18 +34,18 @@ public class TelegramAnswer {
         this.text = text;
     }
 
-    public void formatTextFromObject(List<GasStation> list)
+    public void formatTextFromObject(List<CommonStation> list)
     {
         StringBuilder sb = new StringBuilder();
 
-        for (GasStation gs : list)
+        for (CommonStation gs : list)
         {
-            String location = gs.locations();
+            String location = gs.getLocation();
             if (location.contains("Visās Rīgas DUS cenas ir vienādas") || location.contains("Visos Rīgas DUS degvielas cenas ir vienādas") || location.contains("Visās VIADA uzpildes stacijās."))
             {
                 location = "Цены на всех заправках одинаковые";
             }
-            sb.append(String.format("*%s*", gs.gasType())).append(", цена= ").append(String.format("*%s*", gs.price())).append(" *EUR*").append(", адрес= ").append(String.format("_%s_",location)).append(System.getProperty("line.separator"));
+            sb.append(String.format("*%s*", gs.gasType)).append(", цена= ").append(String.format("*%s*", gs.getPrice())).append(" *EUR*").append(", адрес= ").append(String.format("_%s_",location)).append(System.getProperty("line.separator"));
         }
         setText(sb.toString());
     }
