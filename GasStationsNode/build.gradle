@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'org.easybot'
-version '1.0-SNAPSHOT'
+//group 'org.easybot'
+//version '1.0'
 
 repositories {
     mavenCentral()
