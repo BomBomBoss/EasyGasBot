@@ -32,14 +32,10 @@ BTelegramBot/src/main/java/com/bosscorp/service/AnswerConsumer.java,4/1/4140804
 settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 ?
 versions.gradle,a/8/a8e804beb3174b2650db161f81257656db32888b
-L
-GasStationsNode/build.gradle,c/3/c3840881e74bea54f6bb837220adc1ccdafc9f51
 H
 TelegramBot/build.gradle,6/5/65a226eb5ee43e1ed6a07eb252f2b461de7f54af
 F
 Liquibase/build.gradle,c/3/c321f9b0c77a48bd1864a53b5a2fff9fca42d929
-<
-build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
 A
 gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
 r
