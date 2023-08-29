@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/bossbotdb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="bossbotdb@localhost [2]" uuid="22795ad4-fe34-4b81-8c23-6e91c8d7dd84">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/bossbotdb</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
