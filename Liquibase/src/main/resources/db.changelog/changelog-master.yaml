@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db.changelog/changeset/create-circlek-table.yaml
   - include:
       file: db.changelog/changeset/create-viada-table.yaml
+  - include:
+      file: db.changelog/changeset/create-virsi-table.yaml

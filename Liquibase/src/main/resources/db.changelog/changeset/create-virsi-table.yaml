@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: virsi_table
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: virsi
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: gas_type
+                  type: varchar
+              - column:
+                  name: price
+                  type: varchar
+              - column:
+                  name: location
+                  type: varchar
+
+  - changeSet:
+      id: insert_virsi
+      author: Vlad
+      changes:
+        - insert:
+            tableName: gas_stations_brands
+            columns:
+              - column:
+                  name: brand_name
+                  value: "virsi"

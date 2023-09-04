@@ -8,7 +8,10 @@ public enum GasStationTitle {
             "https://www.circlek.lv/privātpersonām/degvielas-cenas", "circle_k"),
 
     VIADA("/viada",
-            "https://www.viada.lv/zemakas-degvielas-cenas/", "viada");
+            "https://www.viada.lv/zemakas-degvielas-cenas/", "viada"),
+
+    VIRSI("/virsi",
+            "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas", "virsi");
 
 
     private final String command;

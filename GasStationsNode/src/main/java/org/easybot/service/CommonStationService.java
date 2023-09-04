@@ -2,10 +2,7 @@ package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.entity.CommonStation;
-import org.easybot.repository.CircleRepository;
-import org.easybot.repository.CommonStationRepository;
-import org.easybot.repository.NesteRepository;
-import org.easybot.repository.ViadaRepository;
+import org.easybot.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +13,14 @@ public class CommonStationService {
     private final NesteRepository nesteRepository;
     private final CircleRepository circleRepository;
     private final ViadaRepository viadaRepository;
+    private final VirsiRepository virsiRepository;
 
-    public CommonStationService(NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository)
+    public CommonStationService(NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository, VirsiRepository virsiRepository)
     {
         this.nesteRepository = nesteRepository;
         this.circleRepository = circleRepository;
         this.viadaRepository = viadaRepository;
+        this.virsiRepository = virsiRepository;
     }
 
     public void save(CommonStation station, String gasStationTitle)
@@ -50,6 +49,8 @@ public class CommonStationService {
                     case "neste" -> nesteRepository;
                     case "circle" -> circleRepository;
                     case "viada" -> viadaRepository;
+                    case "virsi" -> virsiRepository;
+
                     default -> throw new RuntimeException("Can't return repository instance");
 
                 };

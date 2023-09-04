@@ -17,12 +17,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.easybot.CommonTexts.CIRCLE_PRICES_DESCRIPTION;
-import static org.easybot.CommonTexts.NESTE_PRICES_DESCRIPTION;
-import static org.easybot.CommonTexts.VIADA_PRICES_DESCRIPTION;
-import static org.easybot.enums.GasStationTitle.CIRCLE;
-import static org.easybot.enums.GasStationTitle.NESTE;
-import static org.easybot.enums.GasStationTitle.VIADA;
+import static org.easybot.CommonTexts.*;
+import static org.easybot.enums.GasStationTitle.*;
 
 @Log4j2
 @Component
@@ -41,6 +37,7 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         listOfCommands.add(new BotCommand(NESTE.getCommand(), NESTE_PRICES_DESCRIPTION));
         listOfCommands.add(new BotCommand(CIRCLE.getCommand(), CIRCLE_PRICES_DESCRIPTION));
         listOfCommands.add(new BotCommand(VIADA.getCommand(), VIADA_PRICES_DESCRIPTION));
+        listOfCommands.add(new BotCommand(VIRSI.getCommand(), VIRSI_PRICES_DESCRIPTION));
 
         SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null);
         try

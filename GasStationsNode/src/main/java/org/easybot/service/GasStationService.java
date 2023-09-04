@@ -16,11 +16,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
 
 @Service
 @Slf4j
@@ -62,7 +62,7 @@ public class GasStationService {
             try
             {
                 Document document = Jsoup.connect(url).get();
-                Elements element = document.select("table > tbody > tr > td");
+                Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
                 Iterator<String> cleanedList = modifyList(gasStationTitle, element);
                 while (cleanedList.hasNext())
@@ -88,6 +88,21 @@ public class GasStationService {
 
     }
 
+    private Elements parsingWebSites(GasStationTitle gasStationTitle, Document document)
+    {
+        Elements element;
+
+        if (gasStationTitle.getTitle().equals("virsi"))
+        {
+             element = document.select("div.prices-block.fuel-block");
+        }
+        else
+        {
+             element = document.select("table > tbody > tr > td");
+        }
+        return element;
+    }
+
     private CommonStation createInstance(String title)
     {
 
@@ -96,6 +111,7 @@ public class GasStationService {
                     case "neste" ->  new Neste();
                     case "circle" -> new CircleK();
                     case "viada" -> new Viada();
+                    case "virsi" -> new Virsi();
                     default -> throw new RuntimeException("Can't create instance of gas station");
                 };
     }
@@ -118,6 +134,39 @@ public class GasStationService {
             list.set(12, "Diesel multi");
             list.set(15, "Gas");
             list.set(18, "E 85");
+        }
+        if (gasStation.equals("virsi"))
+        {
+            String rawString = list.get(0);
+            list.clear();
+
+            String [] withoutZipCode = rawString
+                    .replaceAll("(LV-)[0-9]{4}", "")
+                    .replace("Degvielas cenas", "")
+                    .replace(VIRSI_ALL_STATIONS, VIRSI_ALL_STATIONS.concat(","))
+                    .split(",");
+            List<String> listWithoutSpaces = Arrays.stream(withoutZipCode).map(String::trim).toList();
+            Iterator<String> iterator = listWithoutSpaces.listIterator();
+            while (iterator.hasNext())
+            {
+                String st = iterator.next();
+
+                if (st.matches(".*\\s.*"))
+                {
+                    String [] s = st.split(" ", 3);
+                    Queue<String> queue = new LinkedList<>(Arrays.asList(s));
+                    while (!queue.isEmpty())
+                    {
+                        list.add(queue.poll());
+                    }
+                }
+                else
+                {
+                    int lastIndex = list.size() - 1;
+                    list.set(lastIndex, list.get(lastIndex).concat(" " + st));
+                }
+            }
+
         }
         checkForEmptyFields(list);
         return list.stream().map(x->x.replace("EUR", "")).iterator();

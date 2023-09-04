@@ -5,6 +5,8 @@
 /TelegramBot/build/classes/java/main/
 **/build/
 !src/**/build/
+/sonarlint
+.idea
 
 # Ignore Gradle GUI config
 gradle-app.setting

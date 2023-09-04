@@ -7,6 +7,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.util.List;
+
+import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
+
 @Component
 public class TelegramAnswer {
     private String text;
@@ -41,7 +44,7 @@ public class TelegramAnswer {
         for (CommonStation gs : list)
         {
             String location = gs.getLocation();
-            if (location.contains("Visās Rīgas DUS cenas ir vienādas") || location.contains("Visos Rīgas DUS degvielas cenas ir vienādas") || location.contains("Visās VIADA uzpildes stacijās."))
+            if (location.contains("Visās Rīgas DUS cenas ir vienādas") || location.contains("Visos Rīgas DUS degvielas cenas ir vienādas") || location.contains("Visās VIADA uzpildes stacijās.") || location.contains(VIRSI_ALL_STATIONS))
             {
                 location = "Цены на всех заправках одинаковые";
             }
