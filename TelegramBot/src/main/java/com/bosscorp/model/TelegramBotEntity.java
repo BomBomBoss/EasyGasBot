@@ -34,10 +34,10 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
     private void createCommands()
     {
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand(NESTE.getCommand(), NESTE_PRICES_DESCRIPTION));
-        listOfCommands.add(new BotCommand(CIRCLE.getCommand(), CIRCLE_PRICES_DESCRIPTION));
-        listOfCommands.add(new BotCommand(VIADA.getCommand(), VIADA_PRICES_DESCRIPTION));
-        listOfCommands.add(new BotCommand(VIRSI.getCommand(), VIRSI_PRICES_DESCRIPTION));
+        listOfCommands.add(new BotCommand(NESTE.getCommand(), NESTE_COMMAND_DESCRIPTION));
+        listOfCommands.add(new BotCommand(CIRCLE.getCommand(), CIRCLE_COMMAND_DESCRIPTION));
+        listOfCommands.add(new BotCommand(VIADA.getCommand(), VIADA_COMMAND_DESCRIPTION));
+        listOfCommands.add(new BotCommand(VIRSI.getCommand(), VIRSI_COMMAND_DESCRIPTION));
 
         SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null);
         try

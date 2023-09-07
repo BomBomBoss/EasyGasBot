@@ -1,6 +1,5 @@
 package org.easybot.entity;
 
-import org.easybot.entity.GasStation;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -8,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 import java.util.List;
 
-import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
+import static org.easybot.CommonTexts.*;
 
 @Component
 public class TelegramAnswer {
@@ -44,11 +43,19 @@ public class TelegramAnswer {
         for (CommonStation gs : list)
         {
             String location = gs.getLocation();
-            if (location.contains("Visās Rīgas DUS cenas ir vienādas") || location.contains("Visos Rīgas DUS degvielas cenas ir vienādas") || location.contains("Visās VIADA uzpildes stacijās.") || location.contains(VIRSI_ALL_STATIONS))
+            if (location.contains(ALL_RIGA_DUS_EQUALS_1) || location.contains(ALL_RIGA_DUS_EQUALS_2) || location.contains(VIADA_ALL_STATIONS) || location.contains(VIRSI_ALL_STATIONS))
             {
-                location = "Цены на всех заправках одинаковые";
+                location = RESPONSE_ALL_RIGA_DUS_EQUALS;
             }
-            sb.append(String.format("*%s*", gs.gasType)).append(System.getProperty("line.separator")).append("цена= ").append(String.format("*%s*", gs.getPrice())).append(" *EUR*").append(System.getProperty("line.separator")).append("адрес= ").append(String.format("_%s_",location)).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
+            sb.append(String.format("*%s*", gs.gasType)) // bold
+                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                    .append(RESPONSE_PRICE_EQUALS)
+                    .append(String.format("*%s*", gs.getPrice())) // bold
+                    .append(RESPONSE_EUR_SIGN_BOLD)
+                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                    .append(RESPONSE_ADDRESS_EQUALS).append(String.format("_%s_",location)) // italic
+                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                    .append(System.getProperty(UTIL_LINE_SEPARATOR));
         }
         setText(sb.toString());
     }

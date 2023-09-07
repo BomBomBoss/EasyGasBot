@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
+import static org.easybot.CommonTexts.*;
 
 @Service
 @Slf4j
@@ -108,10 +108,10 @@ public class GasStationService {
 
         return switch (title)
                 {
-                    case "neste" ->  new Neste();
-                    case "circle" -> new CircleK();
-                    case "viada" -> new Viada();
-                    case "virsi" -> new Virsi();
+                    case NESTE_TITLE ->  new Neste();
+                    case CIRCLE_WITHOUT_K_TITLE -> new CircleK();
+                    case VIADA_TITLE -> new Viada();
+                    case VIRSI_TITLE -> new Virsi();
                     default -> throw new RuntimeException("Can't create instance of gas station");
                 };
     }
@@ -121,7 +121,7 @@ public class GasStationService {
     {
         List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
 
-        if (gasStation.equals("neste"))
+        if (gasStation.equals(NESTE_TITLE))
         {
             list =  list.subList(3, list.size());
         }
@@ -135,7 +135,7 @@ public class GasStationService {
             list.set(15, "Gas");
             list.set(18, "E 85");
         }
-        if (gasStation.equals("virsi"))
+        if (gasStation.equals(VIRSI_TITLE))
         {
             String rawString = list.get(0);
             list.clear();

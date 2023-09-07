@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.easybot.CommonTexts.*;
+
 @Service
 @Slf4j
 public class CommonStationService {
@@ -41,15 +43,15 @@ public class CommonStationService {
 
     private CommonStationRepository returnCorrectRepository(String title)
     {
-        if (title.equals("circle_k"))
+        if (title.equals(CIRCLE_K_TITLE))
             title = title.substring(0, title.length()-2);
 
         return switch (title)
                 {
-                    case "neste" -> nesteRepository;
-                    case "circle" -> circleRepository;
-                    case "viada" -> viadaRepository;
-                    case "virsi" -> virsiRepository;
+                    case NESTE_TITLE -> nesteRepository;
+                    case CIRCLE_WITHOUT_K_TITLE -> circleRepository;
+                    case VIADA_TITLE -> viadaRepository;
+                    case VIRSI_TITLE -> virsiRepository;
 
                     default -> throw new RuntimeException("Can't return repository instance");
 

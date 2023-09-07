@@ -1,6 +1,9 @@
 package org.easybot.service;
 
 import org.easybot.entity.*;
+
+import static org.easybot.CommonTexts.RESPONSE_COMMAND_NOT_FOUND;
+import static org.easybot.CommonTexts.UTIL_LINE_SEPARATOR;
 import static org.easybot.enums.AdministrationCommands.*;
 
 import org.easybot.enums.GasStationTitle;
@@ -39,7 +42,7 @@ public class MainServiceImp implements MainService{
         {
             Optional<GasStationTitle> cd = Arrays.stream(GasStationTitle.values()).filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
             cd.ifPresentOrElse(gasStationTitle -> telegramAnswer.formatTextFromObject(retrieveGasStationInfo(gasStationTitle.getTitle().toLowerCase())),
-                    () -> telegramAnswer.setText(String.format("Command %s *NOT FOUND*. Please try another command", command)));
+                    () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND, command)));
         }
         telegramAnswer.setChatId(update.getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
@@ -58,7 +61,7 @@ public class MainServiceImp implements MainService{
         StringBuilder sb = new StringBuilder(result);
         for(GasStationTitle gs : GasStationTitle.values())
         {
-            sb.append(gs.getCommand()).append(" - цены на ").append(gs.getTitle().toUpperCase()).append(System.getProperty("line.separator"));
+            sb.append(gs.getCommand()).append(" - цены на ").append(gs.getTitle().toUpperCase()).append(System.getProperty(UTIL_LINE_SEPARATOR));
         }
         return sb.toString().replace("_", "\\_");
     }
