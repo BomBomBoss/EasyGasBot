@@ -8,11 +8,10 @@ public class CommonTexts {
 
 
     /************************ Bot Commands *****************************************************/
-    public static final String NESTE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":fuelpump:" + "цены на заправках Neste");
-    public static final String CIRCLE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":fuelpump:" + "цены на заправках Circle");
-    public static final String VIADA_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":fuelpump:" + "цены на заправках Viada");
-
-    public static final String VIRSI_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":fuelpump:" + "цены на заправках Virsi");
+    public static final String NESTE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":one:" + " цены на заправках Neste");
+    public static final String CIRCLE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":two:" + " цены на заправках Circle");
+    public static final String VIADA_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":three:" + " цены на заправках Viada");
+    public static final String VIRSI_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":four:" + " цены на заправках Virsi");
     public static final String START_COMMAND_DESCRIPTION = "Добро пожаловать *%s* на просторы бота EasyGas.\n" +
             "Здесь ты сможешь посмотреть, где сейчас продаётся самое дешёвое топливо среди заправок NESTE, CIRCLE_K, VIADA, VIRŠI. \n" +
             "Команды, которые сейчас доступны: \n";
