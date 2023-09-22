@@ -22,6 +22,7 @@ public interface CommonStationRepository<T extends CommonStation> extends JpaRep
 
 
     @Query(value = "select t from #{#entityName} t")
+    @Transactional
     List<T> findAll();
 
 

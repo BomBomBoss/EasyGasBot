@@ -5,6 +5,7 @@ services:
     image: my-bot
     environment:
     - SPRING_RABBITMQ_HOST=rabbitmq
+    - "SPRING_PROFILES_ACTIVE=docker"
     depends_on:
       - rabbitmq
   rabbitmq:
@@ -27,6 +28,7 @@ services:
       - "SPRING_DATASOURCE_USERNAME=admin"
       - "SPRING_DATASOURCE_PASSWORD=admin"
       - "SPRING_RABBITMQ_HOST=rabbitmq"
+      - "SPRING_PROFILES_ACTIVE=docker"
     depends_on:
       - rabbitmq
   postgres:
