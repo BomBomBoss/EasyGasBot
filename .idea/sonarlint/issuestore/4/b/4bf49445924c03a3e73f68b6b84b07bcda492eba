@@ -1,5 +1,7 @@
 
-h
-java:S1192"KDefine a constant instead of duplicating this literal ":fuelpump:" 3 times.(ú–¾é8”×ƒ¤1
 W
-java:S1118":Add a private constructor to hide the implicit public one.(­¼ğ8Í¬„¤1
+java:S1118":Add a private constructor to hide the implicit public one.(­¼ğ8Í¬„¤1
+O
+java:S6126"2Replace this String concatenation with Text block.(­£ƒâ8­ä¿²º1
+I
+java:S1128",Remove this unused import 'javax.ws.rs.PUT'.(¦Ö±–8¯ä¿²º1

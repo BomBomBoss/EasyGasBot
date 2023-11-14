@@ -31,7 +31,7 @@ public class CommonConfiguration {
            GasStationsBrands brands = brandsList.stream().filter(x-> gs.getTitle()
                    .equalsIgnoreCase(x.getBrandName()))
                    .findFirst()
-                   .orElseThrow( () ->new RuntimeException(gs.getTitle() + "can't be found in DB"));
+                   .orElseThrow(() -> new RuntimeException(gs.getTitle() + "can't be found in DB"));
            gs.setId(brands.getId());
         }
     }

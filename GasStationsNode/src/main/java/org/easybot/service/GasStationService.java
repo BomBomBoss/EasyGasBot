@@ -3,10 +3,13 @@ package org.easybot.service;
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.entity.*;
 import org.easybot.enums.GasStationTitle;
+import org.easybot.exceptions.ParsingException;
 import org.easybot.repository.CircleRepository;
 import org.easybot.repository.GasStationsRepository;
 import org.easybot.repository.NesteRepository;
 import org.easybot.repository.ViadaRepository;
+import org.easybot.util.Modifier;
+import org.easybot.util.ModifierFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,6 +31,7 @@ public class GasStationService {
 
     private final GasStationsRepository gasStationsRepository;
     private final CommonStationService  commonStationService;
+    private final EnumMap<GasStationTitle, String> validationReport = new EnumMap<>(GasStationTitle.class);
 
     @Autowired
     public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository)
@@ -56,8 +60,6 @@ public class GasStationService {
             title = iterable.next();
             String url = title.getUrl();
             String gasStationTitle = title.name().toLowerCase();
-            log.info("Truncating table {}",title.getTitle());
-            commonStationService.deleteTable(gasStationTitle);
 
             try
             {
@@ -65,6 +67,8 @@ public class GasStationService {
                 Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
                 Iterator<String> cleanedList = modifyList(gasStationTitle, element);
+                log.info("Truncating table {}", title.getTitle());
+                commonStationService.deleteTable(gasStationTitle);
                 while (cleanedList.hasNext())
                 {
                     String gasType = cleanedList.next();
@@ -79,12 +83,18 @@ public class GasStationService {
                     commonStationService.save(station, gasStationTitle);
                     log.info("Gas Type - {} was saved to DB", gasType);
                 }
-            } catch (IOException e)
+            } catch (IOException | ParsingException e)
             {
-                throw new RuntimeException("Occurs problem during prices download from WEB");
+                validationReport.put(title, e.toString());
             }
 
         }
+
+        if (!validationReport.isEmpty())
+        {
+            printErrorReport(validationReport);
+        }
+
 
     }
 
@@ -92,7 +102,7 @@ public class GasStationService {
     {
         Elements element;
 
-        if (gasStationTitle.getTitle().equals("virsi"))
+        if (gasStationTitle.getTitle().equals(VIRSI_TITLE))
         {
              element = document.select("div.prices-block.fuel-block");
         }
@@ -117,63 +127,35 @@ public class GasStationService {
     }
 
 
-    private Iterator<String> modifyList(String gasStation, Elements elements)
+    private Iterator<String> modifyList(String gasStation, Elements elements) throws ParsingException
     {
         List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
 
-        if (gasStation.equals(NESTE_TITLE))
+        if (list.isEmpty())
         {
-            list =  list.subList(3, list.size());
+            throw new ParsingException("Jsoup elements are empty");
         }
-        if (gasStation.equals("viada"))
-        {
-            list.set(0, "95 multi green");
-            list.set(3,"95 multi red");
-            list.set(6, "98 multi");
-            list.set(9, "Diesel");
-            list.set(12, "Diesel multi");
-            list.set(15, "Gas");
-            list.set(18, "E 85");
-        }
-        if (gasStation.equals(VIRSI_TITLE))
-        {
-            String rawString = list.get(0);
-            list.clear();
 
-            String [] withoutZipCode = rawString
-                    .replaceAll("(LV-)[0-9]{4}", "")
-                    .replace("Degvielas cenas", "")
-                    .replace(VIRSI_ALL_STATIONS, VIRSI_ALL_STATIONS.concat(","))
-                    .split(",");
-            List<String> listWithoutSpaces = Arrays.stream(withoutZipCode).map(String::trim).toList();
-            Iterator<String> iterator = listWithoutSpaces.listIterator();
-            while (iterator.hasNext())
-            {
-                String st = iterator.next();
+        Modifier stationModifier = ModifierFactory.createModifier(gasStation);
 
-                if (st.matches(".*\\s.*"))
-                {
-                    String [] s = st.split(" ", 3);
-                    Queue<String> queue = new LinkedList<>(Arrays.asList(s));
-                    while (!queue.isEmpty())
-                    {
-                        list.add(queue.poll());
-                    }
-                }
-                else
-                {
-                    int lastIndex = list.size() - 1;
-                    list.set(lastIndex, list.get(lastIndex).concat(" " + st));
-                }
-            }
-
-        }
+        list = stationModifier.cleanRawElements(list);
         checkForEmptyFields(list);
-        return list.stream().map(x->x.replace("EUR", "")).iterator();
+        return list.stream().map(x -> x.replace("EUR", "")).iterator();
     }
 
     private void checkForEmptyFields(List<String> list)
     {
         list.removeIf(x -> x == null || x.isEmpty());
     }
+
+    private void printErrorReport (EnumMap<GasStationTitle, String> errorReport)
+    {
+        for (Map.Entry<GasStationTitle, String> entry : errorReport.entrySet())
+        {
+            log.error("Error during gas stations price download from url: " + entry.getKey().getUrl() + ".Reason: " + entry.getValue());
+        }
+        errorReport.clear();
+    }
+
+
 }

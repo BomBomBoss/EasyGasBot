@@ -44,9 +44,9 @@ public class CommonStationService {
 
         CommonStationRepository repository = repositoryFactory.getRepositoryMap().get(title);
 
-        if(repository==null)
+        if (repository == null)
         {
-            throw new RuntimeException ("Can't return repository instance");
+            throw new RuntimeException("Can't return repository instance");
         }
 
         return repository;
