@@ -1,8 +1,16 @@
 package org.easybot.util;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-public class ViadaModifier implements Modifier{
+@Service
+public class ViadaModifier extends GasTypeFormatter {
+    public ViadaModifier()
+    {
+        super("95 multi green", "98 multi", "Diesel","Diesel multi");
+    }
+
     @Override
     public List<String> cleanRawElements(List<String> rawList)
     {
@@ -15,4 +23,6 @@ public class ViadaModifier implements Modifier{
         rawList.set(18, "E 85");
         return rawList;
     }
+
+
 }

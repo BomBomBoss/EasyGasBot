@@ -31,13 +31,15 @@ public class GasStationService {
 
     private final GasStationsRepository gasStationsRepository;
     private final CommonStationService  commonStationService;
+    private final ModifierFactory modifierFactory;
     private final EnumMap<GasStationTitle, String> validationReport = new EnumMap<>(GasStationTitle.class);
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository)
+    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository, ModifierFactory modifierFactory)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.commonStationService = commonStationService;
+        this.modifierFactory = modifierFactory;
     }
 
     public List<GasStationsBrands> findAllBrands()
@@ -60,23 +62,25 @@ public class GasStationService {
             title = iterable.next();
             String url = title.getUrl();
             String gasStationTitle = title.name().toLowerCase();
+            Modifier stationModifier = modifierFactory.createModifier(gasStationTitle);
 
             try
             {
                 Document document = Jsoup.connect(url).get();
                 Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
-                Iterator<String> cleanedList = modifyList(gasStationTitle, element);
+                Iterator<String> cleanedList = modifyList(gasStationTitle, element, stationModifier);
                 log.info("Truncating table {}", title.getTitle());
                 commonStationService.deleteTable(gasStationTitle);
+
                 while (cleanedList.hasNext())
                 {
                     String gasType = cleanedList.next();
                     String price = cleanedList.next();
                     String location = cleanedList.next();
-
                     CommonStation station = createInstance(gasStationTitle);
-                    station.setGasType(gasType);
+
+                    station.setGasType(stationModifier.adjustCorrectFieldTitleForDB(gasType));
                     station.setPrice(price);
                     station.setLocation(location);
                     station.setGasStationsBrands(findById(title.getId()));
@@ -127,7 +131,7 @@ public class GasStationService {
     }
 
 
-    private Iterator<String> modifyList(String gasStation, Elements elements) throws ParsingException
+    private Iterator<String> modifyList(String gasStation, Elements elements, Modifier stationModifier) throws ParsingException
     {
         List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
 
@@ -136,7 +140,6 @@ public class GasStationService {
             throw new ParsingException("Jsoup elements are empty");
         }
 
-        Modifier stationModifier = ModifierFactory.createModifier(gasStation);
 
         list = stationModifier.cleanRawElements(list);
         checkForEmptyFields(list);

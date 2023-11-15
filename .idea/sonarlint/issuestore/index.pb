@@ -102,3 +102,9 @@ S
 EasyGasBot.iml,4/4/4407e554cf8218da47e53cb377afeb58b158bb41
 ]
 -.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
+p
+@GasStationsNode/src/main/java/org/easybot/entity/GasStation.java,0/b/0bb3207fcc3bbf2162300fafc2258eaaa5a4d4e3
+t
+DGasStationsNode/src/main/java/org/easybot/util/GasTypeFormatter.java,c/e/ce1225d0dfa3cb6ac0bebeaaf580e2552a3e3afd
+r
+BGasStationsNode/src/main/java/org/easybot/entity/GasTypesName.java,e/f/ef6fa51439c0c500b1a593f17d1df5cc94c3d064

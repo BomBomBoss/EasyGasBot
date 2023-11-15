@@ -1,10 +1,19 @@
 package org.easybot.util;
 
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
 
-public class VirsiModifier implements Modifier{
+@Service
+public class VirsiModifier extends GasTypeFormatter{
+
+    public VirsiModifier()
+    {
+        super("95E", "98E", "DD",null);
+    }
+
     @Override
     public List<String> cleanRawElements(List<String> rawList)
     {
