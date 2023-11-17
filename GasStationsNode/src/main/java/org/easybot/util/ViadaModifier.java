@@ -8,7 +8,10 @@ import java.util.List;
 public class ViadaModifier extends GasTypeFormatter {
     public ViadaModifier()
     {
-        super("95 multi green", "98 multi", "Diesel","Diesel multi");
+        super("95 multi green", "95 multi red",
+                "98 multi", "E 85",
+                "Diesel","Diesel multi",
+                null, "Gas", null);
     }
 
     @Override

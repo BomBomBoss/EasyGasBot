@@ -11,7 +11,10 @@ public class VirsiModifier extends GasTypeFormatter{
 
     public VirsiModifier()
     {
-        super("95E", "98E", "DD",null);
+        super("95E", null,
+                "98E", null,
+                "DD",null,
+                "CNG", "LPG", "AdBLUE");
     }
 
     @Override

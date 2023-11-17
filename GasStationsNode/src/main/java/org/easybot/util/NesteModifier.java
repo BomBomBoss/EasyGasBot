@@ -10,7 +10,10 @@ public class NesteModifier extends GasTypeFormatter {
 
     public NesteModifier()
     {
-        super("Neste Futura 95", "Neste Futura 98", "Neste Futura D","Neste Pro Diesel");
+        super("Neste Futura 95", null,
+                "Neste Futura 98", null,
+                "Neste Futura D","Neste Pro Diesel",
+                null,null,null);
     }
 
     @Override

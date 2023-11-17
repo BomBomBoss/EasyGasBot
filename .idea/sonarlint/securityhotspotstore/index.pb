@@ -108,3 +108,7 @@ t
 DGasStationsNode/src/main/java/org/easybot/util/GasTypeFormatter.java,c/e/ce1225d0dfa3cb6ac0bebeaaf580e2552a3e3afd
 r
 BGasStationsNode/src/main/java/org/easybot/entity/GasTypesName.java,e/f/ef6fa51439c0c500b1a593f17d1df5cc94c3d064
+t
+DGasStationsNode/src/main/java/org/easybot/service/IUserModifier.java,b/0/b03d286764b4e678537f9a9db9ffd6b20e461034
+t
+DGasStationsNode/src/main/java/org/easybot/entity/TelegramAnswer.java,5/a/5a308365f7c2045364ffd25b792f30ac9625793c

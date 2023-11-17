@@ -1,12 +1,13 @@
 package org.easybot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.easybot.entity.*;
 
-import static org.easybot.CommonTexts.RESPONSE_COMMAND_NOT_FOUND;
-import static org.easybot.CommonTexts.UTIL_LINE_SEPARATOR;
+import static org.easybot.CommonTexts.*;
 import static org.easybot.enums.AdministrationCommands.*;
 
 import org.easybot.enums.GasStationTitle;
+import org.easybot.util.Modifier;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 
 @Service
+@Slf4j
 public class MainServiceImp implements MainService{
 
     private final TelegramAnswer telegramAnswer;
@@ -41,7 +43,7 @@ public class MainServiceImp implements MainService{
         else
         {
             Optional<GasStationTitle> cd = Arrays.stream(GasStationTitle.values()).filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
-            cd.ifPresentOrElse(gasStationTitle -> telegramAnswer.formatTextFromObject(retrieveGasStationInfo(gasStationTitle.getTitle().toLowerCase())),
+            cd.ifPresentOrElse(gasStationTitle -> telegramAnswer.formatTextFromObject(returnOriginalTitle(gasStationTitle.getTitle().toLowerCase())),
                     () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND, command)));
         }
         telegramAnswer.setChatId(update.getMessage().getChatId().toString());
@@ -65,6 +67,40 @@ public class MainServiceImp implements MainService{
         }
         return sb.toString().replace("_", "\\_");
     }
+
+    private List<CommonStation> returnOriginalTitle(String title)
+    {
+        List <CommonStation> list = retrieveGasStationInfo(title);
+
+        if (title.equals(CIRCLE_K_TITLE))
+        {
+           title = CIRCLE_WITHOUT_K_TITLE;
+        }
+
+        Modifier modifier = gasStationService.getModifierFactory().createModifier(title);
+
+        for (CommonStation cm : list)
+        {
+            for (GasTypesName gs : GasTypesName.values())
+            {
+                if (cm.getGasType().equalsIgnoreCase(gs.getDescription()))
+                {
+                    try
+                    {
+                        cm.setGasType(gs.getOriginalTitle(modifier));
+                    }
+                    catch (Exception e)
+                    {
+                        log.error("Error during resolving original title via modifier");
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return list;
+
+    }
+
 
 
 }

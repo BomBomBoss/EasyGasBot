@@ -160,5 +160,8 @@ public class GasStationService {
         errorReport.clear();
     }
 
-
+    public ModifierFactory getModifierFactory()
+    {
+        return modifierFactory;
+    }
 }
