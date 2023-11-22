@@ -112,3 +112,13 @@ t
 DGasStationsNode/src/main/java/org/easybot/service/IUserModifier.java,b/0/b03d286764b4e678537f9a9db9ffd6b20e461034
 t
 DGasStationsNode/src/main/java/org/easybot/entity/TelegramAnswer.java,5/a/5a308365f7c2045364ffd25b792f30ac9625793c
+u
+EGasStationsNode/src/main/java/org/easybot/service/ProduceService.java,0/7/07c9d5dbd428d4d48bff1e9aedd5daa10fbefcd2
+x
+HTelegramBot/src/main/java/com/bosscorp/service/AnswerConsumeService.java,6/f/6f65baaa79f6f555c60dcf50aa4e6a40e56035cc
+u
+ETelegramBot/src/main/java/com/bosscorp/feature/TelegramFormatter.java,2/6/26bf032052efb5c33ef5c98af6ae2e49a332ebdd
+v
+FTelegramBot/src/main/java/com/bosscorp/service/TelegramBotService.java,2/4/24a76d02302b3133eff29a04c4706cb162635635
+z
+JGasStationsNode/src/main/java/org/easybot/repository/CircleRepository.java,7/7/776824cfff9df4859f9ce83510e011bafea5195a

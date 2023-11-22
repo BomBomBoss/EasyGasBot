@@ -11,9 +11,7 @@ import org.easybot.util.Modifier;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -42,8 +40,10 @@ public class MainServiceImp implements MainService{
         }
         else
         {
-            Optional<GasStationTitle> cd = Arrays.stream(GasStationTitle.values()).filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
-            cd.ifPresentOrElse(gasStationTitle -> telegramAnswer.formatTextFromObject(returnOriginalTitle(gasStationTitle.getTitle().toLowerCase())),
+            Optional<GasStationTitle> gasStation = Arrays.stream(GasStationTitle.values())
+                    .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
+
+            gasStation.ifPresentOrElse(station -> telegramAnswer.formatAnswerText(formatToOriginalGasTypeName(station.getTitle())),
                     () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND, command)));
         }
         telegramAnswer.setChatId(update.getMessage().getChatId().toString());
@@ -52,7 +52,7 @@ public class MainServiceImp implements MainService{
 
     }
 
-    private List<CommonStation> retrieveGasStationInfo(String gasStationTitle)
+    private List<CommonStation> getGasStationInfo(String gasStationTitle)
     {
        return commonStationService.retrieveAll(gasStationTitle);
     }
@@ -68,9 +68,17 @@ public class MainServiceImp implements MainService{
         return sb.toString().replace("_", "\\_");
     }
 
-    private List<CommonStation> returnOriginalTitle(String title)
+    private List<CommonStation> formatToOriginalGasTypeName(String title)
     {
-        List <CommonStation> list = retrieveGasStationInfo(title);
+        List <CommonStation> list = getGasStationInfo(title);
+
+        if (list.isEmpty())
+        {
+            log.error("Returned empty list from DB with title: " + title);
+            return Collections.emptyList();
+        }
+
+        title = title.toLowerCase();
 
         if (title.equals(CIRCLE_K_TITLE))
         {
@@ -79,15 +87,15 @@ public class MainServiceImp implements MainService{
 
         Modifier modifier = gasStationService.getModifierFactory().createModifier(title);
 
-        for (CommonStation cm : list)
+        for (CommonStation station : list)
         {
-            for (GasTypesName gs : GasTypesName.values())
+            for (GasTypesName gasType : GasTypesName.values())
             {
-                if (cm.getGasType().equalsIgnoreCase(gs.getDescription()))
+                if (station.getGasType().equals(gasType.getDescription()))
                 {
                     try
                     {
-                        cm.setGasType(gs.getOriginalTitle(modifier));
+                        station.setGasType(gasType.getOriginalTitle(modifier));
                     }
                     catch (Exception e)
                     {

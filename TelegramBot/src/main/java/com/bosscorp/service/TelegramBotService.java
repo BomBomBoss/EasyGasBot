@@ -51,9 +51,11 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
 
     public void sendResponseToClient(SendMessage sendMessage)
     {
-        try{
-        execute(sendMessage);
-        } catch (TelegramApiException e)
+        try
+        {
+            execute(sendMessage);
+        }
+        catch (TelegramApiException e)
         {
             log.error("Error during sending response to client");
             e.printStackTrace();

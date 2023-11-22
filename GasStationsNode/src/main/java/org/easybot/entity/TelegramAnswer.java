@@ -36,30 +36,38 @@ public class TelegramAnswer {
         this.text = text;
     }
 
-    public void formatTextFromObject(List<CommonStation> list)
+    public void formatAnswerText(List<CommonStation> list)
     {
-        StringBuilder sb = new StringBuilder();
+        String result;
 
-        for (CommonStation gs : list)
+        if (!list.isEmpty())
         {
-            String location = gs.getLocation();
-            if (location.contains(ALL_RIGA_DUS_EQUALS_1) || location.contains(ALL_RIGA_DUS_EQUALS_2) || location.contains(VIADA_ALL_STATIONS) || location.contains(VIRSI_ALL_STATIONS))
+            StringBuilder sb = new StringBuilder();
+            for (CommonStation gs : list)
             {
-                location = RESPONSE_ALL_RIGA_DUS_EQUALS;
+                String location = gs.getLocation();
+                if (location.contains(ALL_RIGA_DUS_EQUALS_1) || location.contains(ALL_RIGA_DUS_EQUALS_2) || location.contains(VIADA_ALL_STATIONS) || location.contains(VIRSI_ALL_STATIONS))
+                {
+                    location = RESPONSE_ALL_RIGA_DUS_EQUALS;
+                }
+                sb.append(String.format("*%s*", gs.gasType)) // bold
+                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                        .append(RESPONSE_PRICE_EQUALS)
+                        .append(String.format("*%s*", gs.getPrice())) // bold
+                        .append(RESPONSE_EUR_SIGN_BOLD)
+                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                        .append(RESPONSE_ADDRESS_EQUALS).append(String.format("_%s_", location)) // italic
+                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                        .append(System.getProperty(UTIL_LINE_SEPARATOR));
             }
-            sb.append(String.format("*%s*", gs.gasType)) // bold
-                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
-                    .append(RESPONSE_PRICE_EQUALS)
-                    .append(String.format("*%s*", gs.getPrice())) // bold
-                    .append(RESPONSE_EUR_SIGN_BOLD)
-                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
-                    .append(RESPONSE_ADDRESS_EQUALS).append(String.format("_%s_",location)) // italic
-                    .append(System.getProperty(UTIL_LINE_SEPARATOR))
-                    .append(System.getProperty(UTIL_LINE_SEPARATOR));
+            result = sb.toString();
         }
-        setText(sb.toString());
+        else
+        {
+            result = "На данный момент нет возможности предоставить информацию по ценам для данной заправки. Пожалуйста попробуйте позже.";
+        }
+        setText(result);
     }
-
 
     public InlineKeyboardMarkup getButtons()
     {

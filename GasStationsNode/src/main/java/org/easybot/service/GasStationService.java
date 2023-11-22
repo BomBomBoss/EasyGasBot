@@ -48,7 +48,7 @@ public class GasStationService {
     }
     public GasStationsBrands findById(Long id)
     {
-        return gasStationsRepository.findById(id).orElseThrow(()->new RuntimeException("Can't find this {" + id + "} in table"));
+        return gasStationsRepository.findById(id).orElseThrow(() -> new RuntimeException("Can't find this {" + id + "} in table"));
     }
 
     @Scheduled(initialDelay = 1/60, fixedRate = 1, timeUnit = TimeUnit.HOURS)
@@ -69,7 +69,7 @@ public class GasStationService {
                 Document document = Jsoup.connect(url).get();
                 Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
-                Iterator<String> cleanedList = modifyList(gasStationTitle, element, stationModifier);
+                Iterator<String> cleanedList = modifyList(element, stationModifier);
                 log.info("Truncating table {}", title.getTitle());
                 commonStationService.deleteTable(gasStationTitle);
 
@@ -93,13 +93,10 @@ public class GasStationService {
             }
 
         }
-
         if (!validationReport.isEmpty())
         {
             printErrorReport(validationReport);
         }
-
-
     }
 
     private Elements parsingWebSites(GasStationTitle gasStationTitle, Document document)
@@ -131,7 +128,7 @@ public class GasStationService {
     }
 
 
-    private Iterator<String> modifyList(String gasStation, Elements elements, Modifier stationModifier) throws ParsingException
+    private Iterator<String> modifyList(Elements elements, Modifier stationModifier) throws ParsingException
     {
         List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
 

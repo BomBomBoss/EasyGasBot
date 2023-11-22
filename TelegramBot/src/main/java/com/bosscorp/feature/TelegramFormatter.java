@@ -16,7 +16,7 @@ public class TelegramFormatter {
     {
         String text = sendMessage.getText();
         text = escapeCharacters.stream()
-                .map(toReplace -> (Function<String, String>)s->s.replace(toReplace, String.format("\\%s", toReplace)))
+                .map(toReplace -> (Function<String, String>) s -> s.replace(toReplace, String.format("\\%s", toReplace)))
                 .reduce(Function.identity(), Function::andThen)
                 .apply(text);
         sendMessage.setText(text);
