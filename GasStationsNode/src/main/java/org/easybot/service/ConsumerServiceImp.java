@@ -1,6 +1,7 @@
 package org.easybot.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.easybot.entity.GasTypesName;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -25,6 +26,15 @@ public class ConsumerServiceImp implements RabbitConsumer {
     {
         log.info(commonLogText, TEXT_MESSAGE_UPDATE);
         mainService.processTextMessage(update, update.getMessage().getText());
+
+    }
+
+    @Override
+    @RabbitListener(queues = CALL_BACK_QUERY)
+    public void consumeCallBackQuery(Update update)
+    {
+        log.info(commonLogText, CALL_BACK_QUERY);
+        mainService.processCallBackQuery(update);
 
     }
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public interface CommonStationRepository<T extends CommonStation> extends JpaRep
     @Query(value = "select t from #{#entityName} t")
     @Transactional
     List<T> findAll();
+
+    @Query(value = "select t from #{#entityName} t WHERE t.gasType = :type")
+    @Transactional
+    T findByType(@Param("type") String type);
 
 
 }

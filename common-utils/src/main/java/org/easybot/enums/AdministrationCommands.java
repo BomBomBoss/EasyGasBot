@@ -3,15 +3,16 @@ package org.easybot.enums;
 import org.easybot.CommonTexts;
 
 public enum AdministrationCommands {
-    START("/start", CommonTexts.START_COMMAND_DESCRIPTION);
+    START("/start", CommonTexts.START_COMMAND_DISCLAIMER),
+    CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER);
 
     private String command;
-    private String description;
+    private String disclaimer;
 
-    AdministrationCommands(String command, String description)
+    AdministrationCommands(String command, String disclaimer)
     {
         this.command = command;
-        this.description = description;
+        this.disclaimer = disclaimer;
     }
 
     public String getCommand()
@@ -19,8 +20,8 @@ public enum AdministrationCommands {
         return command;
     }
 
-    public String getDescription()
+    public String getDisclaimer()
     {
-        return description;
+        return disclaimer;
     }
 }

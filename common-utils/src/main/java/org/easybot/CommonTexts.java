@@ -2,8 +2,6 @@ package org.easybot;
 
 import com.vdurmont.emoji.EmojiParser;
 
-import javax.ws.rs.PUT;
-
 public class CommonTexts {
 
 
@@ -12,9 +10,17 @@ public class CommonTexts {
     public static final String CIRCLE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":two:" + " цены на заправках Circle");
     public static final String VIADA_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":three:" + " цены на заправках Viada");
     public static final String VIRSI_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":four:" + " цены на заправках Virsi");
-    public static final String START_COMMAND_DESCRIPTION = "Добро пожаловать *%s* на просторы бота EasyGas.\n" +
-            "Здесь ты сможешь посмотреть, где сейчас продаётся самое дешёвое топливо среди заправок NESTE, CIRCLE_K, VIADA, VIRŠI. \n" +
-            "Команды, которые сейчас доступны: \n";
+    public static final String CHEAPEST_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":money_with_wings:" + " самое дешёвое топливо");
+    public static final String START_COMMAND_DISCLAIMER = """
+            Добро пожаловать *%s* на просторы бота EasyGas.
+            Здесь ты сможешь посмотреть, где сейчас продаётся самое дешёвое топливо среди заправок NESTE, CIRCLE_K, VIADA, VIRŠI.
+            Команды, которые сейчас доступны:
+            
+            """;
+    public static final String CHEAPEST_COMMAND_DISCLAIMER = """
+                Цены будут показаны в порядке возрастания.
+                *Пожалуйста выберите тип топлива*
+                """;
 
     /************************ Replaced Text *****************************************************/
     public static final String VIRSI_ALL_STATIONS = "Visā Viršu tīklā";
@@ -30,7 +36,6 @@ public class CommonTexts {
     public static final String RESPONSE_ADDRESS_EQUALS = "адрес= ";
     public static final String RESPONSE_PRICE_EQUALS = "цена= ";
     public static final String RESPONSE_EUR_SIGN_BOLD = " *EUR*";
-
 
     /************************ Util Text *****************************************************/
 

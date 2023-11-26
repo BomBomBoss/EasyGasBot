@@ -8,4 +8,5 @@ public interface RabbitConsumer {
     void consumePhotoMessage(Update update);
     void consumeDocMessage(Update update);
     void consumeUpdateException(Update update);
+    void consumeCallBackQuery(Update update);
 }

@@ -33,6 +33,7 @@ public class GasStationService {
     private final CommonStationService  commonStationService;
     private final ModifierFactory modifierFactory;
     private final EnumMap<GasStationTitle, String> validationReport = new EnumMap<>(GasStationTitle.class);
+    private List<CommonStation> rawListOfStations = new ArrayList<>();
 
     @Autowired
     public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository, ModifierFactory modifierFactory)
@@ -75,18 +76,19 @@ public class GasStationService {
 
                 while (cleanedList.hasNext())
                 {
+                    CommonStation station = createInstance(gasStationTitle);
                     String gasType = cleanedList.next();
                     String price = cleanedList.next();
                     String location = cleanedList.next();
-                    CommonStation station = createInstance(gasStationTitle);
 
                     station.setGasType(stationModifier.adjustCorrectFieldTitleForDB(gasType));
                     station.setPrice(price);
                     station.setLocation(location);
                     station.setGasStationsBrands(findById(title.getId()));
-                    commonStationService.save(station, gasStationTitle);
-                    log.info("Gas Type - {} was saved to DB", gasType);
+
+                    validatePulledData(station, gasStationTitle);
                 }
+                rawListOfStations.clear();
             } catch (IOException | ParsingException e)
             {
                 validationReport.put(title, e.toString());
@@ -96,6 +98,16 @@ public class GasStationService {
         if (!validationReport.isEmpty())
         {
             printErrorReport(validationReport);
+        }
+    }
+
+    private void validatePulledData(CommonStation station, String gasStationTitle)
+    {
+        if (station.getPrice().trim().matches("\\d.\\d{3}") && !rawListOfStations.contains(station))
+        {
+            rawListOfStations.add(station);
+            commonStationService.save(station, gasStationTitle);
+            log.info("Gas Type - {} was saved to DB", station.getGasType());
         }
     }
 

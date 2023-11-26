@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
+import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
+
 @Entity
 @Table
 public class GasStationsBrands {
@@ -27,6 +30,11 @@ public class GasStationsBrands {
     public String getBrandName()
     {
         return brandName;
+    }
+
+    public String getFormattedBrandName()
+    {
+        return brandName.equals(CIRCLE_K_TITLE) ? CIRCLE_WITHOUT_K_TITLE : brandName;
     }
 
     public void setBrandName(String title)

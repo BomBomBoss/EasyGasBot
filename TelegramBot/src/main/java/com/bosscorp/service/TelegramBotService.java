@@ -8,12 +8,10 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static org.easybot.RabbitQueue.DOC_MESSAGE_UPDATE;
-import static org.easybot.RabbitQueue.PHOTO_MESSAGE_UPDATE;
-import static org.easybot.RabbitQueue.TEXT_MESSAGE_UPDATE;
-import static org.easybot.RabbitQueue.UPDATE_EXCEPTION;
+import static org.easybot.RabbitQueue.*;
 
 @Service
 @Slf4j
@@ -31,7 +29,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
     public void onUpdateReceived(Update update)
     {
         String queue = distributeMessageType(update);
-        log.info("Received update from client {}", update.getMessage().getFrom());
+        log.info("Received update from client {}", getFromUser(update));
         rabbitTemplate.convertAndSend(queue,update);
     }
 
@@ -46,6 +44,8 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
             else if (message.hasDocument()) return DOC_MESSAGE_UPDATE;
             else if (message.hasPhoto()) return PHOTO_MESSAGE_UPDATE;
         }
+        else if (update.hasCallbackQuery()) return CALL_BACK_QUERY;
+
         return UPDATE_EXCEPTION;
     }
 
@@ -60,6 +60,14 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
             log.error("Error during sending response to client");
             e.printStackTrace();
         }
+    }
+
+    private User getFromUser(Update update)
+    {
+        return update.hasMessage() ? update.getMessage().getFrom()
+                : update.hasCallbackQuery() ? update.getCallbackQuery().getFrom()
+                : new User();
+
     }
 
 }

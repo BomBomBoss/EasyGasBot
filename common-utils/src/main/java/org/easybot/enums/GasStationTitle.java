@@ -1,5 +1,7 @@
 package org.easybot.enums;
 
+import java.util.List;
+
 public enum GasStationTitle {
     NESTE("/neste",
             "https://www.neste.lv/lv/content/degvielas-cenas", "neste"),
@@ -61,5 +63,10 @@ public enum GasStationTitle {
                 ", title='" + title + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public static List<GasStationTitle> getGasStationValues()
+    {
+        return List.of(GasStationTitle.values());
     }
 }

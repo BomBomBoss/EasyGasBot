@@ -36,7 +36,7 @@ public class TelegramAnswer {
         this.text = text;
     }
 
-    public void formatAnswerText(List<CommonStation> list)
+    public void formatAnswerText(List<CommonStation> list, boolean includeStationTitle)
     {
         String result;
 
@@ -49,6 +49,12 @@ public class TelegramAnswer {
                 if (location.contains(ALL_RIGA_DUS_EQUALS_1) || location.contains(ALL_RIGA_DUS_EQUALS_2) || location.contains(VIADA_ALL_STATIONS) || location.contains(VIRSI_ALL_STATIONS))
                 {
                     location = RESPONSE_ALL_RIGA_DUS_EQUALS;
+                }
+                if (includeStationTitle)
+                {
+                    String stationTitle = gs.getGasStationsBrands().getFormattedBrandName().toUpperCase();
+                    sb.append(String.format("__%s__", stationTitle)) // bold
+                            .append(System.getProperty(UTIL_LINE_SEPARATOR));
                 }
                 sb.append(String.format("*%s*", gs.gasType)) // bold
                         .append(System.getProperty(UTIL_LINE_SEPARATOR))

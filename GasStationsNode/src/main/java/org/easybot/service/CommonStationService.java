@@ -37,6 +37,12 @@ public class CommonStationService {
 
     }
 
+    public CommonStation retrieveStationByType(String tableTitle, String type)
+    {
+        return getRepositoryInstance(tableTitle).findByType(type);
+
+    }
+
     private CommonStationRepository getRepositoryInstance(String title)
     {
         if (title.equals(CIRCLE_K_TITLE))
