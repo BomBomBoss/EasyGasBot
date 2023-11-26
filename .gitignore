@@ -8,6 +8,8 @@
 /sonarlint/
 .idea
 /.idea/
+/.idea
+.idea/sonarlint/
 
 # Ignore Gradle GUI config
 gradle-app.setting
