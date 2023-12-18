@@ -4,29 +4,39 @@ import java.util.List;
 
 public enum GasStationTitle {
     NESTE("/neste",
-            "https://www.neste.lv/lv/content/degvielas-cenas", "neste"),
+            "https://www.neste.lv/lv/content/degvielas-cenas",
+            "neste",
+            "table > tbody > tr > td"),
 
     CIRCLE("/circle_k",
-            "https://www.circlek.lv/privātpersonām/degvielas-cenas", "circle_k"),
+            "https://www.circlek.lv/privātpersonām/degvielas-cenas",
+            "circle_k",
+            "table > tbody > tr > td"),
 
     VIADA("/viada",
-            "https://www.viada.lv/zemakas-degvielas-cenas/", "viada"),
+            "https://www.viada.lv/zemakas-degvielas-cenas/",
+            "viada",
+            "table > tbody > tr > td"),
 
     VIRSI("/virsi",
-            "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas", "virsi");
+            "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas",
+            "virsi",
+            "div.prices-block.fuel-block");
 
 
     private final String command;
     private final String url;
     private final String title;
+    private String cssQuery;
     private long id;
 
 
-    GasStationTitle(String command, String url, String title)
+    GasStationTitle(String command, String url, String title, String cssQuery)
     {
         this.command = command;
         this.url = url;
         this.title = title;
+        this.cssQuery = cssQuery;
     }
 
     public String getCommand()
@@ -54,6 +64,16 @@ public enum GasStationTitle {
         this.id = id;
     }
 
+    public String getCssQuery()
+    {
+        return cssQuery;
+    }
+
+    public void setCssQuery(String cssQuery)
+    {
+        this.cssQuery = cssQuery;
+    }
+
     @Override
     public String toString()
     {
@@ -69,4 +89,5 @@ public enum GasStationTitle {
     {
         return List.of(GasStationTitle.values());
     }
+
 }

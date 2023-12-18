@@ -1,11 +1,10 @@
-package org.easybot.entity;
+package org.easybot.entity.enums;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.easybot.service.IUserModifier;
 import org.easybot.util.Modifier;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 
 public enum GasTypesName implements IUserModifier {

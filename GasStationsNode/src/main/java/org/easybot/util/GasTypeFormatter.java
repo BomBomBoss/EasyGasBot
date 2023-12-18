@@ -1,6 +1,6 @@
 package org.easybot.util;
 
-import org.easybot.entity.GasTypesName;
+import org.easybot.entity.enums.GasTypesName;
 
 import java.util.HashMap;
 import java.util.Map;

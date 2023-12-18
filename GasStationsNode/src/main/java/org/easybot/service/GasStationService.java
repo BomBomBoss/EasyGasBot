@@ -36,7 +36,7 @@ public class GasStationService {
     private List<CommonStation> rawListOfStations = new ArrayList<>();
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository, ModifierFactory modifierFactory)
+    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, ModifierFactory modifierFactory)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.commonStationService = commonStationService;
@@ -53,9 +53,9 @@ public class GasStationService {
     }
 
     @Scheduled(initialDelay = 1/60, fixedRate = 1, timeUnit = TimeUnit.HOURS)
-    private void updateTableWithLatestGasPrices()
+    public void updateTableWithLatestGasPrices()
     {
-        Iterator<GasStationTitle> iterable = Arrays.stream(GasStationTitle.values()).iterator();
+        Iterator<GasStationTitle> iterable = GasStationTitle.getGasStationValues().iterator();
         GasStationTitle title;
 
         while (iterable.hasNext())
@@ -70,6 +70,7 @@ public class GasStationService {
                 Document document = Jsoup.connect(url).get();
                 Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
+
                 Iterator<String> cleanedList = modifyList(element, stationModifier);
                 log.info("Truncating table {}", title.getTitle());
                 commonStationService.deleteTable(gasStationTitle);
@@ -93,7 +94,6 @@ public class GasStationService {
             {
                 validationReport.put(title, e.toString());
             }
-
         }
         if (!validationReport.isEmpty())
         {
@@ -111,17 +111,14 @@ public class GasStationService {
         }
     }
 
-    private Elements parsingWebSites(GasStationTitle gasStationTitle, Document document)
+    private Elements parsingWebSites(GasStationTitle gasStationTitle, Document document) throws ParsingException
     {
-        Elements element;
+        Elements element = document.select(gasStationTitle.getCssQuery());
 
-        if (gasStationTitle.getTitle().equals(VIRSI_TITLE))
+        if (element.isEmpty())
         {
-             element = document.select("div.prices-block.fuel-block");
-        }
-        else
-        {
-             element = document.select("table > tbody > tr > td");
+            String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStationTitle.getCssQuery(), gasStationTitle.getTitle());
+            throw new ParsingException(error);
         }
         return element;
     }
@@ -149,7 +146,6 @@ public class GasStationService {
             throw new ParsingException("Jsoup elements are empty");
         }
 
-
         list = stationModifier.cleanRawElements(list);
         checkForEmptyFields(list);
         return list.stream().map(x -> x.replace("EUR", "")).iterator();
@@ -160,11 +156,11 @@ public class GasStationService {
         list.removeIf(x -> x == null || x.isEmpty());
     }
 
-    private void printErrorReport (EnumMap<GasStationTitle, String> errorReport)
+    public void printErrorReport (EnumMap<GasStationTitle, String> errorReport)
     {
         for (Map.Entry<GasStationTitle, String> entry : errorReport.entrySet())
         {
-            log.error("Error during gas stations price download from url: " + entry.getKey().getUrl() + ".Reason: " + entry.getValue());
+            log.error("Error during gas stations price download from url: " + entry.getKey().getUrl() + "\n.Reason: " + entry.getValue());
         }
         errorReport.clear();
     }
@@ -172,5 +168,10 @@ public class GasStationService {
     public ModifierFactory getModifierFactory()
     {
         return modifierFactory;
+    }
+
+    public EnumMap<GasStationTitle, String> getValidationReport()
+    {
+        return validationReport;
     }
 }

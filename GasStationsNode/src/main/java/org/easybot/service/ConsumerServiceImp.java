@@ -1,7 +1,6 @@
 package org.easybot.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.easybot.entity.GasTypesName;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;

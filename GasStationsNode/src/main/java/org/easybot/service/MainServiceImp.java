@@ -4,9 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.easybot.entity.*;
 
 import static org.easybot.CommonTexts.*;
-import static org.easybot.entity.GasTypesName.*;
+import static org.easybot.entity.enums.GasTypesName.*;
 import static org.easybot.enums.AdministrationCommands.*;
 
+import org.easybot.entity.enums.GasTypesName;
 import org.easybot.enums.GasStationTitle;
 import org.easybot.util.Modifier;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class MainServiceImp implements MainService{
+public class MainServiceImp implements MainService {
 
     private final TelegramAnswer telegramAnswer;
     private final ProduceService produceService;
