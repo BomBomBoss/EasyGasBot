@@ -34,7 +34,7 @@ public class VirsiModifier extends GasTypeFormatter{
         {
             String st = iterator.next();
 
-            if (st.matches(".*\\s.*"))
+            if (st.matches(".*\\s.*") && !st.contains("pag.") && !st.contains("novads"))
             {
                 String [] s = st.split(" ", 3);
                 Queue<String> queue = new LinkedList<>(Arrays.asList(s));

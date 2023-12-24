@@ -87,7 +87,7 @@ public class GasStationService {
                     validatePulledData(station, gasStationTitle);
                 }
                 rawListOfStations.clear();
-            } catch (IOException | ParsingException e)
+            } catch (IOException | ParsingException | NoSuchElementException e)
             {
                 validationReport.put(title, e.toString());
             }
