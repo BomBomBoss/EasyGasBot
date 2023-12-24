@@ -49,7 +49,7 @@ public class MainServiceImp implements MainService {
         }
         else
         {
-            Optional<GasStationTitle> gasStation = Arrays.stream(GasStationTitle.values())
+            Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
                     .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
 
             gasStation.ifPresentOrElse(station -> telegramAnswer.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false),

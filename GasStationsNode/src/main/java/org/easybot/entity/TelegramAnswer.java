@@ -53,7 +53,7 @@ public class TelegramAnswer {
                 if (includeStationTitle)
                 {
                     String stationTitle = gs.getGasStationsBrands().getFormattedBrandName().toUpperCase();
-                    sb.append(String.format("__%s__", stationTitle)) // unerline
+                    sb.append(String.format("__%s__", stationTitle)) // underline
                             .append(System.getProperty(UTIL_LINE_SEPARATOR));
                 }
                 sb.append(String.format("*%s*", gs.gasType)) // bold

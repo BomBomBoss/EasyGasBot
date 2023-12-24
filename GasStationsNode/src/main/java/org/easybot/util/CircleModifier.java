@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CircleModifier extends GasTypeFormatter{
+public class CircleModifier extends GasTypeFormatter {
     public CircleModifier()
     {
         super("miles 95", null,
