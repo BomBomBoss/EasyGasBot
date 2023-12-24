@@ -1,6 +1,8 @@
 package org.easybot.enums;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public enum GasStationTitle {
     NESTE("/neste",
@@ -28,6 +30,7 @@ public enum GasStationTitle {
     private final String url;
     private final String title;
     private String cssQuery;
+    private final String buttonId;
     private long id;
 
 
@@ -37,6 +40,7 @@ public enum GasStationTitle {
         this.url = url;
         this.title = title;
         this.cssQuery = cssQuery;
+        this.buttonId = title.concat("_BUTTON");
     }
 
     public String getCommand()
@@ -74,6 +78,11 @@ public enum GasStationTitle {
         this.cssQuery = cssQuery;
     }
 
+    public String getButtonId()
+    {
+        return buttonId;
+    }
+
     @Override
     public String toString()
     {
@@ -88,6 +97,15 @@ public enum GasStationTitle {
     public static List<GasStationTitle> getGasStationValues()
     {
         return List.of(GasStationTitle.values());
+    }
+    public static List<String> getGasStationButtonId()
+    {
+        return getGasStationValues().stream().map(GasStationTitle::getButtonId).toList();
+    }
+
+    public static Optional <String> getCommandByButtonId(String buttonId)
+    {
+        return getGasStationValues().stream().filter(station -> station.buttonId.equals(buttonId)).map(GasStationTitle::getCommand).findFirst();
     }
 
 }

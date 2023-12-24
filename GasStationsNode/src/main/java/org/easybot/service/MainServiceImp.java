@@ -6,6 +6,7 @@ import org.easybot.entity.*;
 import static org.easybot.CommonTexts.*;
 import static org.easybot.entity.enums.GasTypesName.*;
 import static org.easybot.enums.AdministrationCommands.*;
+import static org.easybot.enums.GasStationTitle.*;
 
 import org.easybot.entity.enums.GasTypesName;
 import org.easybot.enums.GasStationTitle;
@@ -38,25 +39,46 @@ public class MainServiceImp implements MainService {
     @Override
     public void processTextMessage(Update update, String command)
     {
+        telegramAnswer.cleanButtons();
+
         if (command.equals(START.getCommand()))
         {
             telegramAnswer.setText(enrichStartCommand(update));
+        }
+        else if (command.equals(HELP.getCommand()))
+        {
+            telegramAnswer.setText(HELP_DISCLAIMER);
         }
         else if (command.equals(CHEAPEST.getCommand()))
         {
             telegramAnswer.setText(enrichCheapestCommand());
             telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForCheapestCommand()));
         }
+        else if (command.equals(STATION_BRANDS.getCommand()))
+        {
+            telegramAnswer.setText(enrichBrandsCommand());
+            telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForStationsBrands()));
+        }
         else
         {
-            Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
-                    .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
-
-            gasStation.ifPresentOrElse(station -> telegramAnswer.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false),
-                    () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND, command)));
+            getStationBrandFormattedInfo(command);
         }
         telegramAnswer.setChatId(update.getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
+    }
+
+    private void getStationBrandFormattedInfo(String command)
+    {
+        Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
+                .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
+
+        gasStation.ifPresentOrElse(station -> telegramAnswer.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false),
+                () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND_RU, escapingMarkdownCharacters(command))));
+    }
+
+    private String escapingMarkdownCharacters(String unknownCommand)
+    {
+        return unknownCommand.replace("_", "").replace("*","");
     }
 
     @Override
@@ -71,6 +93,11 @@ public class MainServiceImp implements MainService {
             Collections.sort(list);
             telegramAnswer.formatAnswerText(list, true);
         }
+        if (GasStationTitle.getGasStationButtonId().contains(data))
+        {
+            Optional<String> command = GasStationTitle.getCommandByButtonId(data);
+            command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(UNABLE_TO_PROCEED_RESPONSE));
+        }
         telegramAnswer.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
 
@@ -80,6 +107,11 @@ public class MainServiceImp implements MainService {
     private String enrichCheapestCommand()
     {
         return CHEAPEST.getDisclaimer();
+    }
+
+    private String enrichBrandsCommand()
+    {
+        return STATION_BRANDS.getDisclaimer();
     }
 
     private List<CommonStation> getGasStationInfo(String gasStationTitle)
@@ -154,6 +186,16 @@ public class MainServiceImp implements MainService {
      map.put(TYPE_98.getDescription(), TYPE_98.getButtonId());
      map.put(DIESEL.getDescription(), DIESEL.getButtonId());
      return map;
+    }
+
+    private Map<String, String> initButtonsForStationsBrands()
+    {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(NESTE.getTitle(), NESTE.getButtonId());
+        map.put(CIRCLE.getTitle(), CIRCLE.getButtonId());
+        map.put(VIRSI.getTitle(), VIRSI.getButtonId());
+        map.put(VIADA.getTitle(), VIADA.getButtonId());
+        return map;
     }
 
 

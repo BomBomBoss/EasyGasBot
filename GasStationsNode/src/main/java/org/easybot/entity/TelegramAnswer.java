@@ -70,7 +70,7 @@ public class TelegramAnswer {
         }
         else
         {
-            result = "На данный момент нет возможности предоставить информацию по ценам для данной заправки. Пожалуйста попробуйте позже.";
+            result = UNABLE_TO_PROCEED_RESPONSE;
         }
         setText(result);
     }

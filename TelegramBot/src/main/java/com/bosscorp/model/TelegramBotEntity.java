@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.easybot.CommonTexts.*;
-import static org.easybot.enums.AdministrationCommands.CHEAPEST;
+import static org.easybot.enums.AdministrationCommands.*;
 import static org.easybot.enums.GasStationTitle.*;
 
 @Log4j2
@@ -35,11 +35,9 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
     private void createCommands()
     {
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand(NESTE.getCommand(), NESTE_COMMAND_DESCRIPTION));
-        listOfCommands.add(new BotCommand(CIRCLE.getCommand(), CIRCLE_COMMAND_DESCRIPTION));
-        listOfCommands.add(new BotCommand(VIADA.getCommand(), VIADA_COMMAND_DESCRIPTION));
-        listOfCommands.add(new BotCommand(VIRSI.getCommand(), VIRSI_COMMAND_DESCRIPTION));
+        listOfCommands.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION));
         listOfCommands.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION));
+        listOfCommands.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION));
 
         SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null);
         try
