@@ -8,6 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GasStationApplication {
     public static void main(String[] args)
     {
-        SpringApplication.run(GasStationApplication.class);
+        SpringApplication.run(GasStationApplication.class, args);
     }
 }
