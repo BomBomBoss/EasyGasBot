@@ -1,5 +1,9 @@
 package org.easybot.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -10,31 +14,15 @@ import java.util.List;
 import static org.easybot.CommonTexts.*;
 
 @Component
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TelegramAnswer {
     private String text;
     private InlineKeyboardMarkup buttons;
     private String chatId;
     private Integer messageId;
-
-    public Integer getMessageId()
-    {
-        return messageId;
-    }
-
-    public void setMessageId(Integer messageId)
-    {
-        this.messageId = messageId;
-    }
-
-    public String getText()
-    {
-        return text;
-    }
-
-    public void setText(String text)
-    {
-        this.text = text;
-    }
 
     public void formatAnswerText(List<CommonStation> list, boolean includeStationTitle)
     {
@@ -54,17 +42,17 @@ public class TelegramAnswer {
                 {
                     String stationTitle = gs.getGasStationsBrands().getFormattedBrandName().toUpperCase();
                     sb.append(String.format("__%s__", stationTitle)) // underline
-                            .append(System.getProperty(UTIL_LINE_SEPARATOR));
+                            .append(System.lineSeparator());
                 }
                 sb.append(String.format("*%s*", gs.gasType)) // bold
-                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                        .append(System.lineSeparator())
                         .append(RESPONSE_PRICE_EQUALS)
                         .append(String.format("*%s*", gs.getPrice())) // bold
                         .append(RESPONSE_EUR_SIGN_BOLD)
-                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
+                        .append(System.lineSeparator())
                         .append(RESPONSE_ADDRESS_EQUALS).append(String.format("_%s_", location)) // italic
-                        .append(System.getProperty(UTIL_LINE_SEPARATOR))
-                        .append(System.getProperty(UTIL_LINE_SEPARATOR));
+                        .append(System.lineSeparator())
+                        .append(System.lineSeparator());
             }
             result = sb.toString();
         }
@@ -73,43 +61,6 @@ public class TelegramAnswer {
             result = UNABLE_TO_PROCEED_RESPONSE;
         }
         setText(result);
-    }
-
-    public InlineKeyboardMarkup getButtons()
-    {
-        return buttons;
-    }
-
-    public void setButtons(InlineKeyboardMarkup buttons)
-    {
-        this.buttons = buttons;
-    }
-
-    public TelegramAnswer()
-    {
-    }
-
-    public TelegramAnswer(String text, InlineKeyboardMarkup buttons, String chatId)
-    {
-        this.text = text;
-        this.buttons = buttons;
-        this.chatId = chatId;
-    }
-
-    public TelegramAnswer(String text, String chatId)
-    {
-        this.text = text;
-        this.chatId = chatId;
-    }
-
-    public String getChatId()
-    {
-        return chatId;
-    }
-
-    public void setChatId(String chatId)
-    {
-        this.chatId = chatId;
     }
 
     public SendMessage mapToSendMessage()

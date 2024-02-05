@@ -86,6 +86,7 @@ public class MainServiceImp implements MainService {
     {
         String data = update.getCallbackQuery().getData();
         telegramAnswer.cleanButtons();
+
         if (data.equals(TYPE_95.getButtonId()) || data.equals(TYPE_98.getButtonId()) || data.equals(DIESEL.getButtonId()))
         {
             String dataWithoutButton = data.replace("_BUTTON", "").trim();
@@ -100,9 +101,8 @@ public class MainServiceImp implements MainService {
         }
         telegramAnswer.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
         telegramAnswer.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+
         produceService.produceEditedAnswer(telegramAnswer.mapToEditedMessage());
-
-
     }
 
     private String enrichCheapestCommand()
@@ -136,7 +136,7 @@ public class MainServiceImp implements MainService {
         StringBuilder sb = new StringBuilder(result);
         for(GasStationTitle gs : GasStationTitle.values())
         {
-            sb.append(gs.getCommand()).append(" - цены на ").append(gs.getTitle().toUpperCase()).append(System.getProperty(UTIL_LINE_SEPARATOR));
+            sb.append(gs.getCommand()).append(" - цены на ").append(gs.getTitle().toUpperCase()).append(System.lineSeparator());
         }
         return sb.toString().replace("_", "\\_");
     }

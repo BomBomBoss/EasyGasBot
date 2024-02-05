@@ -16,7 +16,7 @@ public class RepositoryFactory {
     private final CircleRepository circleRepository;
     private final ViadaRepository viadaRepository;
     private final VirsiRepository virsiRepository;
-    private Map<String, CommonStationRepository> repositoryMap = new HashMap<>();
+    private final Map<String, CommonStationRepository> repositoryMap = new HashMap<>();
 
 
     public RepositoryFactory(NesteRepository nesteRepository, CircleRepository circleRepository, ViadaRepository viadaRepository, VirsiRepository virsiRepository)
