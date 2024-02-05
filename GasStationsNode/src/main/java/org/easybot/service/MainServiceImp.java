@@ -99,7 +99,8 @@ public class MainServiceImp implements MainService {
             command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(UNABLE_TO_PROCEED_RESPONSE));
         }
         telegramAnswer.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-        produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
+        telegramAnswer.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        produceService.produceEditedAnswer(telegramAnswer.mapToEditedMessage());
 
 
     }

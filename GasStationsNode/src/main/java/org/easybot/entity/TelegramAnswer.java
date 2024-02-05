@@ -118,6 +118,7 @@ public class TelegramAnswer {
                 .text(text)
                 .replyMarkup(buttons)
                 .chatId(chatId)
+                .parseMode("MarkdownV2")
                 .build();
     }
 
@@ -128,6 +129,7 @@ public class TelegramAnswer {
                 .replyMarkup(buttons)
                 .chatId(chatId)
                 .messageId(messageId)
+                .parseMode("MarkdownV2")
                 .build();
     }
     public void cleanButtons()

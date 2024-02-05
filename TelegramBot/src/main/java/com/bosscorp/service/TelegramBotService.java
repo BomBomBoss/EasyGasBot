@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -58,6 +59,19 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         catch (TelegramApiException e)
         {
             log.error("Error during sending response to client");
+            e.printStackTrace();
+        }
+    }
+
+    public void sendResponseWithEditedTextToClient(EditMessageText editMessageText)
+    {
+        try
+        {
+            execute(editMessageText);
+        }
+        catch (TelegramApiException e)
+        {
+            log.error("Error during sending edited text response to client");
             e.printStackTrace();
         }
     }
