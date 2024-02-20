@@ -23,6 +23,7 @@ public class CommonTexts {
             /help - помощь
             
             """;
+    public static final String START_COMMAND_DISCLAIMER_LABEL= "start_command_disclaimer_lbl";
     public static final String CHEAPEST_COMMAND_DISCLAIMER = """
                 Цены будут показаны в порядке возрастания.
                 *Пожалуйста, выберите тип топлива*

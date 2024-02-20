@@ -3,7 +3,7 @@ package org.easybot.enums;
 import org.easybot.CommonTexts;
 
 public enum AdministrationCommands {
-    START("/start", CommonTexts.START_COMMAND_DISCLAIMER),
+    START("/start", CommonTexts.START_COMMAND_DISCLAIMER_LABEL),
     CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER),
     STATION_BRANDS("/brands", CommonTexts.STATION_BRANDS_DISCLAIMER),
     HELP("/help", CommonTexts.STATION_BRANDS_DISCLAIMER);

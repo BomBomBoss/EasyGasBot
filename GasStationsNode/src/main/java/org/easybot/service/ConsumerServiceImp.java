@@ -1,6 +1,7 @@
 package org.easybot.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -21,10 +22,10 @@ public class ConsumerServiceImp implements RabbitConsumer {
 
     @Override
     @RabbitListener(queues = TEXT_MESSAGE_UPDATE)
-    public void consumeTextMessage(Update update)
+    public void consumeTextMessage(UpdateWrapper wrapper)
     {
         log.info(commonLogText, TEXT_MESSAGE_UPDATE);
-        mainService.processTextMessage(update, update.getMessage().getText());
+        mainService.processTextMessage(wrapper, wrapper.update().getMessage().getText());
 
     }
 

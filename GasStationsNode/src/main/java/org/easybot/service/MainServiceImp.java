@@ -11,6 +11,8 @@ import static org.easybot.enums.GasStationTitle.*;
 import org.easybot.entity.enums.GasTypesName;
 import org.easybot.enums.GasStationTitle;
 import org.easybot.util.Modifier;
+import org.easybot.wrapper.UpdateWrapper;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -26,24 +28,30 @@ public class MainServiceImp implements MainService {
     private final CommonStationService commonStationService;
     private final GasStationService gasStationService;
     private final TelegramButtonsFactory telegramButtonsFactory;
+    private final TelegramUserService telegramUserService;
+    private final MessageSource messageSource;
 
-    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService, CommonStationService commonStationService, GasStationService gasStationService, TelegramButtonsFactory telegramButtonsFactory)
+    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService, CommonStationService commonStationService, GasStationService gasStationService, TelegramButtonsFactory telegramButtonsFactory, TelegramUserService telegramUserService, MessageSource messageSource)
     {
         this.telegramAnswer = telegramAnswer;
         this.produceService = produceService;
         this.commonStationService = commonStationService;
         this.gasStationService = gasStationService;
         this.telegramButtonsFactory = telegramButtonsFactory;
+        this.telegramUserService = telegramUserService;
+        this.messageSource = messageSource;
     }
 
     @Override
-    public void processTextMessage(Update update, String command)
+    public void processTextMessage(UpdateWrapper wrapper, String command)
     {
+        telegramUserService.resolveTelegramUserById(wrapper.user());
+
         telegramAnswer.cleanButtons();
 
         if (command.equals(START.getCommand()))
         {
-            telegramAnswer.setText(enrichStartCommand(update));
+            telegramAnswer.setText(enrichStartCommand());
         }
         else if (command.equals(HELP.getCommand()))
         {
@@ -63,7 +71,7 @@ public class MainServiceImp implements MainService {
         {
             getStationBrandFormattedInfo(command);
         }
-        telegramAnswer.setChatId(update.getMessage().getChatId().toString());
+        telegramAnswer.setChatId(wrapper.update().getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
     }
 
@@ -130,9 +138,10 @@ public class MainServiceImp implements MainService {
         return fullList;
     }
 
-    private String enrichStartCommand(Update update)
+    private String enrichStartCommand()
     {
-        String result = String.format(START.getDisclaimer(), update.getMessage().getFrom().getUserName());
+        String messageKey = START.getDisclaimer();
+        String result = String.format(messageSource.getMessage(messageKey, null, telegramAnswer.getTelegramUser().getLocale()), telegramAnswer.getTelegramUser().getFirstName());
         StringBuilder sb = new StringBuilder(result);
         for(GasStationTitle gs : GasStationTitle.values())
         {

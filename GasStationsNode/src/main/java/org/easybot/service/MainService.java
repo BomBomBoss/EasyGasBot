@@ -1,9 +1,10 @@
 package org.easybot.service;
 
+import org.easybot.wrapper.UpdateWrapper;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface MainService {
-    void processTextMessage(Update update, String command);
+    void processTextMessage(UpdateWrapper wrapper, String command);
 
     void processCallBackQuery(Update update);
 }

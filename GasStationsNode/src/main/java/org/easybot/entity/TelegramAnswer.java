@@ -23,6 +23,7 @@ public class TelegramAnswer {
     private InlineKeyboardMarkup buttons;
     private String chatId;
     private Integer messageId;
+    private TelegramUser telegramUser;
 
     public void formatAnswerText(List<CommonStation> list, boolean includeStationTitle)
     {
@@ -86,5 +87,15 @@ public class TelegramAnswer {
     public void cleanButtons()
     {
         buttons = null;
+    }
+
+    public TelegramUser getTelegramUser()
+    {
+        return telegramUser;
+    }
+
+    public void setTelegramUser(TelegramUser telegramUser)
+    {
+        this.telegramUser = telegramUser;
     }
 }

@@ -2,6 +2,7 @@ package com.bosscorp.service;
 
 import com.bosscorp.model.TelegramBotEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,11 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
     @Override
     public void onUpdateReceived(Update update)
     {
+        UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update));
+
         String queue = distributeMessageType(update);
-        log.info("Received update from client {}", getFromUser(update));
-        rabbitTemplate.convertAndSend(queue,update);
+        log.info("Received update from client {}", updateWrapper.user());
+        rabbitTemplate.convertAndSend(queue, updateWrapper);
     }
 
     @Override

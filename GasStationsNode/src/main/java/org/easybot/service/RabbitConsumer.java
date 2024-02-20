@@ -1,10 +1,11 @@
 package org.easybot.service;
 
+import org.easybot.wrapper.UpdateWrapper;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface RabbitConsumer {
 
-    void consumeTextMessage(Update update);
+    void consumeTextMessage(UpdateWrapper wrapper);
     void consumePhotoMessage(Update update);
     void consumeDocMessage(Update update);
     void consumeUpdateException(Update update);
