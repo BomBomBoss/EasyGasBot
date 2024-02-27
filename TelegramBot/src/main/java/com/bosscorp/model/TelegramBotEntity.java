@@ -34,16 +34,26 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
     @PostConstruct
     private void createCommands()
     {
-        List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION));
-        listOfCommands.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION));
-        listOfCommands.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION));
+        List<BotCommand> listOfCommandsRu = new ArrayList<>();
+        listOfCommandsRu.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION));
+        listOfCommandsRu.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION));
+        listOfCommandsRu.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION));
+        listOfCommandsRu.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION));
 
-        SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), "lv");
+        SetMyCommands setMyCommandsRu = new SetMyCommands(listOfCommandsRu, new BotCommandScopeDefault(), "ru");
+
+        List<BotCommand> listOfCommandsEn = new ArrayList<>();
+        listOfCommandsEn.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION_EN));
+        listOfCommandsEn.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION_EN));
+        listOfCommandsEn.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION_EN));
+        listOfCommandsEn.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION_EN));
+
+        SetMyCommands setMyCommandsEn = new SetMyCommands(listOfCommandsEn, new BotCommandScopeDefault(), "en");
         try
         {
             log.info("setting command");
-            this.execute(setMyCommands);
+            this.execute(setMyCommandsRu);
+            this.execute(setMyCommandsEn);
         } catch (TelegramApiException e)
         {
             log.error(e);

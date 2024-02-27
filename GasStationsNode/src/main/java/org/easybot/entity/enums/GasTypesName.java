@@ -6,6 +6,7 @@ import org.easybot.util.Modifier;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Set;
 
 public enum GasTypesName implements IUserModifier {
 
@@ -105,6 +106,11 @@ public enum GasTypesName implements IUserModifier {
     public String getButtonId()
     {
         return buttonId;
+    }
+
+    public static Set<String> getCheapestTypesButtonId()
+    {
+        return Set.of(TYPE_95.getButtonId(), TYPE_98.getButtonId(), DIESEL.getButtonId());
     }
 
     public static List<GasTypesName> getValues()

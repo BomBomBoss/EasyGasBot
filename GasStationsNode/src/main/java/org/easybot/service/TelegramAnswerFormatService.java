@@ -2,18 +2,25 @@ package org.easybot.service;
 
 import org.easybot.CommonTexts;
 import org.easybot.entity.CommonStation;
+import org.easybot.enums.AdministrationCommands;
 import org.easybot.enums.GasStationTitle;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.easybot.CommonTexts.*;
+import static org.easybot.entity.enums.GasTypesName.*;
+import static org.easybot.entity.enums.GasTypesName.DIESEL;
+import static org.easybot.enums.GasStationTitle.*;
+import static org.easybot.enums.GasStationTitle.VIADA;
+import static org.easybot.enums.Language.*;
 
 @Component
 public class TelegramAnswerFormatService {
 
     private final MessageResolver messageResolver;
+
+    private final Set<String> allStationsSamePrices = Set.of(ALL_RIGA_DUS_EQUALS_1, ALL_RIGA_DUS_EQUALS_2, VIADA_ALL_STATIONS, VIRSI_ALL_STATIONS);
 
     public TelegramAnswerFormatService(MessageResolver messageResolver) {
         this.messageResolver = messageResolver;
@@ -29,7 +36,7 @@ public class TelegramAnswerFormatService {
             for (CommonStation gs : list)
             {
                 String location = gs.getLocation();
-                if (location.contains(ALL_RIGA_DUS_EQUALS_1) || location.contains(ALL_RIGA_DUS_EQUALS_2) || location.contains(VIADA_ALL_STATIONS) || location.contains(VIRSI_ALL_STATIONS))
+                if (allStationsSamePrices.contains(location))
                 {
                     location = messageResolver.getLocalisedTextWithoutArg(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale);
                 }
@@ -67,16 +74,20 @@ public class TelegramAnswerFormatService {
     public String enrichStartCommand(String firstName, String messageKey, Locale locale)
     {
         String result = messageResolver.getLocalisedTextWithArg(messageKey, locale, firstName);
-        StringBuilder sb = new StringBuilder(result + "\n\n");
+        StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
         for(GasStationTitle gs : GasStationTitle.values())
         {
             sb.append(gs.getCommand())
-                    .append(" ")
+                    .append(ONE_SPACE)
                     .append(messageResolver.getLocalisedTextWithoutArg(START_COMMAND_PRICES_ADD, locale))
-                    .append(" ")
+                    .append(ONE_SPACE)
                     .append(gs.getTitle().toUpperCase())
                     .append(System.lineSeparator());
         }
+        sb.append(System.lineSeparator())
+                .append(AdministrationCommands.LANGUAGE.getCommand())
+                .append(" - ")
+                .append(messageResolver.getLocalisedTextWithoutArg(LANGUAGE_TO_SET_LABEL, locale));
         return sb.toString().replace("_", "\\_");
     }
 
@@ -90,8 +101,41 @@ public class TelegramAnswerFormatService {
         return unknownCommand.replace("_", "").replace("*","");
     }
 
-    public String resolveSimpleResponse(String messageKey, Locale locale)
+    public String resolveSimpleLocalizedResponse(String messageKey, Locale locale)
     {
      return messageResolver.getLocalisedTextWithoutArg(messageKey, locale);
+    }
+
+    public String resolveSimpleLocalizedResponseWithArg(String messageKey, Locale locale, String ... arg)
+    {
+        return messageResolver.getLocalisedTextWithArg(messageKey, locale, arg);
+    }
+
+    public Map<String, String> initButtonsForCheapestCommand()
+    {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(TYPE_95.getDescription(), TYPE_95.getButtonId());
+        map.put(TYPE_98.getDescription(), TYPE_98.getButtonId());
+        map.put(DIESEL.getDescription(), DIESEL.getButtonId());
+        return map;
+    }
+
+    public Map<String, String> initButtonsForStationsBrands()
+    {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(NESTE.getTitle(), NESTE.getButtonId());
+        map.put(CIRCLE.getTitle(), CIRCLE.getButtonId());
+        map.put(VIRSI.getTitle(), VIRSI.getButtonId());
+        map.put(VIADA.getTitle(), VIADA.getButtonId());
+        return map;
+    }
+
+    public Map<String, String> initButtonsForLanguage()
+    {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(EN.getLanguage(), EN.getButtonId());
+        map.put(LV.getLanguage(), LV.getButtonId());
+        map.put(RU.getLanguage(), RU.getButtonId());
+        return map;
     }
 }

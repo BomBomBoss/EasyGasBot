@@ -1,21 +1,18 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.easybot.CommonTexts;
 import org.easybot.entity.*;
 
 import static org.easybot.CommonTexts.*;
-import static org.easybot.entity.enums.GasTypesName.*;
 import static org.easybot.enums.AdministrationCommands.*;
-import static org.easybot.enums.GasStationTitle.*;
 
 import org.easybot.entity.enums.GasTypesName;
+import org.easybot.enums.AdministrationCommands;
 import org.easybot.enums.GasStationTitle;
+import org.easybot.enums.Language;
 import org.easybot.util.Modifier;
 import org.easybot.wrapper.UpdateWrapper;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.*;
 
@@ -52,35 +49,35 @@ public class MainServiceImp implements MainService {
     @Override
     public void processTextMessage(UpdateWrapper wrapper, String command)
     {
+        log.info("Received command: {}", command);
+        AdministrationCommands administrationCommand = AdministrationCommands.getByCommand(command);
+
         telegramUserService.resolveTelegramUserById(wrapper.user());
 
         TelegramUser user = telegramAnswer.getTelegramUser();
         Locale locale = user.getLocale();
 
         telegramAnswer.cleanButtons();
+        switch (administrationCommand)
+        {
+            case START -> telegramAnswer.setText(telegramAnswerFormatService.enrichStartCommand(user.getFirstName(), START.getDisclaimer(), locale));
+            case HELP -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(HELP.getDisclaimer(), locale));
+            case CHEAPEST -> {
+                telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(CHEAPEST.getDisclaimer(), locale));
+                telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForCheapestCommand()));
+            }
+            case STATION_BRANDS -> {
+                telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(STATION_BRANDS.getDisclaimer(), locale));
+                telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForStationsBrands()));
+            }
+            case LANGUAGE -> {
+                telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(LANGUAGE_COMMAND_DISCLAIMER_LABEL, locale));
+                telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForLanguage()));
+            }
+            case null, default ->  getStationBrandFormattedInfo(command);
 
-        if (command.equals(START.getCommand()))
-        {
-            telegramAnswer.setText(telegramAnswerFormatService.enrichStartCommand(user.getFirstName(), START.getDisclaimer(), locale));
         }
-        else if (command.equals(HELP.getCommand()))
-        {
-            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(HELP.getDisclaimer(), locale));
-        }
-        else if (command.equals(CHEAPEST.getCommand()))
-        {
-            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(CHEAPEST.getDisclaimer(), locale));
-            telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForCheapestCommand()));
-        }
-        else if (command.equals(STATION_BRANDS.getCommand()))
-        {
-            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(STATION_BRANDS.getDisclaimer(), locale));
-            telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForStationsBrands()));
-        }
-        else
-        {
-            getStationBrandFormattedInfo(command);
-        }
+
         telegramAnswer.setChatId(wrapper.update().getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
     }
@@ -108,18 +105,29 @@ public class MainServiceImp implements MainService {
         String data = wrapper.update().getCallbackQuery().getData();
         telegramAnswer.cleanButtons();
 
-        if (data.equals(TYPE_95.getButtonId()) || data.equals(TYPE_98.getButtonId()) || data.equals(DIESEL.getButtonId()))
+        if (GasTypesName.getCheapestTypesButtonId().contains(data))
         {
             String dataWithoutButton = data.replace("_BUTTON", "").trim();
             List <CommonStation> list = getGasStationPerType(dataWithoutButton);
             Collections.sort(list);
             telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(list, true, locale));
         }
+
+        if (Language.getAllLanguageButtonId().contains(data))
+        {
+            String languageCode = data.replace("_BUTTON", "").toLowerCase().trim();
+            user.setLanguageCode(languageCode);
+            user.setLocale(Locale.of(languageCode));
+            telegramUserService.updateUser(user);
+            telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponseWithArg(LANGUAGE_IS_SET_LABEL, user.getLocale(), languageCode.toUpperCase()));
+
+        }
         if (GasStationTitle.getGasStationButtonId().contains(data))
         {
             Optional<String> command = GasStationTitle.getCommandByButtonId(data);
-            command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleResponse(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale)));
+            command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale)));
         }
+
         telegramAnswer.setChatId(wrapper.update().getCallbackQuery().getMessage().getChatId().toString());
         telegramAnswer.setMessageId(wrapper.update().getCallbackQuery().getMessage().getMessageId());
 
@@ -182,25 +190,5 @@ public class MainServiceImp implements MainService {
         }
         return list;
     }
-
-    private Map<String, String> initButtonsForCheapestCommand()
-    {
-     Map<String, String> map = new LinkedHashMap<>();
-     map.put(TYPE_95.getDescription(), TYPE_95.getButtonId());
-     map.put(TYPE_98.getDescription(), TYPE_98.getButtonId());
-     map.put(DIESEL.getDescription(), DIESEL.getButtonId());
-     return map;
-    }
-
-    private Map<String, String> initButtonsForStationsBrands()
-    {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put(NESTE.getTitle(), NESTE.getButtonId());
-        map.put(CIRCLE.getTitle(), CIRCLE.getButtonId());
-        map.put(VIRSI.getTitle(), VIRSI.getButtonId());
-        map.put(VIADA.getTitle(), VIADA.getButtonId());
-        return map;
-    }
-
 
 }

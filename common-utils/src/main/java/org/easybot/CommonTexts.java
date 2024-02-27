@@ -16,8 +16,13 @@ public class CommonTexts {
     public static final String VIADA_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":three:" + " цены на заправках Viada");
     public static final String VIRSI_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":four:" + " цены на заправках Virsi");
     public static final String BRANDS_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":white_check_mark:" + " выбор бренда заправки");
+    public static final String BRANDS_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":white_check_mark:" + " choose gas station");
     public static final String CHEAPEST_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":money_with_wings:" + " выбор вида топлива");
+    public static final String CHEAPEST_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":money_with_wings:" + " choose fuel type");
     public static final String HELP_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":sos:" + " нужна помощь?");
+    public static final String HELP_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":sos:" + " need help?");
+    public static final String LANGUAGE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":earth_africa:" + " выбор языка");
+    public static final String LANGUAGE_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":earth_africa:" + " choose language");
     public static final String START_COMMAND_DISCLAIMER = """
             Добро пожаловать *%s* на просторы бота EasyGas.
             Здесь ты сможешь посмотреть, где сейчас продаётся самое дешёвое топливо среди заправок NESTE, CIRCLE_K, VIADA, VIRŠI.
@@ -65,11 +70,17 @@ public class CommonTexts {
     /************************ Util Text *****************************************************/
 
     public static final String UTIL_LINE_SEPARATOR = "line.separator";
+    public static final String TWO_NEW_LINES = "\n\n";
+    public static final String ONE_SPACE = " ";
     public static final String CIRCLE_K_TITLE = "circle_k";
     public static final String CIRCLE_WITHOUT_K_TITLE = "circle";
     public static final String NESTE_TITLE = "neste";
     public static final String VIADA_TITLE = "viada";
     public static final String VIRSI_TITLE = "virsi";
+
+    public static final String LANGUAGE_RUS = "RUS " + "\uD83C\uDDF7\uD83C\uDDFA";
+    public static final String LANGUAGE_LV = "LV " + "\uD83C\uDDF1\uD83C\uDDFB";
+    public static final String LANGUAGE_EN = "EN " + "\uD83C\uDDEC\uD83C\uDDE7";
 
     /************************ Localization Text *****************************************************/
     public static final String START_COMMAND_DISCLAIMER_LABEL= "start_command_disclaimer_lbl";
@@ -80,4 +91,8 @@ public class CommonTexts {
     public static final String RESPONSE_COMMAND_NOT_FOUND_LABEL = "response_command_not_found_lbl";
     public static final String RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL = "response_all_riga_dus_price_equals_lbl";
     public static final String UNABLE_TO_PROCEED_RESPONSE_LABEL = "unable_to_proceed_response_lbl";
+    public static final String LANGUAGE_COMMAND_DISCLAIMER_LABEL = "language_command_disclaimer_lbl";
+    public static final String LANGUAGE_IS_SET_LABEL = "language_is_set_lbl";
+    public static final String LANGUAGE_TO_SET_LABEL = "language_to_set_lbl";
+
 }

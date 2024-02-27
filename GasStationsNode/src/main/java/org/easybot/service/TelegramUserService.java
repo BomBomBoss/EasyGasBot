@@ -21,14 +21,12 @@ public class TelegramUserService {
     private final TelegramUserRepository telegramUserRepository;
     private final TelegramAnswer telegramAnswer;
 
-    private final MessageSource messageSource;
 
 
-    public TelegramUserService(TelegramUserRepository telegramUserRepository, TelegramAnswer telegramAnswer, MessageSource messageSource)
+    public TelegramUserService(TelegramUserRepository telegramUserRepository, TelegramAnswer telegramAnswer)
     {
         this.telegramUserRepository = telegramUserRepository;
         this.telegramAnswer = telegramAnswer;
-        this.messageSource = messageSource;
     }
 
     public void resolveTelegramUserById(User user)
@@ -50,5 +48,10 @@ public class TelegramUserService {
             log.info("User with id: {} and name {} is NOT found in DB. Persisting ... ", telegramUser.getUserId(), telegramUser.getFirstName());
         });
 
+    }
+
+    public void updateUser(TelegramUser user)
+    {
+        telegramUserRepository.save(user);
     }
 }

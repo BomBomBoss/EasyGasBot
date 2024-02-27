@@ -71,7 +71,7 @@ public class TelegramUser {
         }
         else
         {
-            setLocale(new Locale(languageCode));
+            setLocale(Locale.of(languageCode));
         }
     }
 
