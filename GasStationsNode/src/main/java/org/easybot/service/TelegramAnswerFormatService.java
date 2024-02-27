@@ -48,11 +48,12 @@ public class TelegramAnswerFormatService {
                 }
                 sb.append(String.format("*%s*", gs.gasType)) // bold
                         .append(System.lineSeparator())
-                        .append(RESPONSE_PRICE_EQUALS)
+                        .append(messageResolver.getLocalisedTextWithoutArg(RESPONSE_PRICE_LABEL, locale))
                         .append(String.format("*%s*", gs.getPrice())) // bold
-                        .append(RESPONSE_EUR_SIGN_BOLD)
+                        .append(EUR_SIGN_BOLD)
                         .append(System.lineSeparator())
-                        .append(RESPONSE_ADDRESS_EQUALS).append(String.format("_%s_", location)) // italic
+                        .append(messageResolver.getLocalisedTextWithoutArg(RESPONSE_ADDRESS_LABEL, locale))
+                        .append(String.format("_%s_", location)) // italic
                         .append(System.lineSeparator())
                         .append(System.lineSeparator());
             }
@@ -60,7 +61,7 @@ public class TelegramAnswerFormatService {
         }
         else
         {
-            result = messageResolver.getLocalisedTextWithoutArg(UNABLE_TO_PROCEED_RESPONSE, locale);
+            result = messageResolver.getLocalisedTextWithoutArg(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale);
         }
         return result;
     }

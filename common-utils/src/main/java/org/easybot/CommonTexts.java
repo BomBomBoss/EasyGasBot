@@ -11,10 +11,6 @@ public class CommonTexts {
 
 
     /************************ Bot Commands *****************************************************/
-    public static final String NESTE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":one:" + " цены на заправках Neste");
-    public static final String CIRCLE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":two:" + " цены на заправках Circle");
-    public static final String VIADA_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":three:" + " цены на заправках Viada");
-    public static final String VIRSI_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":four:" + " цены на заправках Virsi");
     public static final String BRANDS_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":white_check_mark:" + " выбор бренда заправки");
     public static final String BRANDS_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":white_check_mark:" + " choose gas station");
     public static final String CHEAPEST_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":money_with_wings:" + " выбор вида топлива");
@@ -59,17 +55,12 @@ public class CommonTexts {
 
     /************************ Response Text *****************************************************/
 
-    public static final String RESPONSE_COMMAND_NOT_FOUND = "Command %s *NOT FOUND*. Please try another command";
-    public static final String RESPONSE_COMMAND_NOT_FOUND_RU = "Ваша команда: *%s* не найдена. Попробуйте другую команду или проверьте список доступных команд тут /help";
-    public static final String UNABLE_TO_PROCEED_RESPONSE = "На данный момент нет возможности предоставить информацию по ценам для данной заправки. Пожалуйста попробуйте позже.";
-    public static final String RESPONSE_ALL_RIGA_DUS_EQUALS = "Цены на всех заправках одинаковые";
-    public static final String RESPONSE_ADDRESS_EQUALS = "адрес= ";
-    public static final String RESPONSE_PRICE_EQUALS = "цена= ";
-    public static final String RESPONSE_EUR_SIGN_BOLD = " *EUR*";
+
 
     /************************ Util Text *****************************************************/
 
-    public static final String UTIL_LINE_SEPARATOR = "line.separator";
+
+    public static final String EUR_SIGN_BOLD = " *EUR*";
     public static final String TWO_NEW_LINES = "\n\n";
     public static final String ONE_SPACE = " ";
     public static final String CIRCLE_K_TITLE = "circle_k";
@@ -94,5 +85,8 @@ public class CommonTexts {
     public static final String LANGUAGE_COMMAND_DISCLAIMER_LABEL = "language_command_disclaimer_lbl";
     public static final String LANGUAGE_IS_SET_LABEL = "language_is_set_lbl";
     public static final String LANGUAGE_TO_SET_LABEL = "language_to_set_lbl";
+    public static final String RESPONSE_ADDRESS_LABEL = "address_lbl";
+    public static final String RESPONSE_PRICE_LABEL = "price_lbl";
+
 
 }
