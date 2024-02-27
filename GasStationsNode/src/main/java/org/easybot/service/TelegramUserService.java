@@ -1,11 +1,18 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.easybot.entity.CommonStation;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.repository.TelegramUserRepository;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.User;
+
+import java.util.List;
+
+import static org.easybot.CommonTexts.*;
 
 @Component
 @Slf4j
@@ -14,10 +21,14 @@ public class TelegramUserService {
     private final TelegramUserRepository telegramUserRepository;
     private final TelegramAnswer telegramAnswer;
 
-    public TelegramUserService(TelegramUserRepository telegramUserRepository, TelegramAnswer telegramAnswer)
+    private final MessageSource messageSource;
+
+
+    public TelegramUserService(TelegramUserRepository telegramUserRepository, TelegramAnswer telegramAnswer, MessageSource messageSource)
     {
         this.telegramUserRepository = telegramUserRepository;
         this.telegramAnswer = telegramAnswer;
+        this.messageSource = messageSource;
     }
 
     public void resolveTelegramUserById(User user)

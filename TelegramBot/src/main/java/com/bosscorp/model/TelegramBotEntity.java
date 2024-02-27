@@ -39,7 +39,7 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         listOfCommands.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION));
         listOfCommands.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION));
 
-        SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null);
+        SetMyCommands setMyCommands = new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), "lv");
         try
         {
             log.info("setting command");

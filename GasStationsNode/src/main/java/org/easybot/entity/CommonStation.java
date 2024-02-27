@@ -9,9 +9,9 @@ public abstract class CommonStation implements Comparable <CommonStation> {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    Long id;
-   protected String gasType;
-   protected String price;
-   protected String location;
+   public String gasType;
+   public String price;
+   public String location;
    @ManyToOne
    @JoinColumn(name = "brand_id", referencedColumnName = "id")
    protected GasStationsBrands gasStationsBrands;

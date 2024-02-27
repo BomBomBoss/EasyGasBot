@@ -31,10 +31,10 @@ public class ConsumerServiceImp implements RabbitConsumer {
 
     @Override
     @RabbitListener(queues = CALL_BACK_QUERY)
-    public void consumeCallBackQuery(Update update)
+    public void consumeCallBackQuery(UpdateWrapper wrapper)
     {
         log.info(commonLogText, CALL_BACK_QUERY);
-        mainService.processCallBackQuery(update);
+        mainService.processCallBackQuery(wrapper);
 
     }
 

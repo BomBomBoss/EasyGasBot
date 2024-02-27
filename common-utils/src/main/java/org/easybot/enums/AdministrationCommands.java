@@ -4,9 +4,9 @@ import org.easybot.CommonTexts;
 
 public enum AdministrationCommands {
     START("/start", CommonTexts.START_COMMAND_DISCLAIMER_LABEL),
-    CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER),
-    STATION_BRANDS("/brands", CommonTexts.STATION_BRANDS_DISCLAIMER),
-    HELP("/help", CommonTexts.STATION_BRANDS_DISCLAIMER);
+    CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER_LABEL),
+    STATION_BRANDS("/brands", CommonTexts.STATION_BRANDS_DISCLAIMER_LABEL),
+    HELP("/help", CommonTexts.HELP_DISCLAIMER_LABEL);
 
     private String command;
     private String disclaimer;

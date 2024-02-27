@@ -1,6 +1,7 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.easybot.CommonTexts;
 import org.easybot.entity.*;
 
 import static org.easybot.CommonTexts.*;
@@ -29,9 +30,15 @@ public class MainServiceImp implements MainService {
     private final GasStationService gasStationService;
     private final TelegramButtonsFactory telegramButtonsFactory;
     private final TelegramUserService telegramUserService;
-    private final MessageSource messageSource;
+    private final TelegramAnswerFormatService telegramAnswerFormatService;
 
-    public MainServiceImp(TelegramAnswer telegramAnswer, ProduceService produceService, CommonStationService commonStationService, GasStationService gasStationService, TelegramButtonsFactory telegramButtonsFactory, TelegramUserService telegramUserService, MessageSource messageSource)
+    public MainServiceImp(TelegramAnswer telegramAnswer,
+                          ProduceService produceService,
+                          CommonStationService commonStationService,
+                          GasStationService gasStationService,
+                          TelegramButtonsFactory telegramButtonsFactory,
+                          TelegramUserService telegramUserService,
+                          TelegramAnswerFormatService telegramAnswerFormatService)
     {
         this.telegramAnswer = telegramAnswer;
         this.produceService = produceService;
@@ -39,7 +46,7 @@ public class MainServiceImp implements MainService {
         this.gasStationService = gasStationService;
         this.telegramButtonsFactory = telegramButtonsFactory;
         this.telegramUserService = telegramUserService;
-        this.messageSource = messageSource;
+        this.telegramAnswerFormatService = telegramAnswerFormatService;
     }
 
     @Override
@@ -47,24 +54,27 @@ public class MainServiceImp implements MainService {
     {
         telegramUserService.resolveTelegramUserById(wrapper.user());
 
+        TelegramUser user = telegramAnswer.getTelegramUser();
+        Locale locale = user.getLocale();
+
         telegramAnswer.cleanButtons();
 
         if (command.equals(START.getCommand()))
         {
-            telegramAnswer.setText(enrichStartCommand());
+            telegramAnswer.setText(telegramAnswerFormatService.enrichStartCommand(user.getFirstName(), START.getDisclaimer(), locale));
         }
         else if (command.equals(HELP.getCommand()))
         {
-            telegramAnswer.setText(HELP_DISCLAIMER);
+            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(HELP.getDisclaimer(), locale));
         }
         else if (command.equals(CHEAPEST.getCommand()))
         {
-            telegramAnswer.setText(enrichCheapestCommand());
+            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(CHEAPEST.getDisclaimer(), locale));
             telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForCheapestCommand()));
         }
         else if (command.equals(STATION_BRANDS.getCommand()))
         {
-            telegramAnswer.setText(enrichBrandsCommand());
+            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(STATION_BRANDS.getDisclaimer(), locale));
             telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(initButtonsForStationsBrands()));
         }
         else
@@ -77,22 +87,25 @@ public class MainServiceImp implements MainService {
 
     private void getStationBrandFormattedInfo(String command)
     {
+        Locale locale = telegramAnswer.getTelegramUser().getLocale();
+
         Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
                 .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
 
-        gasStation.ifPresentOrElse(station -> telegramAnswer.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false),
-                () -> telegramAnswer.setText(String.format(RESPONSE_COMMAND_NOT_FOUND_RU, escapingMarkdownCharacters(command))));
+        gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
+                () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
     }
 
-    private String escapingMarkdownCharacters(String unknownCommand)
-    {
-        return unknownCommand.replace("_", "").replace("*","");
-    }
 
     @Override
-    public void processCallBackQuery(Update update)
+    public void processCallBackQuery(UpdateWrapper wrapper)
     {
-        String data = update.getCallbackQuery().getData();
+        telegramUserService.resolveTelegramUserById(wrapper.user());
+
+        TelegramUser user = telegramAnswer.getTelegramUser();
+        Locale locale = user.getLocale();
+
+        String data = wrapper.update().getCallbackQuery().getData();
         telegramAnswer.cleanButtons();
 
         if (data.equals(TYPE_95.getButtonId()) || data.equals(TYPE_98.getButtonId()) || data.equals(DIESEL.getButtonId()))
@@ -100,28 +113,19 @@ public class MainServiceImp implements MainService {
             String dataWithoutButton = data.replace("_BUTTON", "").trim();
             List <CommonStation> list = getGasStationPerType(dataWithoutButton);
             Collections.sort(list);
-            telegramAnswer.formatAnswerText(list, true);
+            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(list, true, locale));
         }
         if (GasStationTitle.getGasStationButtonId().contains(data))
         {
             Optional<String> command = GasStationTitle.getCommandByButtonId(data);
-            command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(UNABLE_TO_PROCEED_RESPONSE));
+            command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleResponse(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale)));
         }
-        telegramAnswer.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-        telegramAnswer.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        telegramAnswer.setChatId(wrapper.update().getCallbackQuery().getMessage().getChatId().toString());
+        telegramAnswer.setMessageId(wrapper.update().getCallbackQuery().getMessage().getMessageId());
 
         produceService.produceEditedAnswer(telegramAnswer.mapToEditedMessage());
     }
 
-    private String enrichCheapestCommand()
-    {
-        return CHEAPEST.getDisclaimer();
-    }
-
-    private String enrichBrandsCommand()
-    {
-        return STATION_BRANDS.getDisclaimer();
-    }
 
     private List<CommonStation> getGasStationInfo(String gasStationTitle)
     {
@@ -138,17 +142,7 @@ public class MainServiceImp implements MainService {
         return fullList;
     }
 
-    private String enrichStartCommand()
-    {
-        String messageKey = START.getDisclaimer();
-        String result = String.format(messageSource.getMessage(messageKey, null, telegramAnswer.getTelegramUser().getLocale()), telegramAnswer.getTelegramUser().getFirstName());
-        StringBuilder sb = new StringBuilder(result);
-        for(GasStationTitle gs : GasStationTitle.values())
-        {
-            sb.append(gs.getCommand()).append(" - цены на ").append(gs.getTitle().toUpperCase()).append(System.lineSeparator());
-        }
-        return sb.toString().replace("_", "\\_");
-    }
+
 
     private List<CommonStation> formatToOriginalGasTypeName(String title)
     {
@@ -207,7 +201,6 @@ public class MainServiceImp implements MainService {
         map.put(VIADA.getTitle(), VIADA.getButtonId());
         return map;
     }
-
 
 
 }

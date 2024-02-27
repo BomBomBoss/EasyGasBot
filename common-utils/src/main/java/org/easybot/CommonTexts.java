@@ -4,6 +4,11 @@ import com.vdurmont.emoji.EmojiParser;
 
 public class CommonTexts {
 
+    public static String parseTextWithEmoji(String text)
+    {
+        return EmojiParser.parseToUnicode(text);
+    }
+
 
     /************************ Bot Commands *****************************************************/
     public static final String NESTE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":one:" + " цены на заправках Neste");
@@ -23,7 +28,6 @@ public class CommonTexts {
             /help - помощь
             
             """;
-    public static final String START_COMMAND_DISCLAIMER_LABEL= "start_command_disclaimer_lbl";
     public static final String CHEAPEST_COMMAND_DISCLAIMER = """
                 Цены будут показаны в порядке возрастания.
                 *Пожалуйста, выберите тип топлива*
@@ -66,4 +70,14 @@ public class CommonTexts {
     public static final String NESTE_TITLE = "neste";
     public static final String VIADA_TITLE = "viada";
     public static final String VIRSI_TITLE = "virsi";
+
+    /************************ Localization Text *****************************************************/
+    public static final String START_COMMAND_DISCLAIMER_LABEL= "start_command_disclaimer_lbl";
+    public static final String START_COMMAND_PRICES_ADD = "start_command_prices_add";
+    public static final String HELP_DISCLAIMER_LABEL = "help_command_disclaimer_lbl";
+    public static final String CHEAPEST_COMMAND_DISCLAIMER_LABEL = "cheapest_command_disclaimer_lbl";
+    public static final String STATION_BRANDS_DISCLAIMER_LABEL = "station_brands_disclaimer_lbl";
+    public static final String RESPONSE_COMMAND_NOT_FOUND_LABEL = "response_command_not_found_lbl";
+    public static final String RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL = "response_all_riga_dus_price_equals_lbl";
+    public static final String UNABLE_TO_PROCEED_RESPONSE_LABEL = "unable_to_proceed_response_lbl";
 }
