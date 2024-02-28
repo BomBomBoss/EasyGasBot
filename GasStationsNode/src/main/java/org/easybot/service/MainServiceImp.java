@@ -93,7 +93,6 @@ public class MainServiceImp implements MainService {
                 () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
     }
 
-
     @Override
     public void processCallBackQuery(UpdateWrapper wrapper)
     {
@@ -134,7 +133,6 @@ public class MainServiceImp implements MainService {
         produceService.produceEditedAnswer(telegramAnswer.mapToEditedMessage());
     }
 
-
     private List<CommonStation> getGasStationInfo(String gasStationTitle)
     {
        return commonStationService.retrieveAll(gasStationTitle);
@@ -149,8 +147,6 @@ public class MainServiceImp implements MainService {
         }
         return fullList;
     }
-
-
 
     private List<CommonStation> formatToOriginalGasTypeName(String title)
     {

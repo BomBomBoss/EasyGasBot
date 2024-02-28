@@ -40,26 +40,29 @@ public class ConsumerServiceImp implements RabbitConsumer {
 
     @Override
     @RabbitListener(queues = PHOTO_MESSAGE_UPDATE)
-    public void consumePhotoMessage(Update update)
+    public void consumePhotoMessage(UpdateWrapper wrapper)
     {
         log.info(commonLogText, PHOTO_MESSAGE_UPDATE);
+        log.error("Unsupported format received from user: {} send ", wrapper.user());
 
 
     }
 
     @Override
     @RabbitListener(queues = DOC_MESSAGE_UPDATE)
-    public void consumeDocMessage(Update update)
+    public void consumeDocMessage(UpdateWrapper wrapper)
     {
         log.info(commonLogText, DOC_MESSAGE_UPDATE);
+        log.error("Unsupported format received from user: {} send ", wrapper.user());
 
     }
 
     @Override
     @RabbitListener(queues = UPDATE_EXCEPTION)
-    public void consumeUpdateException(Update update)
+    public void consumeUpdateException(UpdateWrapper wrapper)
     {
         log.info(commonLogText, UPDATE_EXCEPTION);
+        log.error("Unsupported format received from user: {} send ", wrapper.user());
 
     }
 }

@@ -32,6 +32,9 @@ public enum AdministrationCommands {
 
     public static AdministrationCommands getByCommand(String command)
     {
-        return Arrays.stream(AdministrationCommands.values()).filter(ac -> ac.command.equals(command)).findFirst().orElse(null);
+        return Arrays.stream(AdministrationCommands.values())
+                .filter(ac -> ac.command.equals(command))
+                .findFirst()
+                .orElse(null);
     }
 }
