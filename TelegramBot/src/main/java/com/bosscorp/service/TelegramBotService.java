@@ -30,7 +30,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
     @Override
     public void onUpdateReceived(Update update)
     {
-        UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update));
+        UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update), getChatId(update));
 
         String queue = distributeMessageType(update);
         log.info("Sending update from client {} to node", updateWrapper.user());
@@ -84,6 +84,14 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         return update.hasMessage() ? update.getMessage().getFrom()
                 : update.hasCallbackQuery() ? update.getCallbackQuery().getFrom()
                 : new User();
+
+    }
+
+    private Long getChatId(Update update)
+    {
+        return update.hasMessage() ? update.getMessage().getChatId()
+                : update.hasCallbackQuery() ? update.getCallbackQuery().getMessage().getChatId()
+                : 0;
 
     }
 

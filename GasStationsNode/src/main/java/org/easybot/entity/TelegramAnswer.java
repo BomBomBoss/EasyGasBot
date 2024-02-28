@@ -52,14 +52,4 @@ public class TelegramAnswer {
         buttons = null;
     }
 
-    public TelegramUser getTelegramUser()
-    {
-        return telegramUser;
-    }
-
-    public void setTelegramUser(TelegramUser telegramUser)
-    {
-        this.telegramUser = telegramUser;
-    }
-
 }

@@ -3,65 +3,46 @@ package org.easybot.entity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Entity
 @Table(name = "telegram_user")
+@Setter
+@Getter
 public class TelegramUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Nonnull
     @Column(name = "user_id")
     private Long userId;
+
+    @Nonnull
+    @Column(name = "chat_id")
+    private Long chatId;
+
     @Nullable
     @Column(name = "first_name")
     private String firstName;
+
     @Nullable
     @Column(name = "language_code")
     private String languageCode;
+
+    @Nullable
+    @Column(name = "update_time")
+    private LocalDateTime updateTime;
+
     @Transient
     private Locale locale;
 
-    @Nonnull
-    public Long getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(@Nonnull Long userId)
-    {
-        this.userId = userId;
-    }
-
-    @Nullable
-    public String getFirstName()
-    {
-        return firstName;
-    }
-
-    public void setFirstName(@Nullable String firstName)
-    {
-        this.firstName = firstName;
-    }
-
-    @Nullable
-    public String getLanguageCode()
-    {
-        return languageCode;
-    }
-
-    public void setLocale(Locale locale)
-    {
-        this.locale = locale;
-    }
-
-    public void setLanguageCode(@Nullable String languageCode)
-    {
-        this.languageCode = languageCode;
-    }
 
     public void resolveLocaleFromLanguageCode(String languageCode)
     {
@@ -75,8 +56,4 @@ public class TelegramUser {
         }
     }
 
-    public Locale getLocale()
-    {
-        return locale;
-    }
 }

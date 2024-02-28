@@ -19,16 +19,24 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
                   name: first_name
                   type: varchar
               - column:
                   name: language_code
                   type: varchar
+              - column:
+                  name: update_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
         - createIndex:
-            indexName: index_in_user_id
+            indexName: updated_time
             tableName: telegram_user
             columns:
               - column:
-                  name: user_id
+                  name: update_time
 
 

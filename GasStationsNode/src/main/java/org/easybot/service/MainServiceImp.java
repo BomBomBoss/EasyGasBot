@@ -52,7 +52,7 @@ public class MainServiceImp implements MainService {
         log.info("Received command: {}", command);
         AdministrationCommands administrationCommand = AdministrationCommands.getByCommand(command);
 
-        telegramUserService.resolveTelegramUserById(wrapper.user());
+        telegramUserService.resolveTelegramUserById(wrapper);
 
         TelegramUser user = telegramAnswer.getTelegramUser();
         Locale locale = user.getLocale();
@@ -86,7 +86,7 @@ public class MainServiceImp implements MainService {
     @Override
     public void processCallBackQuery(UpdateWrapper wrapper)
     {
-        telegramUserService.resolveTelegramUserById(wrapper.user());
+        telegramUserService.resolveTelegramUserById(wrapper);
 
         TelegramUser user = telegramAnswer.getTelegramUser();
         Locale locale = user.getLocale();
@@ -126,7 +126,7 @@ public class MainServiceImp implements MainService {
     @Override
     public void processUnsupportedUpdate(UpdateWrapper wrapper) {
 
-        telegramUserService.resolveTelegramUserById(wrapper.user());
+        telegramUserService.resolveTelegramUserById(wrapper);
 
         TelegramUser user = telegramAnswer.getTelegramUser();
         Locale locale = user.getLocale();
