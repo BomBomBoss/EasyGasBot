@@ -33,24 +33,24 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update));
 
         String queue = distributeMessageType(update);
-        log.info("Received update from client {}", updateWrapper.user());
+        log.info("Sending update from client {} to node", updateWrapper.user());
         rabbitTemplate.convertAndSend(queue, updateWrapper);
     }
 
     @Override
     public String distributeMessageType(Update update)
     {
-        Message message = update.getMessage();
 
         if (update.hasMessage())
         {
+            Message message = update.getMessage();
+
             if (message.hasText()) return TEXT_MESSAGE_UPDATE;
-            else if (message.hasDocument()) return DOC_MESSAGE_UPDATE;
-            else if (message.hasPhoto()) return PHOTO_MESSAGE_UPDATE;
+            else return NOT_SUPPORTED_MESSAGE_UPDATE;
         }
         else if (update.hasCallbackQuery()) return CALL_BACK_QUERY;
 
-        return UPDATE_EXCEPTION;
+        return NOT_SUPPORTED_MESSAGE_UPDATE;
     }
 
     public void sendResponseToClient(SendMessage sendMessage)

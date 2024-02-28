@@ -24,18 +24,6 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public Queue docMessageQueue()
-    {
-        return new Queue(DOC_MESSAGE_UPDATE);
-    }
-
-    @Bean
-    public Queue photoMessageQueue()
-    {
-        return new Queue(PHOTO_MESSAGE_UPDATE);
-    }
-
-    @Bean
     public Queue callBackQueue()
     {
         return new Queue(CALL_BACK_QUERY);
@@ -54,8 +42,8 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public Queue updateExceptionQueue()
+    public Queue notSupprtedMessageQueue()
     {
-        return new Queue(UPDATE_EXCEPTION);
+        return new Queue(NOT_SUPPORTED_MESSAGE_UPDATE);
     }
 }

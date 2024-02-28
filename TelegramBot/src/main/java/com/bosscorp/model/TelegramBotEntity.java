@@ -68,6 +68,7 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update)
     {
+        log.info("Received update from client");
         consumerService.onUpdateReceived(update);
     }
 

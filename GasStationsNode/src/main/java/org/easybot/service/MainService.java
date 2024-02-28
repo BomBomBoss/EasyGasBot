@@ -7,4 +7,6 @@ public interface MainService {
     void processTextMessage(UpdateWrapper wrapper, String command);
 
     void processCallBackQuery(UpdateWrapper wrapper);
+
+    void processUnsupportedUpdate(UpdateWrapper wrapper);
 }

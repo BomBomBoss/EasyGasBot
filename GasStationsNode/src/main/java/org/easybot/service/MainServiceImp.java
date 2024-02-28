@@ -82,16 +82,6 @@ public class MainServiceImp implements MainService {
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
     }
 
-    private void getStationBrandFormattedInfo(String command)
-    {
-        Locale locale = telegramAnswer.getTelegramUser().getLocale();
-
-        Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
-                .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
-
-        gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
-                () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
-    }
 
     @Override
     public void processCallBackQuery(UpdateWrapper wrapper)
@@ -131,6 +121,30 @@ public class MainServiceImp implements MainService {
         telegramAnswer.setMessageId(wrapper.update().getCallbackQuery().getMessage().getMessageId());
 
         produceService.produceEditedAnswer(telegramAnswer.mapToEditedMessage());
+    }
+
+    @Override
+    public void processUnsupportedUpdate(UpdateWrapper wrapper) {
+
+        telegramUserService.resolveTelegramUserById(wrapper.user());
+
+        TelegramUser user = telegramAnswer.getTelegramUser();
+        Locale locale = user.getLocale();
+
+        telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(RESPONSE_NOT_SUPPORTED_UPDATE_LABEL, locale));
+        telegramAnswer.setChatId(wrapper.update().getMessage().getChatId().toString());
+        produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
+    }
+
+    private void getStationBrandFormattedInfo(String command)
+    {
+        Locale locale = telegramAnswer.getTelegramUser().getLocale();
+
+        Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
+                .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
+
+        gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
+                () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
     }
 
     private List<CommonStation> getGasStationInfo(String gasStationTitle)

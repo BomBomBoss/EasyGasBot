@@ -87,6 +87,7 @@ public class CommonTexts {
     public static final String LANGUAGE_TO_SET_LABEL = "language_to_set_lbl";
     public static final String RESPONSE_ADDRESS_LABEL = "address_lbl";
     public static final String RESPONSE_PRICE_LABEL = "price_lbl";
+    public static final String RESPONSE_NOT_SUPPORTED_UPDATE_LABEL = "not_supported_update_lbl";
 
 
 }
