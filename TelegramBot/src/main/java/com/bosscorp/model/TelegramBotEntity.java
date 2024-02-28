@@ -48,10 +48,10 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         listOfCommandsEn.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION_EN));
         listOfCommandsEn.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION_EN));
 
-        SetMyCommands setMyCommandsEn = new SetMyCommands(listOfCommandsEn, new BotCommandScopeDefault(), "en");
+        SetMyCommands setMyCommandsEn = new SetMyCommands(listOfCommandsEn, new BotCommandScopeDefault(), null);
         try
         {
-            log.info("setting command");
+            log.info("setting commands");
             this.execute(setMyCommandsRu);
             this.execute(setMyCommandsEn);
         } catch (TelegramApiException e)
