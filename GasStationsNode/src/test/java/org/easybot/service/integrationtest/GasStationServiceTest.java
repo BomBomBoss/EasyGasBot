@@ -6,13 +6,16 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +43,7 @@ class GasStationServiceTest {
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1")
             .withInitScript("db/init.sql");
+
     @Test
     void contextLoads()
     {
@@ -81,10 +85,10 @@ class GasStationServiceTest {
         CommonStation fourth = list.get(3);
 
 
-        Assertions.assertTrue(first instanceof Neste);
-        Assertions.assertTrue(second instanceof CircleK);
-        Assertions.assertTrue(third instanceof Viada);
-        Assertions.assertTrue(fourth instanceof Virsi);
+        Assertions.assertInstanceOf(Neste.class, first);
+        Assertions.assertInstanceOf(CircleK.class, second);
+        Assertions.assertInstanceOf(Viada.class, third);
+        Assertions.assertInstanceOf(Virsi.class, fourth);
     }
 
     @Test
@@ -92,7 +96,7 @@ class GasStationServiceTest {
     {
         List<CommonStation> list = priceSorting();
 
-        CommonStation first = list.get(0);
+        CommonStation first = list.getFirst();
 
         Assertions.assertFalse(first instanceof CircleK);
     }
