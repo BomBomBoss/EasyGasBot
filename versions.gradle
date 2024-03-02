@@ -1,4 +1,6 @@
 ext {
-    telegrambotVersion = '6.4.0'
-    springVersion = '3.1.0'
+    telegrambotVersion = '6.8.0'
+    springVersion = '3.2.0'
+    postgresVersion = '42.7.0'
+    liquibaseVersion ='4.25.0'
 }

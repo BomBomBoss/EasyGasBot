@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: telegram_user_table
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: telegram_user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar
+              - column:
+                  name: language_code
+                  type: varchar
+              - column:
+                  name: update_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
+        - createIndex:
+            indexName: updated_time
+            tableName: telegram_user
+            columns:
+              - column:
+                  name: update_time
+
+

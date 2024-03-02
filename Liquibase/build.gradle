@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'org.easybot'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+    implementation "org.postgresql:postgresql:${postgresVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}"
+
+
+}
+
+test {
+    useJUnitPlatform()
+}

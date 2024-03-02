@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: neste_table
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: neste
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: gas_type
+                  type: varchar
+              - column:
+                  name: price
+                  type: varchar
+              - column:
+                  name: location
+                  type: varchar
+

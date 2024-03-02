@@ -2,7 +2,7 @@ package com.bosscorp.service;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public interface UpdateValidator {
+public interface UpdateService {
 
-    void contentValidate(Update update);
+    String distributeMessageType(Update update);
 }
