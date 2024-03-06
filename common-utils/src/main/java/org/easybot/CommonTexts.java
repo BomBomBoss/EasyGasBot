@@ -19,41 +19,23 @@ public class CommonTexts {
     public static final String HELP_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":sos:" + " need help?");
     public static final String LANGUAGE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":earth_africa:" + " выбор языка");
     public static final String LANGUAGE_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":earth_africa:" + " choose language");
-    public static final String START_COMMAND_DISCLAIMER = """
-            Добро пожаловать *%s* на просторы бота EasyGas.
-            Здесь ты сможешь посмотреть, где сейчас продаётся самое дешёвое топливо среди заправок NESTE, CIRCLE_K, VIADA, VIRŠI.
-            Команды, которые сейчас доступны:
-            
-            /brands - выбор заправки
-            /cheapest - выбор топлива
-            /help - помощь
-            
-            """;
-    public static final String CHEAPEST_COMMAND_DISCLAIMER = """
-                Цены будут показаны в порядке возрастания.
-                *Пожалуйста, выберите тип топлива*
-                """;
 
-    public static final String STATION_BRANDS_DISCLAIMER = """
-                Будет показан список адресов, видов топлива и цен, где в данный момент самая низкая цена.
-                *Пожалуйста, выберите бренд заправочной станции*
-                """;
-    public static final String HELP_DISCLAIMER = EmojiParser.parseToUnicode("""
-                Тут всё очень просто! :blush:
-                Хочешь посмотреть какие цены на заправках? Нажимай: /brands
-                Хочешь узнать, где самый дешёвый бензин или дизель среди заправок? Тогда: /cheapest
-                А если хочешь сразу перейти к конкретной заправке, то это ещё проще! Жми одну из этих команд:
-                /neste, /circle\\_k /neste, /virsi
-                """);
+    /************************ Bot Short Description *****************************************************/
+
+    public static final String BOT_SHORT_DESCRIPTION_RU = """
+            Бот, который расскажет, где в Риге самое дешёвое топливо 👌
+            Разработчик - @BomBoss 🤘
+                        """;
+    public static final String BOT_SHORT_DESCRIPTION_EN = """
+            Bot that will tell you where are the cheapest fuel is in Riga 👌
+            Developer - @BomBoss 🤘
+                            """;
 
     /************************ Replaced Text *****************************************************/
     public static final String VIRSI_ALL_STATIONS = "Visā Viršu tīklā";
     public static final String ALL_RIGA_DUS_EQUALS_1 = "Visās Rīgas DUS cenas ir vienādas";
     public static final String ALL_RIGA_DUS_EQUALS_2 = "Visos Rīgas DUS degvielas cenas ir vienādas";
     public static final String VIADA_ALL_STATIONS = "Visās VIADA uzpildes stacijās.";
-
-
-    /************************ Response Text *****************************************************/
 
 
 

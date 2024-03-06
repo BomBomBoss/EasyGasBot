@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.description.SetMyShortDescription;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -19,7 +20,6 @@ import java.util.List;
 
 import static org.easybot.CommonTexts.*;
 import static org.easybot.enums.AdministrationCommands.*;
-import static org.easybot.enums.GasStationTitle.*;
 
 @Log4j2
 @Component
@@ -49,9 +49,14 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         listOfCommandsEn.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION_EN));
 
         SetMyCommands setMyCommandsEn = new SetMyCommands(listOfCommandsEn, new BotCommandScopeDefault(), null);
+
+        SetMyShortDescription setMyShortDescriptionRu = new SetMyShortDescription(BOT_SHORT_DESCRIPTION_RU, "ru");
+        SetMyShortDescription setMyShortDescriptionEn = new SetMyShortDescription(BOT_SHORT_DESCRIPTION_EN, null);
         try
         {
             log.info("setting commands");
+            this.execute(setMyShortDescriptionRu);
+            this.execute(setMyShortDescriptionEn);
             this.execute(setMyCommandsRu);
             this.execute(setMyCommandsEn);
         } catch (TelegramApiException e)
