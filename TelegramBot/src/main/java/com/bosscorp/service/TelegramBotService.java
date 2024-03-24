@@ -4,6 +4,7 @@ import com.bosscorp.model.TelegramBotEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.Objects;
 
 import static org.easybot.RabbitQueue.*;
 
@@ -22,6 +25,9 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
 
     private final RabbitTemplate rabbitTemplate;
 
+    @Value("${user.is.admin}")
+    private String adminId;
+
     public TelegramBotService(RabbitTemplate rabbitTemplate)
     {
         this.rabbitTemplate = rabbitTemplate;
@@ -30,7 +36,8 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
     @Override
     public void onUpdateReceived(Update update)
     {
-        UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update), getChatId(update));
+        Long chatId = getChatId(update);
+        UpdateWrapper updateWrapper = new UpdateWrapper(update, getFromUser(update), chatId, isUserAdmin(chatId));
 
         String queue = distributeMessageType(update);
         log.info("Sending update from client {} to node", updateWrapper.user());
@@ -92,7 +99,11 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         return update.hasMessage() ? update.getMessage().getChatId()
                 : update.hasCallbackQuery() ? update.getCallbackQuery().getMessage().getChatId()
                 : 0;
+    }
 
+    private Boolean isUserAdmin(Long chatId)
+    {
+        return Objects.equals(Long.parseLong(adminId), chatId);
     }
 
 }

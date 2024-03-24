@@ -2,17 +2,18 @@ package org.easybot.service;
 
 import org.easybot.CommonTexts;
 import org.easybot.entity.CommonStation;
-import org.easybot.enums.AdministrationCommands;
+import org.easybot.entity.TelegramUser;
+import org.easybot.enums.BotCommands;
 import org.easybot.enums.GasStationTitle;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.easybot.CommonTexts.*;
 import static org.easybot.entity.enums.GasTypesName.*;
-import static org.easybot.entity.enums.GasTypesName.DIESEL;
+import static org.easybot.enums.AdminCommands.*;
 import static org.easybot.enums.GasStationTitle.*;
-import static org.easybot.enums.GasStationTitle.VIADA;
 import static org.easybot.enums.Language.*;
 
 @Component
@@ -86,7 +87,7 @@ public class TelegramAnswerFormatService {
                     .append(System.lineSeparator());
         }
         sb.append(System.lineSeparator())
-                .append(AdministrationCommands.LANGUAGE.getCommand())
+                .append(BotCommands.LANGUAGE.getCommand())
                 .append(" - ")
                 .append(messageResolver.getLocalisedTextWithoutArg(LANGUAGE_TO_SET_LABEL, locale));
         return sb.toString().replace("_", "\\_");
@@ -110,6 +111,24 @@ public class TelegramAnswerFormatService {
     public String resolveSimpleLocalizedResponseWithArg(String messageKey, Locale locale, String ... arg)
     {
         return messageResolver.getLocalisedTextWithArg(messageKey, locale, arg);
+    }
+
+    public String resolveCountOfActiveUsers(List<TelegramUser> telegramUsers, boolean isDetailsNeeded)
+    {
+        if (!isDetailsNeeded)
+        {
+            return String.format("Общее число пользователей за всё время: %d", telegramUsers.size());
+        }
+
+        if (telegramUsers.isEmpty())
+        {
+            return "За этот период времени никто не пользовался ботом";
+        }
+        String listOfUsers = telegramUsers.stream()
+                .reduce(" ", (total, element) -> total +
+                        (String.format("*%s*\n_%s_\n", element.getFirstName(), element.getUpdateTime().format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")))),
+                        String::concat);
+        return listOfUsers.concat("\n").concat("Всего пользователей: ").concat(String.valueOf(telegramUsers.size()));
     }
 
     public Map<String, String> initButtonsForCheapestCommand()
@@ -137,6 +156,16 @@ public class TelegramAnswerFormatService {
         map.put(EN.getLanguage(), EN.getButtonId());
         map.put(LV.getLanguage(), LV.getButtonId());
         map.put(RU.getLanguage(), RU.getButtonId());
+        return map;
+    }
+
+    public Map<String, String> initButtonsForAdmin()
+    {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(ONE_DAY.getButtonText(), ONE_DAY.getButtonId());
+        map.put(TWO_DAYS.getButtonText(), TWO_DAYS.getButtonId());
+        map.put(ONE_WEEK.getButtonText(), ONE_WEEK.getButtonId());
+        map.put(ALL_TIME.getButtonText(), ALL_TIME.getButtonId());
         return map;
     }
 }
