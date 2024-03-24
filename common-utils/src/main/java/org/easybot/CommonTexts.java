@@ -30,6 +30,13 @@ public class CommonTexts {
             Bot that will tell you where are the cheapest fuel is in Riga 👌
             Developer - @BomBoss 🤘
                             """;
+    /************************ Admin text *****************************************************/
+
+    public static final String ADMIN_COMMAND_DISCLAIMER= """
+            Ты зашёл в режим God Mode.
+            Давай глянем сколько там пользователей
+            воспользовались ботом за
+            """;
 
     /************************ Replaced Text *****************************************************/
     public static final String VIRSI_ALL_STATIONS = "Visā Viršu tīklā";

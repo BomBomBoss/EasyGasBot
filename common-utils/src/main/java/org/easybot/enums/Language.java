@@ -23,7 +23,7 @@ public enum Language {
         this.buttonId = name().concat("_BUTTON");
     }
 
-    public static Set<String> getAllLanguageButtonId()
+    public static Set<String> getSetOfLanguageButtonId()
     {
         return Arrays.stream(Language.values()).map(Language::getButtonId).collect(Collectors.toSet());
     }

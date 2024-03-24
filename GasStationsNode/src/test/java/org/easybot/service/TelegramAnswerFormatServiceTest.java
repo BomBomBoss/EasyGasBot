@@ -1,12 +1,11 @@
 package org.easybot.service;
 
 import org.easybot.CommonTexts;
-import org.easybot.enums.AdministrationCommands;
-import org.junit.jupiter.api.*;
+import org.easybot.enums.BotCommands;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
@@ -38,7 +37,7 @@ class TelegramAnswerFormatServiceTest {
     @Test
     void shouldInvokeResolverWithStartLabel()
     {
-        AdministrationCommands result = AdministrationCommands.getByCommand(START_COMMAND);
+        BotCommands result = BotCommands.getByCommand(START_COMMAND);
         telegramAnswerFormatService.enrichStartCommand("Test", result.getDisclaimer(), Locale.ENGLISH);
 
         Mockito.verify(messageResolver).getLocalisedTextWithArg(eq(START_COMMAND_DISCLAIMER_LABEL), any(Locale.class), any());
@@ -52,7 +51,7 @@ class TelegramAnswerFormatServiceTest {
         try (MockedStatic <CommonTexts> commonTexts = Mockito.mockStatic(CommonTexts.class))
         {
             commonTexts.when(() -> CommonTexts.parseTextWithEmoji(anyString())).thenReturn(eq(anyString()));
-            AdministrationCommands result = AdministrationCommands.getByCommand(CHEAPEST_COMMAND);
+            BotCommands result = BotCommands.getByCommand(CHEAPEST_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
         Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(CHEAPEST_COMMAND_DISCLAIMER_LABEL), any(Locale.class));
@@ -64,7 +63,7 @@ class TelegramAnswerFormatServiceTest {
         try (MockedStatic <CommonTexts> commonTexts = Mockito.mockStatic(CommonTexts.class))
         {
             commonTexts.when(() -> CommonTexts.parseTextWithEmoji(anyString())).thenReturn(eq(anyString()));
-            AdministrationCommands result = AdministrationCommands.getByCommand(STATION_BRANDS_COMMAND);
+            BotCommands result = BotCommands.getByCommand(STATION_BRANDS_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
         Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(STATION_BRANDS_DISCLAIMER_LABEL), any(Locale.class));
@@ -76,7 +75,7 @@ class TelegramAnswerFormatServiceTest {
         try (MockedStatic <CommonTexts> commonTexts = Mockito.mockStatic(CommonTexts.class))
         {
             commonTexts.when(() -> CommonTexts.parseTextWithEmoji(anyString())).thenReturn(eq(anyString()));
-            AdministrationCommands result = AdministrationCommands.getByCommand(HELP_COMMAND);
+            BotCommands result = BotCommands.getByCommand(HELP_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
         Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(HELP_DISCLAIMER_LABEL), any(Locale.class));
@@ -85,7 +84,7 @@ class TelegramAnswerFormatServiceTest {
     @Test
     void shouldInvokeResolverWithLanguageLabel()
     {
-        AdministrationCommands result = AdministrationCommands.getByCommand(LANGUAGE_COMMAND);
+        BotCommands result = BotCommands.getByCommand(LANGUAGE_COMMAND);
         telegramAnswerFormatService.resolveSimpleLocalizedResponse(result.getDisclaimer(), Locale.ENGLISH);
 
         Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(LANGUAGE_COMMAND_DISCLAIMER_LABEL), any(Locale.class));

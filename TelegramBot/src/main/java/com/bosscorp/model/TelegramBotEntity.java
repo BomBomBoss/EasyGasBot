@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.easybot.CommonTexts.*;
-import static org.easybot.enums.AdministrationCommands.*;
+import static org.easybot.enums.BotCommands.*;
 
 @Log4j2
 @Component

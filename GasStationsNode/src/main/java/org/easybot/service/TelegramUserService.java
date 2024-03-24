@@ -1,21 +1,16 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.easybot.entity.CommonStation;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.repository.TelegramUserRepository;
 import org.easybot.wrapper.UpdateWrapper;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-
-import static org.easybot.CommonTexts.*;
 
 @Component
 @Slf4j
@@ -64,5 +59,15 @@ public class TelegramUserService {
     public void updateUser(TelegramUser user)
     {
         telegramUserRepository.save(user);
+    }
+
+    public List <TelegramUser> findActiveUsersAfterDate(LocalDateTime startDate)
+    {
+        return telegramUserRepository.findByUpdateTimeAfterOrderByUpdateTimeDesc(startDate);
+    }
+
+    public List <TelegramUser> findAllUsers()
+    {
+        return telegramUserRepository.findAll();
     }
 }
