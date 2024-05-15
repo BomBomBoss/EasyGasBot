@@ -7,7 +7,6 @@ import java.util.List;
 @Service
 public class NesteModifier extends GasTypeFormatter {
 
-
     public NesteModifier()
     {
         super("Neste Futura 95", null,

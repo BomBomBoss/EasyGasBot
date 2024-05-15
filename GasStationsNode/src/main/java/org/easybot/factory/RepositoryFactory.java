@@ -1,15 +1,15 @@
 package org.easybot.factory;
 
+import lombok.Getter;
 import org.easybot.CommonTexts;
 import org.easybot.repository.*;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Getter
 public class RepositoryFactory {
 
     private final NesteRepository nesteRepository;
@@ -36,8 +36,4 @@ public class RepositoryFactory {
         repositoryMap.put(CommonTexts.VIRSI_TITLE, virsiRepository);
     }
 
-    public Map<String, CommonStationRepository> getRepositoryMap()
-    {
-        return repositoryMap;
-    }
 }

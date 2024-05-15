@@ -15,11 +15,3 @@ test {
 
 
 
-task somethingTask {
-    def props = System.getProperties()
-    doLast {
-           println props.each {key, value -> "$key = $value /n"}
-        }
-}
-
-
