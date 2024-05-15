@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 @Getter
 public enum BotCommands {
+
     START("/start", CommonTexts.START_COMMAND_DISCLAIMER_LABEL),
     CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER_LABEL),
     STATION_BRANDS("/brands", CommonTexts.STATION_BRANDS_DISCLAIMER_LABEL),

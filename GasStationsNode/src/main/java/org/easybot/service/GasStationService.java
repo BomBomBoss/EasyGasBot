@@ -167,8 +167,4 @@ public class GasStationService {
         return modifierFactory;
     }
 
-    public EnumMap<GasStationTitle, String> getValidationReport()
-    {
-        return validationReport;
-    }
 }

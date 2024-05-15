@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Optional;
 
 @Configuration
 public class CommonConfiguration {
@@ -28,8 +27,8 @@ public class CommonConfiguration {
 
         for (GasStationTitle gs : GasStationTitle.values())
         {
-           GasStationsBrands brands = brandsList.stream().filter(x-> gs.getTitle()
-                   .equalsIgnoreCase(x.getBrandName()))
+           GasStationsBrands brands = brandsList.stream().filter(station -> gs.getTitle()
+                   .equalsIgnoreCase(station.getBrandName()))
                    .findFirst()
                    .orElseThrow(() -> new RuntimeException(gs.getTitle() + "can't be found in DB"));
            gs.setId(brands.getId());

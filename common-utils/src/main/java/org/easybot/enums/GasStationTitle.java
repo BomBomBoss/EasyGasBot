@@ -2,7 +2,7 @@ package org.easybot.enums;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public enum GasStationTitle {
     NESTE("/neste",
@@ -100,12 +100,19 @@ public enum GasStationTitle {
     }
     public static List<String> getGasStationButtonId()
     {
-        return getGasStationValues().stream().map(GasStationTitle::getButtonId).toList();
+        return getGasStationValues()
+                .stream()
+                .map(GasStationTitle::getButtonId)
+                .toList();
     }
 
     public static Optional <String> getCommandByButtonId(String buttonId)
     {
-        return getGasStationValues().stream().filter(station -> station.buttonId.equals(buttonId)).map(GasStationTitle::getCommand).findFirst();
+        return getGasStationValues()
+                .stream()
+                .filter(station -> station.buttonId.equals(buttonId))
+                .map(GasStationTitle::getCommand)
+                .findFirst();
     }
 
 }

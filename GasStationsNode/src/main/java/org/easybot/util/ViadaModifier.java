@@ -6,6 +6,7 @@ import java.util.List;
 
 @Service
 public class ViadaModifier extends GasTypeFormatter {
+
     public ViadaModifier()
     {
         super("95 multi green", "95 multi red",

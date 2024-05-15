@@ -13,7 +13,6 @@ import static org.easybot.RabbitQueue.ANSWER_MESSAGE;
 @Slf4j
 public class AnswerConsumeService implements AnswerConsumer {
 
-
     private final TelegramBotService telegramBotService;
     private final TelegramFormatter telegramFormatter;
 
