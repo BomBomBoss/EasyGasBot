@@ -21,7 +21,7 @@ public class TelegramAnswerFormatService {
 
     private final MessageResolver messageResolver;
 
-    private final Set<String> allStationsSamePrices = Set.of(ALL_RIGA_DUS_EQUALS_1, ALL_RIGA_DUS_EQUALS_2, VIADA_ALL_STATIONS, VIRSI_ALL_STATIONS);
+    private final Set<String> allStationsSamePrices = Set.of(ALL_RIGA_DUS_EQUALS_1, ALL_RIGA_DUS_EQUALS_2, VIADA_ALL_STATIONS, VIRSI_ALL_STATIONS, NESTE_ALL_STATIONS, CIRCLE_ALL_STATIONS);
 
     public TelegramAnswerFormatService(MessageResolver messageResolver) {
         this.messageResolver = messageResolver;
