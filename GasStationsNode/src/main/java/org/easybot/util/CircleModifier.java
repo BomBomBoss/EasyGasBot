@@ -8,9 +8,9 @@ import java.util.List;
 public class CircleModifier extends GasTypeFormatter {
     public CircleModifier()
     {
-        super("miles 95", null,
-                "milesPLUS 98", null,
-                "miles D","milesPLUS D",
+        super("95miles", null,
+                "98miles+", null,
+                "dmiles","dmiles+",
                 null, "autogāze", null);
     }
 
