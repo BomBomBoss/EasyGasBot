@@ -40,6 +40,7 @@ public class CommonTexts {
 
     /************************ Replaced Text *****************************************************/
     public static final String VIRSI_ALL_STATIONS = "Visā Viršu tīklā";
+    public static final String NESTE_ALL_STATIONS = "Visās DUS cenas vienādas";
     public static final String ALL_RIGA_DUS_EQUALS_1 = "Visās Rīgas DUS cenas ir vienādas";
     public static final String ALL_RIGA_DUS_EQUALS_2 = "Visos Rīgas DUS degvielas cenas ir vienādas";
     public static final String VIADA_ALL_STATIONS = "Visās VIADA uzpildes stacijās.";
