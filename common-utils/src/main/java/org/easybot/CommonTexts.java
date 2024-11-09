@@ -41,8 +41,10 @@ public class CommonTexts {
     /************************ Replaced Text *****************************************************/
     public static final String VIRSI_ALL_STATIONS = "Visā Viršu tīklā";
     public static final String NESTE_ALL_STATIONS = "Visās DUS cenas vienādas";
-    public static final String ALL_RIGA_DUS_EQUALS_1 = "Visās Rīgas DUS cenas ir vienādas";
-    public static final String ALL_RIGA_DUS_EQUALS_2 = "Visos Rīgas DUS degvielas cenas ir vienādas";
+    public static final String NESTE_ALL_STATIONS_1 = "Visās stacijās cenas vienādas";
+    public static final String CIRCLE_ALL_STATIONS = "Visās Rīgas DUS cenas ir vienādas";
+    public static final String CIRCLE_ALL_STATIONS_1 = "Visos Rīgas DUS degvielas cenas ir vienādas";
+    public static final String CIRCLE_ALL_STATIONS_2 = "Visās Rīgas DUS degvielas cenas ir vienādas";
     public static final String VIADA_ALL_STATIONS = "Visās VIADA uzpildes stacijās.";
 
 
@@ -58,6 +60,7 @@ public class CommonTexts {
     public static final String NESTE_TITLE = "neste";
     public static final String VIADA_TITLE = "viada";
     public static final String VIRSI_TITLE = "virsi";
+    public static final String RIGA = "Rīga";
 
     public static final String LANGUAGE_RUS = "RUS " + "\uD83C\uDDF7\uD83C\uDDFA";
     public static final String LANGUAGE_LV = "LV " + "\uD83C\uDDF1\uD83C\uDDFB";

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.easybot.CommonTexts.RIGA;
 import static org.easybot.CommonTexts.VIRSI_ALL_STATIONS;
 
 @Service
@@ -27,6 +28,7 @@ public class VirsiModifier extends GasTypeFormatter{
                 .replaceAll("(LV-)[0-9]{4}", "")
                 .replace("Degvielas cenas", "")
                 .replace(VIRSI_ALL_STATIONS, VIRSI_ALL_STATIONS.concat(","))
+                .replace(RIGA, RIGA.concat(","))
                 .split(",");
         List<String> listWithoutSpaces = Arrays.stream(withoutZipCode).map(String::trim).toList();
         Iterator<String> iterator = listWithoutSpaces.listIterator();
