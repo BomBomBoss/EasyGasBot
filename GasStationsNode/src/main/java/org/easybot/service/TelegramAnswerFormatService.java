@@ -22,7 +22,7 @@ public class TelegramAnswerFormatService {
     private final MessageResolver messageResolver;
 
     private final Set<String> allStationsSamePrices = Set.of(CIRCLE_ALL_STATIONS, CIRCLE_ALL_STATIONS_1, VIADA_ALL_STATIONS,
-            VIRSI_ALL_STATIONS, NESTE_ALL_STATIONS, NESTE_ALL_STATIONS_1,CIRCLE_ALL_STATIONS_2);
+            VIRSI_ALL_STATIONS, NESTE_ALL_STATIONS, NESTE_ALL_STATIONS_1,CIRCLE_ALL_STATIONS_2, NESTE_ALL_STATIONS_2);
 
     public TelegramAnswerFormatService(MessageResolver messageResolver) {
         this.messageResolver = messageResolver;
