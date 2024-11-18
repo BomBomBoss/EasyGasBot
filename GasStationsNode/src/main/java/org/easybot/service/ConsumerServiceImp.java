@@ -4,9 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static org.easybot.RabbitQueue.*;
+import static org.easybot.RabbitQueue.CALL_BACK_QUERY;
+import static org.easybot.RabbitQueue.NOT_SUPPORTED_MESSAGE_UPDATE;
+import static org.easybot.RabbitQueue.TEXT_MESSAGE_UPDATE;
 
 @Log4j2
 @Service

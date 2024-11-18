@@ -21,7 +21,7 @@ public class VirsiModifier extends GasTypeFormatter{
     @Override
     public List<String> cleanRawElements(List<String> rawList)
     {
-        String rawString = rawList.get(0);
+        String rawString = rawList.getFirst();
         rawList.clear();
 
         String [] withoutZipCode = rawString
@@ -31,27 +31,19 @@ public class VirsiModifier extends GasTypeFormatter{
                 .replace(RIGA, RIGA.concat(","))
                 .split(",");
         List<String> listWithoutSpaces = Arrays.stream(withoutZipCode).map(String::trim).toList();
-        Iterator<String> iterator = listWithoutSpaces.listIterator();
-        while (iterator.hasNext())
-        {
-            String st = iterator.next();
 
-            if (st.matches(".*\\s.*") && !st.contains("pag.") && !st.contains("novads"))
-            {
-                String [] s = st.split(" ", 3);
+        for (String st : listWithoutSpaces) {
+            if (st.matches(".*\\s.*") && !st.contains("pag.") && !st.contains("novads")) {
+                String[] s = st.split(" ", 3);
                 Queue<String> queue = new LinkedList<>(Arrays.asList(s));
-                while (!queue.isEmpty())
-                {
+                while (!queue.isEmpty()) {
                     rawList.add(queue.poll());
                 }
-            }
-            else
-            {
+            } else {
                 int lastIndex = rawList.size() - 1;
                 rawList.set(lastIndex, rawList.get(lastIndex).concat(" " + st));
             }
         }
-
         return rawList;
     }
 }

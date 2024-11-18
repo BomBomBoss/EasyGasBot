@@ -17,21 +17,10 @@ public class MessageResolver {
         this.messageSource = messageSource;
     }
 
-    public String getLocalisedTextWithoutArg(String key, Locale locale)
-    {
+    public String getLocalisedText(String key, Locale locale, String... arg) {
         String text = "";
         try {
-            text = messageSource.getMessage(key, null, locale);
-        } catch (NoSuchMessageException e) {
-            log.error("Key: [{}] can't be found in resources", key);
-        }
-        return text;
-    }
-
-    public String getLocalisedTextWithArg(String key, Locale locale, String... arg) {
-        String text = "";
-        try {
-            text = arg == null ? getLocalisedTextWithoutArg(key, locale) : messageSource.getMessage(key, arg, locale);
+            text = messageSource.getMessage(key, arg, locale);
         } catch (NoSuchMessageException e) {
             log.error("Key: [{}] can't be found in resources", key);
         }

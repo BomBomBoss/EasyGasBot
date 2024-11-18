@@ -49,6 +49,11 @@ public class CommonTexts {
     public static final String VIADA_ALL_STATIONS = "Visās VIADA uzpildes stacijās.";
 
 
+    public static final String ALL_STATIONS_1 = "Visās";
+    public static final String ALL_STATIONS_2 = "Visā";
+    public static final String ALL_STATIONS_3 = "Visos";
+
+
 
     /************************ Util Text *****************************************************/
 

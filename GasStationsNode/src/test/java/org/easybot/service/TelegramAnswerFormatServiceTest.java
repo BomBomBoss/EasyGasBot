@@ -40,9 +40,9 @@ class TelegramAnswerFormatServiceTest {
         BotCommands result = BotCommands.getByCommand(START_COMMAND);
         telegramAnswerFormatService.enrichStartCommand("Test", result.getDisclaimer(), Locale.ENGLISH);
 
-        Mockito.verify(messageResolver).getLocalisedTextWithArg(eq(START_COMMAND_DISCLAIMER_LABEL), any(Locale.class), any());
-        Mockito.verify(messageResolver, Mockito.atMost(4)).getLocalisedTextWithoutArg(eq(START_COMMAND_PRICES_ADD), any(Locale.class));
-        Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(LANGUAGE_TO_SET_LABEL), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(START_COMMAND_DISCLAIMER_LABEL), any(Locale.class), any());
+        Mockito.verify(messageResolver, Mockito.atMost(4)).getLocalisedText(eq(START_COMMAND_PRICES_ADD), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(LANGUAGE_TO_SET_LABEL), any(Locale.class));
     }
 
     @Test
@@ -54,7 +54,7 @@ class TelegramAnswerFormatServiceTest {
             BotCommands result = BotCommands.getByCommand(CHEAPEST_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
-        Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(CHEAPEST_COMMAND_DISCLAIMER_LABEL), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(CHEAPEST_COMMAND_DISCLAIMER_LABEL), any(Locale.class));
     }
 
     @Test
@@ -66,7 +66,7 @@ class TelegramAnswerFormatServiceTest {
             BotCommands result = BotCommands.getByCommand(STATION_BRANDS_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
-        Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(STATION_BRANDS_DISCLAIMER_LABEL), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(STATION_BRANDS_DISCLAIMER_LABEL), any(Locale.class));
     }
 
     @Test
@@ -78,7 +78,7 @@ class TelegramAnswerFormatServiceTest {
             BotCommands result = BotCommands.getByCommand(HELP_COMMAND);
             telegramAnswerFormatService.formatAnswerTextWithEmoji(result.getDisclaimer(), Locale.ENGLISH);
         }
-        Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(HELP_DISCLAIMER_LABEL), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(HELP_DISCLAIMER_LABEL), any(Locale.class));
     }
 
     @Test
@@ -87,7 +87,7 @@ class TelegramAnswerFormatServiceTest {
         BotCommands result = BotCommands.getByCommand(LANGUAGE_COMMAND);
         telegramAnswerFormatService.resolveSimpleLocalizedResponse(result.getDisclaimer(), Locale.ENGLISH);
 
-        Mockito.verify(messageResolver).getLocalisedTextWithoutArg(eq(LANGUAGE_COMMAND_DISCLAIMER_LABEL), any(Locale.class));
+        Mockito.verify(messageResolver).getLocalisedText(eq(LANGUAGE_COMMAND_DISCLAIMER_LABEL), any(Locale.class));
     }
 
 

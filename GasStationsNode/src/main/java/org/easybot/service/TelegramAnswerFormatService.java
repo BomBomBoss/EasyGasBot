@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.easybot.CommonTexts.*;
 import static org.easybot.entity.enums.GasTypesName.*;
@@ -21,8 +22,11 @@ public class TelegramAnswerFormatService {
 
     private final MessageResolver messageResolver;
 
-    private final Set<String> allStationsSamePrices = Set.of(CIRCLE_ALL_STATIONS, CIRCLE_ALL_STATIONS_1, VIADA_ALL_STATIONS,
-            VIRSI_ALL_STATIONS, NESTE_ALL_STATIONS, NESTE_ALL_STATIONS_1,CIRCLE_ALL_STATIONS_2, NESTE_ALL_STATIONS_2);
+    private final List<Pattern> patterns =
+            List.of(Pattern.compile(ALL_STATIONS_1, Pattern.CASE_INSENSITIVE),
+                    Pattern.compile(ALL_STATIONS_2, Pattern.CASE_INSENSITIVE),
+                    Pattern.compile(ALL_STATIONS_3, Pattern.CASE_INSENSITIVE));
+
 
     public TelegramAnswerFormatService(MessageResolver messageResolver) {
         this.messageResolver = messageResolver;
@@ -35,26 +39,23 @@ public class TelegramAnswerFormatService {
         if (!list.isEmpty())
         {
             StringBuilder sb = new StringBuilder();
-            for (CommonStation gs : list)
+            for (CommonStation station : list)
             {
-                String location = gs.getLocation();
-                if (allStationsSamePrices.contains(location))
-                {
-                    location = messageResolver.getLocalisedTextWithoutArg(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale);
-                }
+                String location = getFormattedLocation(locale, station);
+
                 if (includeStationTitle)
                 {
-                    String stationTitle = gs.getGasStationsBrands().getFormattedBrandName().toUpperCase();
+                    String stationTitle = station.getGasStationsBrands().getFormattedBrandName().toUpperCase();
                     sb.append(String.format("__%s__", stationTitle)) // underline
                             .append(System.lineSeparator());
                 }
-                sb.append(String.format("*%s*", gs.gasType)) // bold
+                sb.append(String.format("*%s*", station.gasType)) // bold
                         .append(System.lineSeparator())
-                        .append(messageResolver.getLocalisedTextWithoutArg(RESPONSE_PRICE_LABEL, locale))
-                        .append(String.format("*%s*", gs.getPrice())) // bold
+                        .append(messageResolver.getLocalisedText(RESPONSE_PRICE_LABEL, locale))
+                        .append(String.format("*%s*", station.getPrice())) // bold
                         .append(EUR_SIGN_BOLD)
                         .append(System.lineSeparator())
-                        .append(messageResolver.getLocalisedTextWithoutArg(RESPONSE_ADDRESS_LABEL, locale))
+                        .append(messageResolver.getLocalisedText(RESPONSE_ADDRESS_LABEL, locale))
                         .append(String.format("_%s_", location)) // italic
                         .append(System.lineSeparator())
                         .append(System.lineSeparator());
@@ -63,26 +64,34 @@ public class TelegramAnswerFormatService {
         }
         else
         {
-            result = messageResolver.getLocalisedTextWithoutArg(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale);
+            result = messageResolver.getLocalisedText(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale);
         }
         return result;
     }
 
+    private String getFormattedLocation(Locale locale, CommonStation gs) {
+        return patterns.stream()
+                .filter(pattern -> pattern.matcher(gs.getLocation()).find())
+                .map(loc -> messageResolver.getLocalisedText(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale))
+                .findFirst()
+                .orElse(gs.getLocation());
+    }
+
     public String formatAnswerTextWithEmoji(String messageKey, Locale locale)
     {
-        String text = messageResolver.getLocalisedTextWithoutArg(messageKey, locale);
+        String text = messageResolver.getLocalisedText(messageKey, locale);
         return CommonTexts.parseTextWithEmoji(text);
     }
 
     public String enrichStartCommand(String firstName, String messageKey, Locale locale)
     {
-        String result = messageResolver.getLocalisedTextWithArg(messageKey, locale, firstName);
+        String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
         StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
         for(GasStationTitle gs : GasStationTitle.values())
         {
             sb.append(gs.getCommand())
                     .append(ONE_SPACE)
-                    .append(messageResolver.getLocalisedTextWithoutArg(START_COMMAND_PRICES_ADD, locale))
+                    .append(messageResolver.getLocalisedText(START_COMMAND_PRICES_ADD, locale))
                     .append(ONE_SPACE)
                     .append(gs.getTitle().toUpperCase())
                     .append(System.lineSeparator());
@@ -90,13 +99,13 @@ public class TelegramAnswerFormatService {
         sb.append(System.lineSeparator())
                 .append(BotCommands.LANGUAGE.getCommand())
                 .append(" - ")
-                .append(messageResolver.getLocalisedTextWithoutArg(LANGUAGE_TO_SET_LABEL, locale));
+                .append(messageResolver.getLocalisedText(LANGUAGE_TO_SET_LABEL, locale));
         return sb.toString().replace("_", "\\_");
     }
 
     public String resolveNotFoundCommand(String command, Locale locale)
     {
-        return String.format(messageResolver.getLocalisedTextWithoutArg(RESPONSE_COMMAND_NOT_FOUND_LABEL, locale), escapingMarkdownCharacters(command));
+        return String.format(messageResolver.getLocalisedText(RESPONSE_COMMAND_NOT_FOUND_LABEL, locale), escapingMarkdownCharacters(command));
     }
 
     private String escapingMarkdownCharacters(String unknownCommand)
@@ -106,12 +115,12 @@ public class TelegramAnswerFormatService {
 
     public String resolveSimpleLocalizedResponse(String messageKey, Locale locale)
     {
-     return messageResolver.getLocalisedTextWithoutArg(messageKey, locale);
+     return messageResolver.getLocalisedText(messageKey, locale);
     }
 
     public String resolveSimpleLocalizedResponseWithArg(String messageKey, Locale locale, String ... arg)
     {
-        return messageResolver.getLocalisedTextWithArg(messageKey, locale, arg);
+        return messageResolver.getLocalisedText(messageKey, locale, arg);
     }
 
     public String resolveCountOfActiveUsers(List<TelegramUser> telegramUsers, boolean isDetailsNeeded)
