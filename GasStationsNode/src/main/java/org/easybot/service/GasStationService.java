@@ -49,7 +49,7 @@ public class GasStationService {
         return gasStationsRepository.findById(id).orElseThrow(() -> new RuntimeException("Can't find this {" + id + "} in table"));
     }
 
-    @Scheduled(initialDelay = 1/60, fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void updateTableWithLatestGasPrices()
     {
         Iterator<GasStationTitle> iterable = GasStationTitle.getGasStationValues().iterator();

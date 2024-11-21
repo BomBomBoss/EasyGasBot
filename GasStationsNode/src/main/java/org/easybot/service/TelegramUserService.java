@@ -6,6 +6,7 @@ import org.easybot.entity.TelegramUser;
 import org.easybot.repository.TelegramUserRepository;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class TelegramUserService {
         this.telegramAnswer = telegramAnswer;
     }
 
+    @Transactional
     public void resolveTelegramUserById(UpdateWrapper wrapper)
     {
         User user = wrapper.user();

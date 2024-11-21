@@ -32,6 +32,7 @@ public class MainServiceImp implements MainService {
     private final TelegramButtonsFactory telegramButtonsFactory;
     private final TelegramUserService telegramUserService;
     private final TelegramAnswerFormatService telegramAnswerFormatService;
+    private BotCommands administrationCommand;
 
     public MainServiceImp(TelegramAnswer telegramAnswer,
                           ProduceService produceService,
@@ -50,11 +51,25 @@ public class MainServiceImp implements MainService {
         this.telegramAnswerFormatService = telegramAnswerFormatService;
     }
 
+    private final Consumer<UpdateWrapper> adminConsumer = new Consumer<>() {
+        @Override
+        public void accept(UpdateWrapper updateWrapper) {
+                if (updateWrapper.isAdmin()) {
+                    telegramAnswer.setText(administrationCommand.getDisclaimer());
+                    telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForAdmin()));
+                }
+                else
+                    telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(administrationCommand.getCommand(), telegramAnswer.getTelegramUser().getLocale()));
+        }
+    };
+
     @Override
-    public void processTextMessage(UpdateWrapper wrapper, String command)
+    public void processTextMessage(UpdateWrapper wrapper)
     {
+        String command = wrapper.update().getMessage().getText();
+
         log.info("Received command: {}", command);
-        BotCommands administrationCommand = BotCommands.getByCommand(command);
+        administrationCommand = BotCommands.getByCommand(command);
 
         telegramUserService.resolveTelegramUserById(wrapper);
 
@@ -78,7 +93,7 @@ public class MainServiceImp implements MainService {
                 telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(LANGUAGE_COMMAND_DISCLAIMER_LABEL, locale));
                 telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForLanguage()));
             }
-            case ADMIN -> getConsumer(administrationCommand, locale).accept(wrapper);
+            case ADMIN -> adminConsumer.accept(wrapper);
             case null, default ->  getStationBrandFormattedInfo(command);
 
         }
@@ -113,8 +128,7 @@ public class MainServiceImp implements MainService {
             user.setLanguageCode(languageCode);
             user.setLocale(Locale.of(languageCode));
             telegramUserService.updateUser(user);
-            telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponseWithArg(LANGUAGE_IS_SET_LABEL, user.getLocale(), languageCode.toUpperCase()));
-
+            telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(LANGUAGE_IS_SET_LABEL, user.getLocale(), languageCode.toUpperCase()));
         }
 
         else if (AdminCommands.getSetOfAdminCommandsButtonId().contains(data))
@@ -164,7 +178,7 @@ public class MainServiceImp implements MainService {
         Locale locale = telegramAnswer.getTelegramUser().getLocale();
 
         Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
-                .filter(x -> x.getCommand().equalsIgnoreCase(command)).findFirst();
+                .filter(station -> station.getCommand().equalsIgnoreCase(command)).findFirst();
 
         gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
                 () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
@@ -222,22 +236,6 @@ public class MainServiceImp implements MainService {
             }
         }
         return list;
-    }
-
-
-    private Consumer<UpdateWrapper> getConsumer(BotCommands command, Locale locale)
-    {
-        return wrapper ->
-        {
-            if (wrapper.isAdmin()) {
-                telegramAnswer.setText(command.getDisclaimer());
-                telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForAdmin()));
-
-            }
-
-            else
-                telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command.getCommand(), locale));
-        };
     }
 
 }

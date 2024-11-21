@@ -7,6 +7,7 @@ import org.easybot.enums.BotCommands;
 import org.easybot.enums.GasStationTitle;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -69,12 +70,12 @@ public class TelegramAnswerFormatService {
         return result;
     }
 
-    private String getFormattedLocation(Locale locale, CommonStation gs) {
+    private String getFormattedLocation(Locale locale, CommonStation station) {
         return patterns.stream()
-                .filter(pattern -> pattern.matcher(gs.getLocation()).find())
+                .filter(pattern -> pattern.matcher(station.getLocation()).find())
                 .map(loc -> messageResolver.getLocalisedText(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale))
                 .findFirst()
-                .orElse(gs.getLocation());
+                .orElse(station.getLocation());
     }
 
     public String formatAnswerTextWithEmoji(String messageKey, Locale locale)
@@ -113,12 +114,7 @@ public class TelegramAnswerFormatService {
         return unknownCommand.replace("_", "").replace("*","");
     }
 
-    public String resolveSimpleLocalizedResponse(String messageKey, Locale locale)
-    {
-     return messageResolver.getLocalisedText(messageKey, locale);
-    }
-
-    public String resolveSimpleLocalizedResponseWithArg(String messageKey, Locale locale, String ... arg)
+    public String resolveSimpleLocalizedResponse(String messageKey, Locale locale, String ... arg)
     {
         return messageResolver.getLocalisedText(messageKey, locale, arg);
     }
@@ -135,10 +131,16 @@ public class TelegramAnswerFormatService {
             return "За этот период времени никто не пользовался ботом";
         }
         String listOfUsers = telegramUsers.stream()
-                .reduce(" ", (total, element) -> total +
-                        (String.format("*%s*\n_%s_\n", element.getFirstName(), element.getUpdateTime().format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")))),
+                .reduce("", (total, element) -> total +
+                        (String.format("*%s*\n_%s_\n", element.getFirstName(), getUpdateTime(element.getUpdateTime()))),
                         String::concat);
-        return listOfUsers.concat("\n").concat("Всего пользователей: ").concat(String.valueOf(telegramUsers.size()));
+
+        return String.format("%s\nВсего пользователей: %s", listOfUsers, telegramUsers.size());
+    }
+
+    private String getUpdateTime(LocalDateTime localDateTime)
+    {
+        return localDateTime != null ? localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")) : "неизвестное время";
     }
 
     public Map<String, String> initButtonsForCheapestCommand()

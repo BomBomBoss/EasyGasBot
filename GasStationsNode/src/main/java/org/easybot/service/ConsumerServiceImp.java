@@ -25,7 +25,7 @@ public class ConsumerServiceImp implements RabbitConsumer {
     public void consumeTextMessage(UpdateWrapper wrapper)
     {
         log.info(commonLogText, TEXT_MESSAGE_UPDATE);
-        mainService.processTextMessage(wrapper, wrapper.update().getMessage().getText());
+        mainService.processTextMessage(wrapper);
 
     }
 

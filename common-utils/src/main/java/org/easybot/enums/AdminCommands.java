@@ -31,12 +31,13 @@ public enum AdminCommands {
 
     private String setButtonText(Integer daysRange)
     {
+        String days = daysRange.toString();
         return switch (daysRange)
         {
-            case 1 -> daysRange.toString().concat(" день");
-            case 2 -> daysRange.toString().concat(" дня");
+            case 1 -> days.concat(" день");
+            case 2 -> days.concat(" дня");
             case 0 -> "весь период";
-            default -> daysRange.toString().concat(" дней");
+            default -> days.concat(" дней");
         };
     }
 
