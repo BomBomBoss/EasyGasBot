@@ -12,4 +12,7 @@
 - _docker-bot-local.yaml_ - to run only RabbitMQ and DB in containers. For local testing
 
 ## Script:
-_dockerw.sh_ - script with arguments to build jar, create image and run containers 
+_./dockerw.sh_ - script with arguments to build jar, create image and run containers
+_./dockerw.sh push gas_ - to push station node to docker hub
+_./dockerw.sh push bot_ - to push bot node to docker hub
+
