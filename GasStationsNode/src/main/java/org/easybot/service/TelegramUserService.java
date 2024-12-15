@@ -54,7 +54,6 @@ public class TelegramUserService {
                             telegramAnswer.setTelegramUser(telegramUserRepository.save(telegramUser));
                             log.info("User with id: {} and name {} is NOT found in DB. Persisting ... ", telegramUser.getUserId(), telegramUser.getFirstName());
                         });
-
     }
 
     public void updateUser(TelegramUser user)

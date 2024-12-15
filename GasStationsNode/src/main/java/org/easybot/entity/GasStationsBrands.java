@@ -1,10 +1,11 @@
 package org.easybot.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
-
-import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
-import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
 
 @Entity
 @Table
@@ -14,10 +15,4 @@ public class GasStationsBrands {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String brandName;
-
-    public String getFormattedBrandName()
-    {
-        return brandName.equals(CIRCLE_K_TITLE) ? CIRCLE_WITHOUT_K_TITLE : brandName;
-    }
-
 }

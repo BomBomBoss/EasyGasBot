@@ -9,14 +9,41 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.easybot.CommonTexts.*;
-import static org.easybot.entity.enums.GasTypesName.*;
-import static org.easybot.enums.AdminCommands.*;
-import static org.easybot.enums.GasStationTitle.*;
-import static org.easybot.enums.Language.*;
+import static org.easybot.CommonTexts.ALL_STATIONS_1;
+import static org.easybot.CommonTexts.ALL_STATIONS_2;
+import static org.easybot.CommonTexts.ALL_STATIONS_3;
+import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
+import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
+import static org.easybot.CommonTexts.EUR_SIGN_BOLD;
+import static org.easybot.CommonTexts.LANGUAGE_TO_SET_LABEL;
+import static org.easybot.CommonTexts.ONE_SPACE;
+import static org.easybot.CommonTexts.RESPONSE_ADDRESS_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_COMMAND_NOT_FOUND_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_PRICE_LABEL;
+import static org.easybot.CommonTexts.START_COMMAND_PRICES_ADD;
+import static org.easybot.CommonTexts.TWO_NEW_LINES;
+import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
+import static org.easybot.entity.enums.GasTypesName.DIESEL;
+import static org.easybot.entity.enums.GasTypesName.TYPE_95;
+import static org.easybot.entity.enums.GasTypesName.TYPE_98;
+import static org.easybot.enums.AdminCommands.ALL_TIME;
+import static org.easybot.enums.AdminCommands.ONE_DAY;
+import static org.easybot.enums.AdminCommands.ONE_WEEK;
+import static org.easybot.enums.AdminCommands.TWO_DAYS;
+import static org.easybot.enums.GasStationTitle.CIRCLE;
+import static org.easybot.enums.GasStationTitle.NESTE;
+import static org.easybot.enums.GasStationTitle.VIADA;
+import static org.easybot.enums.GasStationTitle.VIRSI;
+import static org.easybot.enums.Language.EN;
+import static org.easybot.enums.Language.LV;
+import static org.easybot.enums.Language.RU;
 
 @Component
 public class TelegramAnswerFormatService {
@@ -46,7 +73,7 @@ public class TelegramAnswerFormatService {
 
                 if (includeStationTitle)
                 {
-                    String stationTitle = station.getGasStationsBrands().getFormattedBrandName().toUpperCase();
+                    String stationTitle = circleNameFormatter(station.getGasStationsBrands().getBrandName()).toUpperCase();
                     sb.append(String.format("__%s__", stationTitle)) // underline
                             .append(System.lineSeparator());
                 }
@@ -88,7 +115,7 @@ public class TelegramAnswerFormatService {
     {
         String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
         StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
-        for(GasStationTitle gs : GasStationTitle.values())
+        for (GasStationTitle gs : GasStationTitle.values())
         {
             sb.append(gs.getCommand())
                     .append(ONE_SPACE)
@@ -141,6 +168,11 @@ public class TelegramAnswerFormatService {
     private String getUpdateTime(LocalDateTime localDateTime)
     {
         return localDateTime != null ? localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")) : "неизвестное время";
+    }
+
+    public String circleNameFormatter(String title)
+    {
+        return title.replace(CIRCLE_K_TITLE, CIRCLE_WITHOUT_K_TITLE);
     }
 
     public Map<String, String> initButtonsForCheapestCommand()

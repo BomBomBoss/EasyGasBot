@@ -14,11 +14,21 @@ import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
-import static org.easybot.CommonTexts.*;
-import static org.easybot.enums.BotCommands.*;
+import static org.easybot.CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.LANGUAGE_IS_SET_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_NOT_SUPPORTED_UPDATE_LABEL;
+import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
+import static org.easybot.enums.BotCommands.CHEAPEST;
+import static org.easybot.enums.BotCommands.HELP;
+import static org.easybot.enums.BotCommands.START;
+import static org.easybot.enums.BotCommands.STATION_BRANDS;
 
 
 @Service
@@ -94,8 +104,7 @@ public class MainServiceImp implements MainService {
                 telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForLanguage()));
             }
             case ADMIN -> adminConsumer.accept(wrapper);
-            case null, default ->  getStationBrandFormattedInfo(command);
-
+            case null, default -> getStationBrandFormattedInfo(command);
         }
 
         telegramAnswer.setChatId(wrapper.update().getMessage().getChatId().toString());
@@ -205,16 +214,11 @@ public class MainServiceImp implements MainService {
 
         if (list.isEmpty())
         {
-            log.error("Returned empty list from DB with title: " + title);
+            log.error("Returned empty list from DB with title: {}", title);
             return Collections.emptyList();
         }
 
-        title = title.toLowerCase();
-
-        if (title.equals(CIRCLE_K_TITLE))
-        {
-            title = CIRCLE_WITHOUT_K_TITLE;
-        }
+        title = telegramAnswerFormatService.circleNameFormatter(title).toLowerCase();
 
         Modifier modifier = gasStationService.getModifierFactory().createModifier(title);
 

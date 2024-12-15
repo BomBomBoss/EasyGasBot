@@ -4,15 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.easybot.service.MessageResolver;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-
-import java.util.List;
-
-import static org.easybot.CommonTexts.*;
 
 @Component
 @Getter
@@ -33,6 +28,15 @@ public class TelegramAnswer {
                 .text(text)
                 .replyMarkup(buttons)
                 .chatId(chatId)
+                .parseMode("MarkdownV2")
+                .build();
+    }
+
+    public static SendMessage mapToErrorMessage(String text)
+    {
+        return SendMessage.builder()
+                .text(text)
+                .chatId("")
                 .parseMode("MarkdownV2")
                 .build();
     }

@@ -7,4 +7,5 @@ public interface ProduceService {
 
     void produceSimpleAnswer(SendMessage sendMessage);
     void produceEditedAnswer(EditMessageText editMessageText);
+    void produceErrorReport(SendMessage sendMessage);
 }

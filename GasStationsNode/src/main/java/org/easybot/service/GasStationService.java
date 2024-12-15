@@ -1,7 +1,13 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.easybot.entity.*;
+import org.easybot.dto.Error;
+import org.easybot.entity.CircleK;
+import org.easybot.entity.CommonStation;
+import org.easybot.entity.GasStationsBrands;
+import org.easybot.entity.Neste;
+import org.easybot.entity.Viada;
+import org.easybot.entity.Virsi;
 import org.easybot.enums.GasStationTitle;
 import org.easybot.exceptions.ParsingException;
 import org.easybot.repository.GasStationsRepository;
@@ -16,11 +22,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.easybot.CommonTexts.*;
+import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
+import static org.easybot.CommonTexts.NESTE_TITLE;
+import static org.easybot.CommonTexts.VIADA_TITLE;
+import static org.easybot.CommonTexts.VIRSI_TITLE;
 
 @Service
 @Slf4j
@@ -29,15 +41,17 @@ public class GasStationService {
     private final GasStationsRepository gasStationsRepository;
     private final CommonStationService  commonStationService;
     private final ModifierFactory modifierFactory;
-    private final EnumMap<GasStationTitle, String> validationReport = new EnumMap<>(GasStationTitle.class);
+    private final List<Error> errors = new ArrayList<>();
+    private final ErrorProvider errorProvider;
     private List<CommonStation> rawListOfStations = new ArrayList<>();
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, ModifierFactory modifierFactory)
+    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, ModifierFactory modifierFactory, ErrorProvider errorProvider)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.commonStationService = commonStationService;
         this.modifierFactory = modifierFactory;
+        this.errorProvider = errorProvider;
     }
 
     public List<GasStationsBrands> findAllBrands()
@@ -68,7 +82,7 @@ public class GasStationService {
                 Elements element = parsingWebSites(title, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
 
-                Iterator<String> cleanedList = modifyList(element, stationModifier);
+                Iterator<String> cleanedList = modifyList(element, stationModifier, gasStationTitle);
                 log.info("Truncating table {}", title.getTitle());
                 commonStationService.deleteTable(gasStationTitle);
 
@@ -89,12 +103,12 @@ public class GasStationService {
                 rawListOfStations.clear();
             } catch (IOException | ParsingException | NoSuchElementException e)
             {
-                validationReport.put(title, e.toString());
+                errors.add(new Error(e));
             }
         }
-        if (!validationReport.isEmpty())
+        if (!errors.isEmpty())
         {
-            printErrorReport(validationReport);
+            errorProvider.printReport(errors);
         }
     }
 
@@ -134,14 +148,11 @@ public class GasStationService {
     }
 
 
-    private Iterator<String> modifyList(Elements elements, Modifier stationModifier) throws ParsingException
+    private Iterator<String> modifyList(Elements elements, Modifier stationModifier, String gasStation) throws ParsingException
     {
         List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
 
-        if (list.isEmpty())
-        {
-            throw new ParsingException("Jsoup elements are empty");
-        }
+        list.stream().findAny().orElseThrow(()-> new ParsingException("Jsoup elements are empty for " + gasStation));
 
         list = stationModifier.cleanRawElements(list);
         checkForEmptyFields(list);
@@ -153,18 +164,12 @@ public class GasStationService {
         list.removeIf(x -> x == null || x.isEmpty());
     }
 
-    public void printErrorReport (EnumMap<GasStationTitle, String> errorReport)
-    {
-        for (Map.Entry<GasStationTitle, String> entry : errorReport.entrySet())
-        {
-            log.error("Error during gas stations price download from url: " + entry.getKey().getUrl() + "\n.Reason: " + entry.getValue());
-        }
-        errorReport.clear();
-    }
-
     public ModifierFactory getModifierFactory()
     {
         return modifierFactory;
     }
 
+    public List<Error> getErrorReports() {
+        return errors;
+    }
 }
