@@ -1,12 +1,20 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.easybot.entity.CommonStation;
+import static org.easybot.CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.LANGUAGE_IS_SET_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_NOT_SUPPORTED_UPDATE_LABEL;
+import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.entity.enums.GasTypesName;
+import org.easybot.entity.stations.CommonStation;
 import org.easybot.enums.AdminCommands;
 import org.easybot.enums.BotCommands;
+import static org.easybot.enums.BotCommands.CHEAPEST;
+import static org.easybot.enums.BotCommands.HELP;
+import static org.easybot.enums.BotCommands.START;
+import static org.easybot.enums.BotCommands.STATION_BRANDS;
 import org.easybot.enums.GasStationTitle;
 import org.easybot.enums.Language;
 import org.easybot.util.Modifier;
@@ -20,15 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import static org.easybot.CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL;
-import static org.easybot.CommonTexts.LANGUAGE_IS_SET_LABEL;
-import static org.easybot.CommonTexts.RESPONSE_NOT_SUPPORTED_UPDATE_LABEL;
-import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
-import static org.easybot.enums.BotCommands.CHEAPEST;
-import static org.easybot.enums.BotCommands.HELP;
-import static org.easybot.enums.BotCommands.START;
-import static org.easybot.enums.BotCommands.STATION_BRANDS;
 
 
 @Service

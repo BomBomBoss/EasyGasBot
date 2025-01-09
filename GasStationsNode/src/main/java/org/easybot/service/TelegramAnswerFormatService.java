@@ -1,20 +1,6 @@
 package org.easybot.service;
 
 import org.easybot.CommonTexts;
-import org.easybot.entity.CommonStation;
-import org.easybot.entity.TelegramUser;
-import org.easybot.enums.BotCommands;
-import org.easybot.enums.GasStationTitle;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import static org.easybot.CommonTexts.ALL_STATIONS_1;
 import static org.easybot.CommonTexts.ALL_STATIONS_2;
 import static org.easybot.CommonTexts.ALL_STATIONS_3;
@@ -30,13 +16,17 @@ import static org.easybot.CommonTexts.RESPONSE_PRICE_LABEL;
 import static org.easybot.CommonTexts.START_COMMAND_PRICES_ADD;
 import static org.easybot.CommonTexts.TWO_NEW_LINES;
 import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
+import org.easybot.entity.TelegramUser;
 import static org.easybot.entity.enums.GasTypesName.DIESEL;
 import static org.easybot.entity.enums.GasTypesName.TYPE_95;
 import static org.easybot.entity.enums.GasTypesName.TYPE_98;
+import org.easybot.entity.stations.CommonStation;
 import static org.easybot.enums.AdminCommands.ALL_TIME;
 import static org.easybot.enums.AdminCommands.ONE_DAY;
 import static org.easybot.enums.AdminCommands.ONE_WEEK;
 import static org.easybot.enums.AdminCommands.TWO_DAYS;
+import org.easybot.enums.BotCommands;
+import org.easybot.enums.GasStationTitle;
 import static org.easybot.enums.GasStationTitle.CIRCLE;
 import static org.easybot.enums.GasStationTitle.NESTE;
 import static org.easybot.enums.GasStationTitle.VIADA;
@@ -44,6 +34,15 @@ import static org.easybot.enums.GasStationTitle.VIRSI;
 import static org.easybot.enums.Language.EN;
 import static org.easybot.enums.Language.LV;
 import static org.easybot.enums.Language.RU;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 public class TelegramAnswerFormatService {

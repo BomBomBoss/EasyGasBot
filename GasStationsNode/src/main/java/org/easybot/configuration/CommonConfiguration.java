@@ -13,7 +13,6 @@ import java.util.List;
 public class CommonConfiguration {
     private final GasStationService gasStationService;
 
-
     @Autowired
     public CommonConfiguration(GasStationService gasStationService)
     {

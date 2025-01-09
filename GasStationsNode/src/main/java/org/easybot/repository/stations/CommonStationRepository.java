@@ -1,10 +1,7 @@
-package org.easybot.repository;
+package org.easybot.repository.stations;
 
 import jakarta.transaction.Transactional;
-import org.easybot.entity.CircleK;
-import org.easybot.entity.CommonStation;
-import org.easybot.entity.Neste;
-import org.easybot.entity.Viada;
+import org.easybot.entity.stations.CommonStation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

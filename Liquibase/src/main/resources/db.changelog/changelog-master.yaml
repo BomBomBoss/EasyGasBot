@@ -13,3 +13,7 @@ databaseChangeLog:
       file: db.changelog/changeset/create-virsi-table.yaml
   - include:
       file: db.changelog/changeset/create-telegram-user-table.yaml
+  - include:
+      file: db.changelog/changeset/create-price-history-all-stations.yaml
+  - include:
+      file: db.changelog/changeset/create-average-price-view.sql

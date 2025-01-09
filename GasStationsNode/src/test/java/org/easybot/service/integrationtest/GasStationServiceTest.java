@@ -1,21 +1,26 @@
 package org.easybot.service.integrationtest;
 
-import org.easybot.entity.*;
-import org.easybot.repository.*;
+import org.easybot.entity.stations.CircleK;
+import org.easybot.entity.stations.CommonStation;
+import org.easybot.entity.stations.Neste;
+import org.easybot.entity.stations.Viada;
+import org.easybot.entity.stations.Virsi;
+import org.easybot.repository.stations.CircleRepository;
+import org.easybot.repository.stations.GasStationsRepository;
+import org.easybot.repository.stations.NesteRepository;
+import org.easybot.repository.stations.ViadaRepository;
+import org.easybot.repository.stations.VirsiRepository;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.Collections;

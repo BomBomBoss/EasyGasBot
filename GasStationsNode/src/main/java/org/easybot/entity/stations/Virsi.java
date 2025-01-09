@@ -1,4 +1,4 @@
-package org.easybot.entity;
+package org.easybot.entity.stations;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

@@ -1,0 +1,136 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_all_history_tables
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: neste_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: type_95e_price
+                  type: varchar
+              - column:
+                  name: type_98e_price
+                  type: varchar
+              - column:
+                  name: type_diesel_price
+                  type: varchar
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: circle_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: type_95e_price
+                  type: varchar
+              - column:
+                  name: type_98e_price
+                  type: varchar
+              - column:
+                  name: type_diesel_price
+                  type: varchar
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+
+
+        - createTable:
+            tableName: virsi_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: type_95e_price
+                  type: varchar
+              - column:
+                  name: type_98e_price
+                  type: varchar
+              - column:
+                  name: type_diesel_price
+                  type: varchar
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+
+
+        - createTable:
+            tableName: viada_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: brand_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: brand_id
+                    references: gas_stations_brands(id)
+              - column:
+                  name: type_95e_price
+                  type: varchar
+              - column:
+                  name: type_98e_price
+                  type: varchar
+              - column:
+                  name: type_diesel_price
+                  type: varchar
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+
+
