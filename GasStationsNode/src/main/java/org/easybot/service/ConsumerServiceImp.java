@@ -1,13 +1,12 @@
 package org.easybot.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.easybot.wrapper.UpdateWrapper;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Service;
-
 import static org.easybot.RabbitQueue.CALL_BACK_QUERY;
 import static org.easybot.RabbitQueue.NOT_SUPPORTED_MESSAGE_UPDATE;
 import static org.easybot.RabbitQueue.TEXT_MESSAGE_UPDATE;
+import org.easybot.wrapper.UpdateWrapper;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
@@ -42,9 +41,14 @@ public class ConsumerServiceImp implements RabbitConsumer {
     @RabbitListener(queues = NOT_SUPPORTED_MESSAGE_UPDATE)
     public void consumeNotSupportedUpdate(UpdateWrapper wrapper)
     {
-        log.info(commonLogText, NOT_SUPPORTED_MESSAGE_UPDATE);
-        log.error("Unsupported format received from user: {} ", wrapper.user());
-        mainService.processUnsupportedUpdate(wrapper);
+        try {
+            log.info(commonLogText, NOT_SUPPORTED_MESSAGE_UPDATE);
+            log.error("Unsupported format received from user: {} ", wrapper.user());
+            mainService.processUnsupportedUpdate(wrapper);
+        }
+        catch (Exception e) {
+            log.error("Error during consuming rabbit mq queue 'Not Supported Message' with reason {}", e.getMessage());
+        }
 
     }
 }
