@@ -2,7 +2,7 @@ package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
-import org.easybot.entity.stations.CommonStation;
+import org.easybot.entity.stations.BaseStation;
 import org.easybot.factory.RepositoryFactory;
 import org.easybot.repository.stations.CommonStationRepository;
 import org.springframework.stereotype.Service;
@@ -11,27 +11,27 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CommonStationService {
+public class BaseStationService {
     private final RepositoryFactory repositoryFactory;
 
-    public CommonStationService(RepositoryFactory repositoryFactory) {
+    public BaseStationService(RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
 
 
-    public CommonStation save(CommonStation station, String gasStationTitle) {
-        return (CommonStation) getRepositoryInstance(gasStationTitle).save(station);
+    public BaseStation save(BaseStation station, String gasStationTitle) {
+        return (BaseStation) getRepositoryInstance(gasStationTitle).save(station);
     }
 
     public void deleteTable(String gasStationTitle) {
         getRepositoryInstance(gasStationTitle).clearTable();
     }
 
-    public List<CommonStation> retrieveAll(String tableTitle) {
+    public List<BaseStation> retrieveAll(String tableTitle) {
         return getRepositoryInstance(tableTitle).findAll();
     }
 
-    public CommonStation retrieveStationByType(String tableTitle, String type) {
+    public BaseStation retrieveStationByType(String tableTitle, String type) {
         return getRepositoryInstance(tableTitle).findByType(type);
     }
 

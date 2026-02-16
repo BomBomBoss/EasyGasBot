@@ -5,6 +5,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "neste")
-public class Neste extends CommonStation {
+public class Neste extends BaseStation {
 
 }

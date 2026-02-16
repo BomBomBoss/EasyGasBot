@@ -11,22 +11,22 @@ repositories {
 
 dependencies {
     implementation project(":common-utils")
-    implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-amqp:${springVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.postgresql:postgresql:${postgresVersion}"
     // just to make springBootTest works,without it context not loading
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
     implementation 'org.jsoup:jsoup:1.16.1'
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springVersion}"
-    testImplementation "org.springframework.boot:spring-boot-testcontainers:${springVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
     testImplementation 'org.testcontainers:postgresql:1.19.3'
     testImplementation 'org.testcontainers:rabbitmq:1.19.6'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.testcontainers:testcontainers-junit-jupiter:2.0.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {

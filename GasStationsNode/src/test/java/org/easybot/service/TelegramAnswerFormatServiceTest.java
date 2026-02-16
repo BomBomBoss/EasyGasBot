@@ -1,19 +1,26 @@
 package org.easybot.service;
 
 import org.easybot.CommonTexts;
+import static org.easybot.CommonTexts.CHEAPEST_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.HELP_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.LANGUAGE_TO_SET_LABEL;
+import static org.easybot.CommonTexts.START_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.START_COMMAND_PRICES_ADD;
+import static org.easybot.CommonTexts.STATION_BRANDS_DISCLAIMER_LABEL;
 import org.easybot.enums.BotCommands;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Locale;
-
-import static org.easybot.CommonTexts.*;
-import static org.mockito.ArgumentMatchers.*;
 
 @SpringBootTest(classes = {TelegramAnswerFormatService.class, MessageResolver.class})
 class TelegramAnswerFormatServiceTest {
@@ -24,10 +31,10 @@ class TelegramAnswerFormatServiceTest {
     private static final String HELP_COMMAND = "/help";
     private static final String LANGUAGE_COMMAND = "/language";
 
-    @MockBean
+    @MockitoBean
     MessageSource messageSource;
 
-    @MockBean
+    @MockitoBean
     MessageResolver messageResolver;
 
     @Autowired

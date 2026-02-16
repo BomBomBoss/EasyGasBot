@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode(exclude = "id")
-public abstract class CommonHistory {
+public abstract class BaseHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

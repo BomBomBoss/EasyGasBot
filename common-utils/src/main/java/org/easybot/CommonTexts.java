@@ -72,6 +72,8 @@ public class CommonTexts {
     public static final String LANGUAGE_LV = "LV " + "\uD83C\uDDF1\uD83C\uDDFB";
     public static final String LANGUAGE_EN = "EN " + "\uD83C\uDDEC\uD83C\uDDE7";
 
+    public static final String GENERAL_ERROR_PARSING_MESSAGE = "Error occurred during '%s' gas type parsing with message '%s'";
+
     /************************ Localization Text *****************************************************/
     public static final String START_COMMAND_DISCLAIMER_LABEL= "start_command_disclaimer_lbl";
     public static final String START_COMMAND_PRICES_ADD = "start_command_prices_add";

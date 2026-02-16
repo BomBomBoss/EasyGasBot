@@ -2,7 +2,7 @@ package org.easybot.configuration;
 
 import jakarta.annotation.PostConstruct;
 import org.easybot.entity.GasStationsBrands;
-import org.easybot.enums.GasStationTitle;
+import org.easybot.enums.GasStations;
 import org.easybot.service.GasStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class CommonConfiguration {
     {
         List< GasStationsBrands> brandsList = gasStationService.findAllBrands();
 
-        for (GasStationTitle gs : GasStationTitle.values())
+        for (GasStations gs : GasStations.values())
         {
            GasStationsBrands brands = brandsList.stream().filter(station -> gs.getTitle()
                    .equalsIgnoreCase(station.getBrandName()))

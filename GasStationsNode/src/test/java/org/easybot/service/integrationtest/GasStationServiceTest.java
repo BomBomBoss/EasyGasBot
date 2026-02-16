@@ -1,7 +1,7 @@
 package org.easybot.service.integrationtest;
 
+import org.easybot.entity.stations.BaseStation;
 import org.easybot.entity.stations.CircleK;
-import org.easybot.entity.stations.CommonStation;
 import org.easybot.entity.stations.Neste;
 import org.easybot.entity.stations.Viada;
 import org.easybot.entity.stations.Virsi;
@@ -46,7 +46,7 @@ class GasStationServiceTest {
 
     @ServiceConnection
     @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.1")
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:18.1")
             .withInitScript("db/init.sql");
 
     @Test
@@ -82,12 +82,12 @@ class GasStationServiceTest {
     @Test
     void checkIfCheapestPriceSortingIsCorrect_valid()
     {
-        List<CommonStation> list = priceSorting();
+        List<BaseStation> list = priceSorting();
 
-        CommonStation first = list.get(0);
-        CommonStation second = list.get(1);
-        CommonStation third = list.get(2);
-        CommonStation fourth = list.get(3);
+        BaseStation first = list.get(0);
+        BaseStation second = list.get(1);
+        BaseStation third = list.get(2);
+        BaseStation fourth = list.get(3);
 
 
         Assertions.assertInstanceOf(Neste.class, first);
@@ -99,18 +99,18 @@ class GasStationServiceTest {
     @Test
     void checkIfCheapestPriceSortingIsCorrect_Invalid()
     {
-        List<CommonStation> list = priceSorting();
+        List<BaseStation> list = priceSorting();
 
-        CommonStation first = list.getFirst();
+        BaseStation first = list.getFirst();
 
         Assertions.assertFalse(first instanceof CircleK);
     }
 
     @NotNull
-    private List<CommonStation> priceSorting()
+    private List<BaseStation> priceSorting()
     {
         String type98E = "98E";
-        List<CommonStation> list = new ArrayList<>(4);
+        List<BaseStation> list = new ArrayList<>(4);
         list.add(viadaRepository.findByType(type98E));
         list.add(nesteRepository.findByType(type98E));
         list.add(virsiRepository.findByType(type98E));

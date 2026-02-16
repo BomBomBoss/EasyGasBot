@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public enum GasStationTitle {
+public enum GasStations {
     NESTE("/neste",
             "https://www.neste.lv/lv/content/degvielas-cenas",
             "neste",
@@ -34,8 +34,7 @@ public enum GasStationTitle {
     private long id;
 
 
-    GasStationTitle(String command, String url, String title, String cssQuery)
-    {
+    GasStations(String command, String url, String title, String cssQuery) {
         this.command = command;
         this.url = url;
         this.title = title;
@@ -94,15 +93,15 @@ public enum GasStationTitle {
                 '}';
     }
 
-    public static List<GasStationTitle> getGasStationValues()
+    public static List<GasStations> getGasStationValues()
     {
-        return List.of(GasStationTitle.values());
+        return List.of(GasStations.values());
     }
     public static List<String> getGasStationButtonId()
     {
         return getGasStationValues()
                 .stream()
-                .map(GasStationTitle::getButtonId)
+                .map(GasStations::getButtonId)
                 .toList();
     }
 
@@ -111,7 +110,7 @@ public enum GasStationTitle {
         return getGasStationValues()
                 .stream()
                 .filter(station -> station.buttonId.equals(buttonId))
-                .map(GasStationTitle::getCommand)
+                .map(GasStations::getCommand)
                 .findFirst();
     }
 

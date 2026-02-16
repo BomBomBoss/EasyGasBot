@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "circle_history")
-public class CircleHistory extends CommonHistory {
+public class CircleHistory extends BaseHistory {
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "circle_k")
-public class CircleK extends CommonStation {
+public class CircleK extends BaseStation {
 
 
 }

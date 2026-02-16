@@ -6,21 +6,22 @@ import static org.easybot.CommonTexts.NESTE_TITLE;
 import static org.easybot.CommonTexts.VIADA_TITLE;
 import static org.easybot.CommonTexts.VIRSI_TITLE;
 import org.easybot.dto.Error;
+import org.easybot.dto.GasTypeDto;
 import org.easybot.entity.GasStationsBrands;
 import static org.easybot.entity.enums.GasTypesName.DIESEL;
 import static org.easybot.entity.enums.GasTypesName.TYPE_95;
 import static org.easybot.entity.enums.GasTypesName.TYPE_98;
+import org.easybot.entity.history.BaseHistory;
 import org.easybot.entity.history.CircleHistory;
-import org.easybot.entity.history.CommonHistory;
 import org.easybot.entity.history.NesteHistory;
 import org.easybot.entity.history.ViadaHistory;
 import org.easybot.entity.history.VirsiHistory;
+import org.easybot.entity.stations.BaseStation;
 import org.easybot.entity.stations.CircleK;
-import org.easybot.entity.stations.CommonStation;
 import org.easybot.entity.stations.Neste;
 import org.easybot.entity.stations.Viada;
 import org.easybot.entity.stations.Virsi;
-import org.easybot.enums.GasStationTitle;
+import org.easybot.enums.GasStations;
 import org.easybot.exceptions.ParsingException;
 import org.easybot.repository.stations.GasStationsRepository;
 import org.easybot.util.Modifier;
@@ -37,7 +38,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -52,29 +52,28 @@ import java.util.stream.Collectors;
 public class GasStationService {
 
     private final GasStationsRepository gasStationsRepository;
-    private final CommonStationService  commonStationService;
-    private final CommonHistoryService commonHistoryService; ;
+    private final BaseStationService baseStationService;
+    private final StatisticsService statisticsService; ;
     private final ModifierFactory modifierFactory;
     private final List<Error> errors = new ArrayList<>();
     private final ErrorProvider errorProvider;
-    private final List<CommonStation> rawListOfStations = new ArrayList<>();
-    private final Map<GasStationTitle, Set<CommonStation>> freshStationData;
+    private final Map<GasStations, Set<BaseStation>> latestStationData;
 
     private final int daysCount = 45;
 
     {
-        freshStationData = GasStationTitle.getGasStationValues()
+        latestStationData = GasStations.getGasStationValues()
                 .stream()
                 .collect(Collectors.toMap(Function.identity(), key -> new HashSet<>()));
 
     }
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, CommonStationService commonStationService, CommonHistoryService commonHistoryService, ModifierFactory modifierFactory, ErrorProvider errorProvider)
+    public GasStationService(GasStationsRepository gasStationsRepository, BaseStationService baseStationService, StatisticsService statisticsService, ModifierFactory modifierFactory, ErrorProvider errorProvider)
     {
         this.gasStationsRepository = gasStationsRepository;
-        this.commonStationService = commonStationService;
-        this.commonHistoryService = commonHistoryService;
+        this.baseStationService = baseStationService;
+        this.statisticsService = statisticsService;
         this.modifierFactory = modifierFactory;
         this.errorProvider = errorProvider;
     }
@@ -93,54 +92,42 @@ public class GasStationService {
     {
         updateStationData();
         updatePriceHistory();
-        purgeRedundantRows();
+        removeOldHistoryData();
     }
 
     private void updateStationData() {
         log.info("Starting scheduled job to update station data");
+        for (GasStations gasStation : GasStations.getGasStationValues()) {
+            final long gasStationId = gasStation.getId();
+            final String url = gasStation.getUrl();
+            final String gasStationTitle = gasStation.name().toLowerCase();
+            final Modifier stationModifier = modifierFactory.createModifier(gasStationTitle);
 
-        Iterator<GasStationTitle> iterable = GasStationTitle.getGasStationValues().iterator();
-        GasStationTitle title;
-
-        while (iterable.hasNext())
-        {
-            title = iterable.next();
-            String url = title.getUrl();
-            String gasStationTitle = title.name().toLowerCase();
-            Modifier stationModifier = modifierFactory.createModifier(gasStationTitle);
-
-            try
-            {
-                Document document = Jsoup.connect(url).get();
-                Elements element = parsingWebSites(title, document);
+            try {
+                final Document document = Jsoup.connect(url).get();
+                final Elements element = parsingWebSites(gasStation, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
 
-                Iterator<String> cleanedList = modifyList(element, stationModifier, gasStationTitle);
-                log.info("Truncating table {}", title.getTitle());
-                commonStationService.deleteTable(gasStationTitle);
+                final List<GasTypeDto> gasTypesData = getGasTypesData(element, stationModifier, gasStationTitle);
+                log.info("Truncating table {}", gasStation.getTitle());
+                baseStationService.deleteTable(gasStationTitle);
 
-                while (cleanedList.hasNext())
-                {
-                    CommonStation station = createInstance(gasStationTitle);
-                    String gasType = cleanedList.next();
-                    String price = cleanedList.next();
-                    String location = cleanedList.next();
+                final List<BaseStation> stationList = gasTypesData.stream()
+                        .map(data -> {
+                            final BaseStation station = createInstance(gasStationTitle);
+                            station.setGasType(stationModifier.adjustCorrectFieldTitleForDB(data.type()));
+                            station.setPrice(getClearData(data.price()));
+                            station.setLocation(getClearData(data.address()));
+                            station.setGasStationsBrands(findById(gasStationId));
+                            return station;
+                        }).toList();
 
-                    station.setGasType(stationModifier.adjustCorrectFieldTitleForDB(gasType));
-                    station.setPrice(price);
-                    station.setLocation(location);
-                    station.setGasStationsBrands(findById(title.getId()));
-
-                    validatePulledData(station, gasStationTitle);
-                }
-                rawListOfStations.clear();
-            } catch (IOException | ParsingException | NoSuchElementException e)
-            {
+                stationList.forEach(station -> saveStationData(station, gasStationTitle));
+            } catch (IOException | ParsingException | NoSuchElementException e) {
                 errors.add(new Error(e));
             }
         }
-        if (!errors.isEmpty())
-        {
+        if (!errors.isEmpty()) {
             errorProvider.printReport(errors);
         }
     }
@@ -148,78 +135,72 @@ public class GasStationService {
     private void updatePriceHistory() {
         log.info("Starting scheduled job to update price history data");
 
-        commonHistoryService.getCommonHistoryRepositoryMap()
-                .forEach((key, value) -> {
-                    Optional<CommonHistory> history = value.findTodayPrice(LocalDate.now());
-                    Set<CommonStation> listOfPricesFromOneStation = freshStationData.get(key);
-                    CommonHistory commonHistory = history.orElse(createHistoryInstance(key));
+        statisticsService.getHistoryRepositoryMap()
+                .forEach((gasStation, repository) -> {
+                    final Optional<BaseHistory> history = repository.findTodayPrice(LocalDate.now());
+                    final Set<BaseStation> listOfPricesFromOneStation = latestStationData.get(gasStation);
+                    final BaseHistory baseHistory = history.orElse(createHistoryInstance(gasStation));
 
                     listOfPricesFromOneStation.forEach(station -> {
-                        String gasType = station.getGasType();
-                        String gasPrice = station.getPrice();
-
+                        final String gasType = station.getGasType();
+                        final String gasPrice = station.getPrice();
 
                         if (gasType.equals(TYPE_95.getDescription())) {
-                            commonHistory.setPrice_95E(gasPrice);
+                            baseHistory.setPrice_95E(gasPrice);
                         } else if (gasType.equals(TYPE_98.getDescription())) {
-                            commonHistory.setPrice_98E(gasPrice);
+                            baseHistory.setPrice_98E(gasPrice);
                         } else if (gasType.equals(DIESEL.getDescription())) {
-                            commonHistory.setPrice_diesel(gasPrice);
+                            baseHistory.setPrice_diesel(gasPrice);
                         }
 
-                        if (commonHistory.getGasStationsBrands() == null) {
-                            commonHistory.setGasStationsBrands(station.getGasStationsBrands());
-                            commonHistory.setDate(LocalDate.now());
+                        if (baseHistory.getGasStationsBrands() == null) {
+                            baseHistory.setGasStationsBrands(station.getGasStationsBrands());
+                            baseHistory.setDate(LocalDate.now());
                         }
                     });
-                    log.info("Saving price history for station id: {}", key.getId());
-                    value.save(commonHistory);
+                    log.info("Saving price history for station id: {}", gasStation.getId());
+                    repository.save(baseHistory);
                 });
         log.info("Clearing values from price history map");
-        freshStationData.forEach((key,value) -> value.clear());
+        latestStationData.forEach((key, value) -> value.clear());
     }
 
-    private void purgeRedundantRows(){
-        LocalDate threshold = LocalDate.now().minusDays(daysCount);
+    private void removeOldHistoryData(){
+        final LocalDate threshold = LocalDate.now().minusDays(daysCount);
 
-        commonHistoryService.getCommonHistoryRepositoryMap()
-                .forEach((key, value) -> {
-                    int rowsCount = value.findRowsCount();
+        statisticsService.getHistoryRepositoryMap()
+                .forEach((gasStation, repository) -> {
+                    int rowsCount = repository.findRowsCount();
                     if (rowsCount >= daysCount) {
-                        log.info("{} station table has {} rows. Deleting redundant rows... ", key.getTitle(), rowsCount);
-                        value.deleteRedundantRows(threshold);
+                        log.info("{} station table has {} rows. Deleting redundant rows... ", gasStation.getTitle(), rowsCount);
+                        repository.deleteRedundantRows(threshold);
                     }
                 });
     }
 
-    private void validatePulledData(CommonStation station, String gasStationTitle) {
-        if (station.getPrice().trim().matches("\\d.\\d{3}") && !rawListOfStations.contains(station)) {
-            rawListOfStations.add(station);
-            final CommonStation savedStation = commonStationService.save(station, gasStationTitle);
+    private void saveStationData(final BaseStation station, final String gasStationTitle) {
+            final BaseStation savedStation = baseStationService.save(station, gasStationTitle);
             log.info("Gas Type - {} was saved to DB", station.getGasType());
-
-            freshStationData.forEach((key, value) -> {
+            latestStationData.forEach((key, value) -> {
                 if (key.getId() == savedStation.getGasStationsBrands().getId()) {
                     value.add(savedStation);
                 }
             });
-        }
     }
 
-    private Elements parsingWebSites(GasStationTitle gasStationTitle, Document document) throws ParsingException
+    private Elements parsingWebSites(GasStations gasStations, Document document) throws ParsingException
     {
-        Elements element = document.select(gasStationTitle.getCssQuery());
+        Elements element = document.select(gasStations.getCssQuery());
 
         if (element.isEmpty())
         {
-            String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStationTitle.getCssQuery(), gasStationTitle.getTitle());
+            String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStations.getCssQuery(), gasStations.getTitle());
             throw new ParsingException(error);
         }
         return element;
     }
 
-    private CommonStation createInstance(String title)
-    {
+    private BaseStation createInstance(final String title) {
         return switch (title)
                 {
                     case NESTE_TITLE ->  new Neste();
@@ -230,7 +211,7 @@ public class GasStationService {
                 };
     }
 
-    private CommonHistory createHistoryInstance(GasStationTitle title)
+    private BaseHistory createHistoryInstance(GasStations title)
     {
         return switch (title)
         {
@@ -241,20 +222,14 @@ public class GasStationService {
         };
     }
 
-    private Iterator<String> modifyList(Elements elements, Modifier stationModifier, String gasStation) throws ParsingException
-    {
-        List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
-
+    private List<GasTypeDto> getGasTypesData(Elements elements, Modifier stationModifier, String gasStation) throws ParsingException {
+        final List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
         list.stream().findAny().orElseThrow(()-> new ParsingException("Jsoup elements are empty for " + gasStation));
-
-        list = stationModifier.cleanRawElements(list);
-        checkForEmptyFields(list);
-        return list.stream().map(x -> x.replace("EUR", "")).iterator();
+        return stationModifier.getFullTypeData(list);
     }
 
-    private void checkForEmptyFields(List<String> list)
-    {
-        list.removeIf(x -> x == null || x.isEmpty());
+    private String getClearData(final String inputData) {
+      return inputData.replace("EUR","").replace("[.,]$", "").trim();
     }
 
     public ModifierFactory getModifierFactory()

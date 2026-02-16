@@ -17,7 +17,7 @@ import org.easybot.entity.GasStationsBrands;
 @Getter
 @ToString
 @EqualsAndHashCode(exclude = "id")
-public abstract class CommonStation implements Comparable <CommonStation> {
+public abstract class BaseStation implements Comparable <BaseStation> {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public abstract class CommonStation implements Comparable <CommonStation> {
    protected GasStationsBrands gasStationsBrands;
 
    @Override
-   public int compareTo(CommonStation station)
+   public int compareTo(BaseStation station)
    {
       double price1 = Double.parseDouble(price);
       double price2 = Double.parseDouble(station.getPrice());

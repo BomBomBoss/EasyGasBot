@@ -8,14 +8,14 @@ import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.entity.enums.GasTypesName;
-import org.easybot.entity.stations.CommonStation;
+import org.easybot.entity.stations.BaseStation;
 import org.easybot.enums.AdminCommands;
 import org.easybot.enums.BotCommands;
 import static org.easybot.enums.BotCommands.CHEAPEST;
 import static org.easybot.enums.BotCommands.HELP;
 import static org.easybot.enums.BotCommands.START;
 import static org.easybot.enums.BotCommands.STATION_BRANDS;
-import org.easybot.enums.GasStationTitle;
+import org.easybot.enums.GasStations;
 import org.easybot.enums.Language;
 import org.easybot.util.Modifier;
 import org.easybot.wrapper.UpdateWrapper;
@@ -36,7 +36,7 @@ public class MainServiceImp implements MainService {
 
     private final TelegramAnswer telegramAnswer;
     private final ProduceService produceService;
-    private final CommonStationService commonStationService;
+    private final BaseStationService baseStationService;
     private final GasStationService gasStationService;
     private final TelegramButtonsFactory telegramButtonsFactory;
     private final TelegramUserService telegramUserService;
@@ -45,7 +45,7 @@ public class MainServiceImp implements MainService {
 
     public MainServiceImp(TelegramAnswer telegramAnswer,
                           ProduceService produceService,
-                          CommonStationService commonStationService,
+                          BaseStationService baseStationService,
                           GasStationService gasStationService,
                           TelegramButtonsFactory telegramButtonsFactory,
                           TelegramUserService telegramUserService,
@@ -53,7 +53,7 @@ public class MainServiceImp implements MainService {
     {
         this.telegramAnswer = telegramAnswer;
         this.produceService = produceService;
-        this.commonStationService = commonStationService;
+        this.baseStationService = baseStationService;
         this.gasStationService = gasStationService;
         this.telegramButtonsFactory = telegramButtonsFactory;
         this.telegramUserService = telegramUserService;
@@ -125,7 +125,7 @@ public class MainServiceImp implements MainService {
         if (GasTypesName.getCheapestTypesButtonId().contains(data))
         {
             String dataWithoutButton = data.replace("_BUTTON", "").trim();
-            List <CommonStation> list = getGasStationPerType(dataWithoutButton);
+            List <BaseStation> list = getGasStationPerType(dataWithoutButton);
             Collections.sort(list);
             telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(list, true, locale));
         }
@@ -156,9 +156,9 @@ public class MainServiceImp implements MainService {
             }
         }
 
-        else if (GasStationTitle.getGasStationButtonId().contains(data))
+        else if (GasStations.getGasStationButtonId().contains(data))
         {
-            Optional<String> command = GasStationTitle.getCommandByButtonId(data);
+            Optional<String> command = GasStations.getCommandByButtonId(data);
             command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale)));
         }
 
@@ -185,31 +185,31 @@ public class MainServiceImp implements MainService {
     {
         Locale locale = telegramAnswer.getTelegramUser().getLocale();
 
-        Optional<GasStationTitle> gasStation = GasStationTitle.getGasStationValues().stream()
+        Optional<GasStations> gasStation = GasStations.getGasStationValues().stream()
                 .filter(station -> station.getCommand().equalsIgnoreCase(command)).findFirst();
 
         gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
                 () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
     }
 
-    private List<CommonStation> getGasStationInfo(String gasStationTitle)
+    private List<BaseStation> getGasStationInfo(String gasStationTitle)
     {
-       return commonStationService.retrieveAll(gasStationTitle);
+       return baseStationService.retrieveAll(gasStationTitle);
     }
 
-    private List<CommonStation> getGasStationPerType(String type)
+    private List<BaseStation> getGasStationPerType(String type)
     {
-        List <CommonStation> fullList = new ArrayList<>();
-        for (GasStationTitle gs : GasStationTitle.getGasStationValues())
+        List <BaseStation> fullList = new ArrayList<>();
+        for (GasStations gs : GasStations.getGasStationValues())
         {
-            fullList.add(commonStationService.retrieveStationByType(gs.getTitle(), type));
+            fullList.add(baseStationService.retrieveStationByType(gs.getTitle(), type));
         }
         return fullList;
     }
 
-    private List<CommonStation> formatToOriginalGasTypeName(String title)
+    private List<BaseStation> formatToOriginalGasTypeName(String title)
     {
-        List<CommonStation> list = getGasStationInfo(title);
+        List<BaseStation> list = getGasStationInfo(title);
 
         if (list.isEmpty())
         {
@@ -221,7 +221,7 @@ public class MainServiceImp implements MainService {
 
         Modifier modifier = gasStationService.getModifierFactory().createModifier(title);
 
-        for (CommonStation station : list)
+        for (BaseStation station : list)
         {
             for (GasTypesName gasType : GasTypesName.getValues())
             {

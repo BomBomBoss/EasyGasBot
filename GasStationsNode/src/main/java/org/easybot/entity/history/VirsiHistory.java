@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "virsi_history")
-public class VirsiHistory extends CommonHistory {
+public class VirsiHistory extends BaseHistory {
 }

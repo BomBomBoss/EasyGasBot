@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "neste_history")
-public class NesteHistory extends CommonHistory {
+public class NesteHistory extends BaseHistory {
 }

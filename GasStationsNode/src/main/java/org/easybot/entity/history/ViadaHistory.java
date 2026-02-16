@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "viada_history")
-public class ViadaHistory extends CommonHistory {
+public class ViadaHistory extends BaseHistory {
 }

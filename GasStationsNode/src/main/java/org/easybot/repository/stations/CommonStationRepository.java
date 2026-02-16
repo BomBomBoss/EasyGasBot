@@ -1,7 +1,7 @@
 package org.easybot.repository.stations;
 
 import jakarta.transaction.Transactional;
-import org.easybot.entity.stations.CommonStation;
+import org.easybot.entity.stations.BaseStation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +11,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 @NoRepositoryBean
-public interface CommonStationRepository<T extends CommonStation> extends JpaRepository <T, Long> {
+public interface CommonStationRepository<T extends BaseStation> extends JpaRepository <T, Long> {
 
-    @Query(value = "delete from #{#entityName} t" )
+    @Query(value = "delete from #{#entityName} t")
     @Modifying
     @Transactional
     void clearTable();

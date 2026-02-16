@@ -20,17 +20,17 @@ import org.easybot.entity.TelegramUser;
 import static org.easybot.entity.enums.GasTypesName.DIESEL;
 import static org.easybot.entity.enums.GasTypesName.TYPE_95;
 import static org.easybot.entity.enums.GasTypesName.TYPE_98;
-import org.easybot.entity.stations.CommonStation;
+import org.easybot.entity.stations.BaseStation;
 import static org.easybot.enums.AdminCommands.ALL_TIME;
 import static org.easybot.enums.AdminCommands.ONE_DAY;
 import static org.easybot.enums.AdminCommands.ONE_WEEK;
 import static org.easybot.enums.AdminCommands.TWO_DAYS;
 import org.easybot.enums.BotCommands;
-import org.easybot.enums.GasStationTitle;
-import static org.easybot.enums.GasStationTitle.CIRCLE;
-import static org.easybot.enums.GasStationTitle.NESTE;
-import static org.easybot.enums.GasStationTitle.VIADA;
-import static org.easybot.enums.GasStationTitle.VIRSI;
+import org.easybot.enums.GasStations;
+import static org.easybot.enums.GasStations.CIRCLE;
+import static org.easybot.enums.GasStations.NESTE;
+import static org.easybot.enums.GasStations.VIADA;
+import static org.easybot.enums.GasStations.VIRSI;
 import static org.easybot.enums.Language.EN;
 import static org.easybot.enums.Language.LV;
 import static org.easybot.enums.Language.RU;
@@ -59,14 +59,14 @@ public class TelegramAnswerFormatService {
         this.messageResolver = messageResolver;
     }
 
-    public String formatAnswerText(List<CommonStation> list, boolean includeStationTitle, Locale locale)
+    public String formatAnswerText(List<BaseStation> list, boolean includeStationTitle, Locale locale)
     {
         String result;
 
         if (!list.isEmpty())
         {
             StringBuilder sb = new StringBuilder();
-            for (CommonStation station : list)
+            for (BaseStation station : list)
             {
                 String location = getFormattedLocation(locale, station);
 
@@ -96,7 +96,7 @@ public class TelegramAnswerFormatService {
         return result;
     }
 
-    private String getFormattedLocation(Locale locale, CommonStation station) {
+    private String getFormattedLocation(Locale locale, BaseStation station) {
         return patterns.stream()
                 .filter(pattern -> pattern.matcher(station.getLocation()).find())
                 .map(loc -> messageResolver.getLocalisedText(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale))
@@ -114,7 +114,7 @@ public class TelegramAnswerFormatService {
     {
         String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
         StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
-        for (GasStationTitle gs : GasStationTitle.values())
+        for (GasStations gs : GasStations.values())
         {
             sb.append(gs.getCommand())
                     .append(ONE_SPACE)
