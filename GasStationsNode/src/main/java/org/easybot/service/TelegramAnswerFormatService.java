@@ -42,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Component
@@ -135,9 +136,8 @@ public class TelegramAnswerFormatService {
         return String.format(messageResolver.getLocalisedText(RESPONSE_COMMAND_NOT_FOUND_LABEL, locale), escapingMarkdownCharacters(command));
     }
 
-    private String escapingMarkdownCharacters(String unknownCommand)
-    {
-        return unknownCommand.replace("_", "").replace("*","");
+    private String escapingMarkdownCharacters(String unknownCommand) {
+        return Objects.isNull(unknownCommand) ? "" : unknownCommand.replace("_", "").replace("*","");
     }
 
     public String resolveSimpleLocalizedResponse(String messageKey, Locale locale, String ... arg)
@@ -158,7 +158,7 @@ public class TelegramAnswerFormatService {
         }
         String listOfUsers = telegramUsers.stream()
                 .reduce("", (total, element) -> total +
-                        (String.format("*%s*\n_%s_\n", element.getFirstName(), getUpdateTime(element.getUpdateTime()))),
+                        (String.format("*%s*\n_%s_\n", escapingMarkdownCharacters(element.getFirstName()), getUpdateTime(element.getUpdateTime()))),
                         String::concat);
 
         return String.format("%s\nВсего пользователей: %s", listOfUsers, telegramUsers.size());
