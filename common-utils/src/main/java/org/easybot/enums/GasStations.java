@@ -1,5 +1,6 @@
 package org.easybot.enums;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,8 +94,7 @@ public enum GasStations {
                 '}';
     }
 
-    public static List<GasStations> getGasStationValues()
-    {
+    public static List<GasStations> getGasStationValues() {
         return List.of(GasStations.values());
     }
     public static List<String> getGasStationButtonId()
@@ -105,13 +105,17 @@ public enum GasStations {
                 .toList();
     }
 
-    public static Optional <String> getCommandByButtonId(String buttonId)
+    public static Optional<String> getCommandByButtonId(String buttonId)
     {
         return getGasStationValues()
                 .stream()
                 .filter(station -> station.buttonId.equals(buttonId))
                 .map(GasStations::getCommand)
                 .findFirst();
+    }
+
+    public static GasStations gasStations(final String title) {
+        return Arrays.stream(values()).filter(station -> station.title.equalsIgnoreCase(title)).findFirst().orElseThrow();
     }
 
 }

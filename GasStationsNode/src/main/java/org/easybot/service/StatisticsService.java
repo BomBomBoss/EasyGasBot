@@ -2,7 +2,7 @@ package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
-import org.easybot.enums.GasStations;
+import org.easybot.entity.history.BaseHistory;
 import org.easybot.factory.RepositoryFactory;
 import org.easybot.repository.history.BaseHistoryRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class StatisticsService {
     }
 
 
-    public Map<GasStations, BaseHistoryRepository> getHistoryRepositoryMap() {
+    public Map<String, BaseHistoryRepository<? extends BaseHistory>> getHistoryRepositoryMap() {
         return repositoryFactory.getHistoryRepositoryMap();
     }
 }

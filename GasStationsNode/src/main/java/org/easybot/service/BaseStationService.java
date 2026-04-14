@@ -1,5 +1,6 @@
 package org.easybot.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
 import org.easybot.entity.stations.BaseStation;
@@ -11,16 +12,14 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class BaseStationService {
-    private final RepositoryFactory repositoryFactory;
 
-    public BaseStationService(RepositoryFactory repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
+    private final RepositoryFactory repositoryFactory;
 
 
     public BaseStation save(BaseStation station, String gasStationTitle) {
-        return (BaseStation) getRepositoryInstance(gasStationTitle).save(station);
+        return getRepositoryInstance(gasStationTitle).save(station);
     }
 
     public void deleteTable(String gasStationTitle) {
@@ -35,16 +34,10 @@ public class BaseStationService {
         return getRepositoryInstance(tableTitle).findByType(type);
     }
 
-    private CommonStationRepository getRepositoryInstance(String title) {
+    private CommonStationRepository<BaseStation> getRepositoryInstance(String title) {
         if (title.equals(CIRCLE_K_TITLE))
             title = title.substring(0, title.length() - 2);
 
-        CommonStationRepository repository = repositoryFactory.getStationRepositoryMap().get(title);
-
-        if (repository == null) {
-            throw new RuntimeException("Can't return repository instance");
-        }
-
-        return repository;
+        return repositoryFactory.getStationRepository(title);
     }
 }

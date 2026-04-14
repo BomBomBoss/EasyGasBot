@@ -23,6 +23,7 @@ import org.easybot.entity.stations.Viada;
 import org.easybot.entity.stations.Virsi;
 import org.easybot.enums.GasStations;
 import org.easybot.exceptions.ParsingException;
+import org.easybot.repository.history.BaseHistoryRepository;
 import org.easybot.repository.stations.GasStationsRepository;
 import org.easybot.util.Modifier;
 import org.easybot.util.ModifierFactory;
@@ -34,7 +35,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,6 +65,7 @@ public class GasStationService {
 
     private final GasStationsRepository gasStationsRepository;
     private final BaseStationService baseStationService;
+    private final BaseHistoryService baseHistoryService;
     private final StatisticsService statisticsService; ;
     private final ModifierFactory modifierFactory;
     private final List<Error> errors = new ArrayList<>();
@@ -69,10 +82,11 @@ public class GasStationService {
     }
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, BaseStationService baseStationService, StatisticsService statisticsService, ModifierFactory modifierFactory, ErrorProvider errorProvider)
+    public GasStationService(GasStationsRepository gasStationsRepository, BaseStationService baseStationService, StatisticsService statisticsService, ModifierFactory modifierFactory, ErrorProvider errorProvider, BaseHistoryService baseHistoryService)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.baseStationService = baseStationService;
+        this.baseHistoryService = baseHistoryService;
         this.statisticsService = statisticsService;
         this.modifierFactory = modifierFactory;
         this.errorProvider = errorProvider;
@@ -104,7 +118,8 @@ public class GasStationService {
             final Modifier stationModifier = modifierFactory.createModifier(gasStationTitle);
 
             try {
-                final Document document = Jsoup.connect(url).get();
+                final Document document = isViada(gasStation) ? Jsoup.parse(getViadaHtml(gasStation.getUrl())) : Jsoup.connect(url).get();
+
                 final Elements element = parsingWebSites(gasStation, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
 
@@ -123,7 +138,8 @@ public class GasStationService {
                         }).toList();
 
                 stationList.forEach(station -> saveStationData(station, gasStationTitle));
-            } catch (IOException | ParsingException | NoSuchElementException e) {
+            } catch (IOException | ParsingException | NoSuchElementException | NoSuchAlgorithmException |
+                     KeyManagementException | InterruptedException e) {
                 errors.add(new Error(e));
             }
         }
@@ -135,8 +151,10 @@ public class GasStationService {
     private void updatePriceHistory() {
         log.info("Starting scheduled job to update price history data");
 
-        statisticsService.getHistoryRepositoryMap()
-                .forEach((gasStation, repository) -> {
+
+        GasStations.getGasStationValues()
+                .forEach((gasStation) -> {
+                    final BaseHistoryRepository<BaseHistory> repository = baseHistoryService.getHistoryRepository(gasStation.getTitle());
                     final Optional<BaseHistory> history = repository.findTodayPrice(LocalDate.now());
                     final Set<BaseStation> listOfPricesFromOneStation = latestStationData.get(gasStation);
                     final BaseHistory baseHistory = history.orElse(createHistoryInstance(gasStation));
@@ -168,8 +186,9 @@ public class GasStationService {
     private void removeOldHistoryData(){
         final LocalDate threshold = LocalDate.now().minusDays(daysCount);
 
-        statisticsService.getHistoryRepositoryMap()
-                .forEach((gasStation, repository) -> {
+        GasStations.getGasStationValues()
+                .forEach((gasStation) -> {
+                    final BaseHistoryRepository<BaseHistory> repository = baseHistoryService.getHistoryRepository(gasStation.getTitle());
                     int rowsCount = repository.findRowsCount();
                     if (rowsCount >= daysCount) {
                         log.info("{} station table has {} rows. Deleting redundant rows... ", gasStation.getTitle(), rowsCount);
@@ -192,8 +211,7 @@ public class GasStationService {
     {
         Elements element = document.select(gasStations.getCssQuery());
 
-        if (element.isEmpty())
-        {
+        if (element.isEmpty()) {
             String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStations.getCssQuery(), gasStations.getTitle());
             throw new ParsingException(error);
         }
@@ -232,6 +250,35 @@ public class GasStationService {
       return inputData.replace("EUR","").replace("[.,]$", "").trim();
     }
 
+    private boolean isViada(final GasStations gasStation) {
+        return gasStation == GasStations.VIADA;
+    }
+
+    private String getViadaHtml(final String url) throws NoSuchAlgorithmException, KeyManagementException, IOException, InterruptedException {
+        TrustManager[] trustAll = new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+        };
+        final SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAll, new SecureRandom());
+
+        final HttpClient client = HttpClient.newBuilder()
+                .sslContext(sslContext)
+                .build();
+
+        final HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
+
     public ModifierFactory getModifierFactory()
     {
         return modifierFactory;
@@ -240,4 +287,5 @@ public class GasStationService {
     public List<Error> getErrorReports() {
         return errors;
     }
+
 }
