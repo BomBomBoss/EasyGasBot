@@ -1,5 +1,6 @@
 package org.easybot.service;
 
+import lombok.RequiredArgsConstructor;
 import org.easybot.CommonTexts;
 import static org.easybot.CommonTexts.ALL_STATIONS_1;
 import static org.easybot.CommonTexts.ALL_STATIONS_2;
@@ -34,7 +35,7 @@ import static org.easybot.enums.GasStations.VIRSI;
 import static org.easybot.enums.Language.EN;
 import static org.easybot.enums.Language.LV;
 import static org.easybot.enums.Language.RU;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +46,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class TelegramAnswerFormatService {
 
     private final MessageResolver messageResolver;
@@ -56,24 +58,20 @@ public class TelegramAnswerFormatService {
                     Pattern.compile(ALL_STATIONS_3, Pattern.CASE_INSENSITIVE));
 
 
-    public TelegramAnswerFormatService(MessageResolver messageResolver) {
-        this.messageResolver = messageResolver;
-    }
-
-    public String formatAnswerText(List<BaseStation> list, boolean includeStationTitle, Locale locale)
+    public String formatAnswerText(final List<BaseStation> list, final boolean includeStationTitle, final Locale locale)
     {
-        String result;
+        final String result;
 
         if (!list.isEmpty())
         {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             for (BaseStation station : list)
             {
-                String location = getFormattedLocation(locale, station);
+                final String location = getFormattedLocation(locale, station);
 
                 if (includeStationTitle)
                 {
-                    String stationTitle = circleNameFormatter(station.getGasStationsBrands().getBrandName()).toUpperCase();
+                    final String stationTitle = circleNameFormatter(station.getGasStationsBrands().getBrandName()).toUpperCase();
                     sb.append(String.format("__%s__", stationTitle)) // underline
                             .append(System.lineSeparator());
                 }
@@ -97,7 +95,7 @@ public class TelegramAnswerFormatService {
         return result;
     }
 
-    private String getFormattedLocation(Locale locale, BaseStation station) {
+    private String getFormattedLocation(final Locale locale, final BaseStation station) {
         return patterns.stream()
                 .filter(pattern -> pattern.matcher(station.getLocation()).find())
                 .map(loc -> messageResolver.getLocalisedText(RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL, locale))
@@ -105,18 +103,15 @@ public class TelegramAnswerFormatService {
                 .orElse(station.getLocation());
     }
 
-    public String formatAnswerTextWithEmoji(String messageKey, Locale locale)
-    {
-        String text = messageResolver.getLocalisedText(messageKey, locale);
+    public String formatAnswerTextWithEmoji(final String messageKey, final Locale locale) {
+        final String text = messageResolver.getLocalisedText(messageKey, locale);
         return CommonTexts.parseTextWithEmoji(text);
     }
 
-    public String enrichStartCommand(String firstName, String messageKey, Locale locale)
-    {
-        String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
-        StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
-        for (GasStations gs : GasStations.values())
-        {
+    public String enrichStartCommand(final String firstName, final String messageKey, final Locale locale) {
+        final String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
+        final StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
+        for (GasStations gs : GasStations.values()) {
             sb.append(gs.getCommand())
                     .append(ONE_SPACE)
                     .append(messageResolver.getLocalisedText(START_COMMAND_PRICES_ADD, locale))
@@ -131,32 +126,27 @@ public class TelegramAnswerFormatService {
         return sb.toString().replace("_", "\\_");
     }
 
-    public String resolveNotFoundCommand(String command, Locale locale)
-    {
+    public String resolveNotFoundCommand(final String command, final Locale locale) {
         return String.format(messageResolver.getLocalisedText(RESPONSE_COMMAND_NOT_FOUND_LABEL, locale), escapingMarkdownCharacters(command));
     }
 
-    private String escapingMarkdownCharacters(String unknownCommand) {
+    private String escapingMarkdownCharacters(final String unknownCommand) {
         return Objects.isNull(unknownCommand) ? "" : unknownCommand.replace("_", "").replace("*","");
     }
 
-    public String resolveSimpleLocalizedResponse(String messageKey, Locale locale, String ... arg)
-    {
+    public String resolveSimpleLocalizedResponse(final String messageKey, final Locale locale, final String ... arg) {
         return messageResolver.getLocalisedText(messageKey, locale, arg);
     }
 
-    public String resolveCountOfActiveUsers(List<TelegramUser> telegramUsers, boolean isDetailsNeeded)
-    {
-        if (!isDetailsNeeded)
-        {
+    public String resolveCountOfActiveUsers(final List<TelegramUser> telegramUsers, final boolean isDetailsNeeded) {
+        if (!isDetailsNeeded) {
             return String.format("Общее число пользователей за всё время: %d", telegramUsers.size());
         }
 
-        if (telegramUsers.isEmpty())
-        {
+        if (telegramUsers.isEmpty()) {
             return "За этот период времени никто не пользовался ботом";
         }
-        String listOfUsers = telegramUsers.stream()
+        final String listOfUsers = telegramUsers.stream()
                 .reduce("", (total, element) -> total +
                         (String.format("*%s*\n_%s_\n", escapingMarkdownCharacters(element.getFirstName()), getUpdateTime(element.getUpdateTime()))),
                         String::concat);
@@ -164,18 +154,15 @@ public class TelegramAnswerFormatService {
         return String.format("%s\nВсего пользователей: %s", listOfUsers, telegramUsers.size());
     }
 
-    private String getUpdateTime(LocalDateTime localDateTime)
-    {
+    private String getUpdateTime(final LocalDateTime localDateTime) {
         return localDateTime != null ? localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")) : "неизвестное время";
     }
 
-    public String circleNameFormatter(String title)
-    {
+    public String circleNameFormatter(final String title) {
         return title.replace(CIRCLE_K_TITLE, CIRCLE_WITHOUT_K_TITLE);
     }
 
-    public Map<String, String> initButtonsForCheapestCommand()
-    {
+    public Map<String, String> initButtonsForCheapestCommand() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(TYPE_95.getDescription(), TYPE_95.getButtonId());
         map.put(TYPE_98.getDescription(), TYPE_98.getButtonId());
@@ -183,8 +170,7 @@ public class TelegramAnswerFormatService {
         return map;
     }
 
-    public Map<String, String> initButtonsForStationsBrands()
-    {
+    public Map<String, String> initButtonsForStationsBrands() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(NESTE.getTitle(), NESTE.getButtonId());
         map.put(CIRCLE.getTitle(), CIRCLE.getButtonId());
@@ -193,8 +179,7 @@ public class TelegramAnswerFormatService {
         return map;
     }
 
-    public Map<String, String> initButtonsForLanguage()
-    {
+    public Map<String, String> initButtonsForLanguage() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(EN.getLanguage(), EN.getButtonId());
         map.put(LV.getLanguage(), LV.getButtonId());
@@ -202,8 +187,7 @@ public class TelegramAnswerFormatService {
         return map;
     }
 
-    public Map<String, String> initButtonsForAdmin()
-    {
+    public Map<String, String> initButtonsForAdmin() {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(ONE_DAY.getButtonText(), ONE_DAY.getButtonId());
         map.put(TWO_DAYS.getButtonText(), TWO_DAYS.getButtonId());

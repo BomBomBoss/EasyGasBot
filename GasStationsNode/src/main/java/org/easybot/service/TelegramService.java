@@ -18,6 +18,7 @@ import static org.easybot.enums.BotCommands.STATION_BRANDS;
 import org.easybot.enums.GasStations;
 import org.easybot.enums.Language;
 import org.easybot.util.Modifier;
+import org.easybot.util.ModifierFactory;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
 
 @Service
 @Slf4j
-public class MainServiceImp implements MainService {
+public class TelegramService implements MainService {
 
     private final TelegramAnswer telegramAnswer;
     private final ProduceService produceService;
@@ -41,15 +42,17 @@ public class MainServiceImp implements MainService {
     private final TelegramButtonsFactory telegramButtonsFactory;
     private final TelegramUserService telegramUserService;
     private final TelegramAnswerFormatService telegramAnswerFormatService;
+    private final ModifierFactory modifierFactory;
     private BotCommands administrationCommand;
 
-    public MainServiceImp(TelegramAnswer telegramAnswer,
-                          ProduceService produceService,
-                          BaseStationService baseStationService,
-                          GasStationService gasStationService,
-                          TelegramButtonsFactory telegramButtonsFactory,
-                          TelegramUserService telegramUserService,
-                          TelegramAnswerFormatService telegramAnswerFormatService)
+    public TelegramService(final TelegramAnswer telegramAnswer,
+                           final ProduceService produceService,
+                           final BaseStationService baseStationService,
+                           final GasStationService gasStationService,
+                           final TelegramButtonsFactory telegramButtonsFactory,
+                           final TelegramUserService telegramUserService,
+                           final TelegramAnswerFormatService telegramAnswerFormatService,
+                           final ModifierFactory modifierFactory)
     {
         this.telegramAnswer = telegramAnswer;
         this.produceService = produceService;
@@ -58,11 +61,12 @@ public class MainServiceImp implements MainService {
         this.telegramButtonsFactory = telegramButtonsFactory;
         this.telegramUserService = telegramUserService;
         this.telegramAnswerFormatService = telegramAnswerFormatService;
+        this.modifierFactory = modifierFactory;
     }
 
     private final Consumer<UpdateWrapper> adminConsumer = new Consumer<>() {
         @Override
-        public void accept(UpdateWrapper updateWrapper) {
+        public void accept(final UpdateWrapper updateWrapper) {
                 if (updateWrapper.isAdmin()) {
                     telegramAnswer.setText(administrationCommand.getDisclaimer());
                     telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForAdmin()));
@@ -73,17 +77,17 @@ public class MainServiceImp implements MainService {
     };
 
     @Override
-    public void processTextMessage(UpdateWrapper wrapper)
+    public void processTextMessage(final UpdateWrapper wrapper)
     {
-        String command = wrapper.update().getMessage().getText();
+        final String command = wrapper.update().getMessage().getText();
 
         log.info("Received command: {}", command);
         administrationCommand = BotCommands.getByCommand(command);
 
         telegramUserService.resolveTelegramUserById(wrapper);
 
-        TelegramUser user = telegramAnswer.getTelegramUser();
-        Locale locale = user.getLocale();
+        final TelegramUser user = telegramAnswer.getTelegramUser();
+        final Locale locale = user.getLocale();
 
         telegramAnswer.cleanButtons();
         switch (administrationCommand)
@@ -112,53 +116,47 @@ public class MainServiceImp implements MainService {
 
 
     @Override
-    public void processCallBackQuery(UpdateWrapper wrapper)
+    public void processCallBackQuery(final UpdateWrapper wrapper)
     {
         telegramUserService.resolveTelegramUserById(wrapper);
 
-        TelegramUser user = telegramAnswer.getTelegramUser();
-        Locale locale = user.getLocale();
+        final TelegramUser user = telegramAnswer.getTelegramUser();
+        final Locale locale = user.getLocale();
 
-        String data = wrapper.update().getCallbackQuery().getData();
+        final String data = wrapper.update().getCallbackQuery().getData();
         telegramAnswer.cleanButtons();
 
-        if (GasTypesName.getCheapestTypesButtonId().contains(data))
-        {
-            String dataWithoutButton = data.replace("_BUTTON", "").trim();
-            List <BaseStation> list = getGasStationPerType(dataWithoutButton);
+        if (GasTypesName.getCheapestTypesButtonId().contains(data)) {
+            final String dataWithoutButton = data.replace("_BUTTON", "").trim();
+            final List <BaseStation> list = getGasStationPerType(dataWithoutButton);
             Collections.sort(list);
             telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(list, true, locale));
         }
 
-        else if (Language.getSetOfLanguageButtonId().contains(data))
-        {
-            String languageCode = data.replace("_BUTTON", "").toLowerCase().trim();
+        else if (Language.getSetOfLanguageButtonId().contains(data)) {
+            final String languageCode = data.replace("_BUTTON", "").toLowerCase().trim();
             user.setLanguageCode(languageCode);
             user.setLocale(Locale.of(languageCode));
             telegramUserService.updateUser(user);
             telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(LANGUAGE_IS_SET_LABEL, user.getLocale(), languageCode.toUpperCase()));
         }
 
-        else if (AdminCommands.getSetOfAdminCommandsButtonId().contains(data))
-        {
-            Integer daysRange = AdminCommands.getDayRangeByButtonId(data);
+        else if (AdminCommands.getSetOfAdminCommandsButtonId().contains(data)) {
+            final Integer daysRange = AdminCommands.getDayRangeByButtonId(data);
 
-            if (daysRange == 0)
-            {
+            if (daysRange == 0) {
                 List<TelegramUser> users = telegramUserService.findAllUsers();
                 telegramAnswer.setText(telegramAnswerFormatService.resolveCountOfActiveUsers(users, false));
             }
-            else
-            {
+            else {
                 LocalDateTime startDate = LocalDateTime.now().minusDays(daysRange.longValue());
                 List<TelegramUser> users = telegramUserService.findActiveUsersAfterDate(startDate);
                 telegramAnswer.setText(telegramAnswerFormatService.resolveCountOfActiveUsers(users, true));
             }
         }
 
-        else if (GasStations.getGasStationButtonId().contains(data))
-        {
-            Optional<String> command = GasStations.getCommandByButtonId(data);
+        else if (GasStations.getGasStationButtonId().contains(data)) {
+            final Optional<String> command = GasStations.getCommandByButtonId(data);
             command.ifPresentOrElse(this::getStationBrandFormattedInfo, ()-> telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(UNABLE_TO_PROCEED_RESPONSE_LABEL, locale)));
         }
 
@@ -169,39 +167,35 @@ public class MainServiceImp implements MainService {
     }
 
     @Override
-    public void processUnsupportedUpdate(UpdateWrapper wrapper) {
+    public void processUnsupportedUpdate(final UpdateWrapper wrapper) {
 
         telegramUserService.resolveTelegramUserById(wrapper);
 
-        TelegramUser user = telegramAnswer.getTelegramUser();
-        Locale locale = user.getLocale();
+        final TelegramUser user = telegramAnswer.getTelegramUser();
+        final Locale locale = user.getLocale();
 
         telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(RESPONSE_NOT_SUPPORTED_UPDATE_LABEL, locale));
         telegramAnswer.setChatId(wrapper.update().getMessage().getChatId().toString());
         produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
     }
 
-    private void getStationBrandFormattedInfo(String command)
-    {
-        Locale locale = telegramAnswer.getTelegramUser().getLocale();
+    private void getStationBrandFormattedInfo(final String command) {
+        final Locale locale = telegramAnswer.getTelegramUser().getLocale();
 
-        Optional<GasStations> gasStation = GasStations.getGasStationValues().stream()
+        final Optional<GasStations> gasStation = GasStations.getGasStationValues().stream()
                 .filter(station -> station.getCommand().equalsIgnoreCase(command)).findFirst();
 
         gasStation.ifPresentOrElse(station -> telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(formatToOriginalGasTypeName(station.getTitle()), false, locale)),
                 () -> telegramAnswer.setText(telegramAnswerFormatService.resolveNotFoundCommand(command, locale)));
     }
 
-    private List<BaseStation> getGasStationInfo(String gasStationTitle)
-    {
+    private List<BaseStation> getGasStationInfo(final String gasStationTitle) {
        return baseStationService.retrieveAll(gasStationTitle);
     }
 
-    private List<BaseStation> getGasStationPerType(String type)
-    {
-        List <BaseStation> fullList = new ArrayList<>();
-        for (GasStations gs : GasStations.getGasStationValues())
-        {
+    private List<BaseStation> getGasStationPerType(final String type) {
+        final List <BaseStation> fullList = new ArrayList<>();
+        for (GasStations gs : GasStations.getGasStationValues()) {
             fullList.add(baseStationService.retrieveStationByType(gs.getTitle(), type));
         }
         return fullList;
@@ -209,17 +203,16 @@ public class MainServiceImp implements MainService {
 
     private List<BaseStation> formatToOriginalGasTypeName(String title)
     {
-        List<BaseStation> list = getGasStationInfo(title);
+        final List<BaseStation> list = getGasStationInfo(title);
 
-        if (list.isEmpty())
-        {
+        if (list.isEmpty()) {
             log.error("Returned empty list from DB with title: {}", title);
             return Collections.emptyList();
         }
 
         title = telegramAnswerFormatService.circleNameFormatter(title).toLowerCase();
 
-        Modifier modifier = gasStationService.getModifierFactory().createModifier(title);
+        final Modifier modifier = modifierFactory.createModifier(title);
 
         for (BaseStation station : list)
         {

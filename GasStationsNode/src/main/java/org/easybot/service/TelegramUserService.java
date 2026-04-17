@@ -1,11 +1,12 @@
 package org.easybot.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.repository.TelegramUserRepository;
 import org.easybot.wrapper.UpdateWrapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -13,26 +14,20 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
-@Component
+@Service
 @Slf4j
+@RequiredArgsConstructor
 public class TelegramUserService {
 
     private final TelegramUserRepository telegramUserRepository;
     private final TelegramAnswer telegramAnswer;
 
-
-    public TelegramUserService(TelegramUserRepository telegramUserRepository, TelegramAnswer telegramAnswer)
-    {
-        this.telegramUserRepository = telegramUserRepository;
-        this.telegramAnswer = telegramAnswer;
-    }
-
     @Transactional
-    public void resolveTelegramUserById(UpdateWrapper wrapper)
+    public void resolveTelegramUserById(final UpdateWrapper wrapper)
     {
-        User user = wrapper.user();
-        Long userId = user.getId();
-        Long chatId = wrapper.chatId();
+        final User user = wrapper.user();
+        final Long userId = user.getId();
+        final Long chatId = wrapper.chatId();
 
         telegramUserRepository.findByUserId(userId)
                 .ifPresentOrElse(tUser -> {
@@ -56,13 +51,12 @@ public class TelegramUserService {
                         });
     }
 
-    public void updateUser(TelegramUser user)
+    public void updateUser(final TelegramUser user)
     {
         telegramUserRepository.save(user);
     }
 
-    public List <TelegramUser> findActiveUsersAfterDate(LocalDateTime startDate)
-    {
+    public List<TelegramUser> findActiveUsersAfterDate(final LocalDateTime startDate) {
         return telegramUserRepository.findByUpdateTimeAfterOrderByUpdateTimeDesc(startDate);
     }
 

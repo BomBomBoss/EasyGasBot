@@ -1,10 +1,6 @@
 package org.easybot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
-import static org.easybot.CommonTexts.NESTE_TITLE;
-import static org.easybot.CommonTexts.VIADA_TITLE;
-import static org.easybot.CommonTexts.VIRSI_TITLE;
 import org.easybot.dto.Error;
 import org.easybot.dto.GasTypeDto;
 import org.easybot.entity.GasStationsBrands;
@@ -12,17 +8,10 @@ import static org.easybot.entity.enums.GasTypesName.DIESEL;
 import static org.easybot.entity.enums.GasTypesName.TYPE_95;
 import static org.easybot.entity.enums.GasTypesName.TYPE_98;
 import org.easybot.entity.history.BaseHistory;
-import org.easybot.entity.history.CircleHistory;
-import org.easybot.entity.history.NesteHistory;
-import org.easybot.entity.history.ViadaHistory;
-import org.easybot.entity.history.VirsiHistory;
 import org.easybot.entity.stations.BaseStation;
-import org.easybot.entity.stations.CircleK;
-import org.easybot.entity.stations.Neste;
-import org.easybot.entity.stations.Viada;
-import org.easybot.entity.stations.Virsi;
 import org.easybot.enums.GasStations;
 import org.easybot.exceptions.ParsingException;
+import org.easybot.factory.BaseFactory;
 import org.easybot.repository.history.BaseHistoryRepository;
 import org.easybot.repository.stations.GasStationsRepository;
 import org.easybot.util.Modifier;
@@ -66,6 +55,7 @@ public class GasStationService {
     private final GasStationsRepository gasStationsRepository;
     private final BaseStationService baseStationService;
     private final BaseHistoryService baseHistoryService;
+    private final BaseFactory baseFactory;
     private final StatisticsService statisticsService; ;
     private final ModifierFactory modifierFactory;
     private final List<Error> errors = new ArrayList<>();
@@ -82,7 +72,13 @@ public class GasStationService {
     }
 
     @Autowired
-    public GasStationService(GasStationsRepository gasStationsRepository, BaseStationService baseStationService, StatisticsService statisticsService, ModifierFactory modifierFactory, ErrorProvider errorProvider, BaseHistoryService baseHistoryService)
+    public GasStationService(final GasStationsRepository gasStationsRepository,
+                             final BaseStationService baseStationService,
+                             final StatisticsService statisticsService,
+                             final ModifierFactory modifierFactory,
+                             final ErrorProvider errorProvider,
+                             final BaseHistoryService baseHistoryService,
+                             final BaseFactory baseFactory)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.baseStationService = baseStationService;
@@ -90,13 +86,14 @@ public class GasStationService {
         this.statisticsService = statisticsService;
         this.modifierFactory = modifierFactory;
         this.errorProvider = errorProvider;
+        this.baseFactory = baseFactory;
     }
 
     public List<GasStationsBrands> findAllBrands()
     {
         return gasStationsRepository.findAll();
     }
-    public GasStationsBrands findById(Long id)
+    public GasStationsBrands findById(final Long id)
     {
         return gasStationsRepository.findById(id).orElseThrow(() -> new RuntimeException("Can't find this {" + id + "} in table"));
     }
@@ -118,7 +115,7 @@ public class GasStationService {
             final Modifier stationModifier = modifierFactory.createModifier(gasStationTitle);
 
             try {
-                final Document document = isViada(gasStation) ? Jsoup.parse(getViadaHtml(gasStation.getUrl())) : Jsoup.connect(url).get();
+                final Document document = isViada(gasStation) ? Jsoup.parse(getNoneSslHtml(gasStation.getUrl())) : Jsoup.connect(url).get();
 
                 final Elements element = parsingWebSites(gasStation, document);
                 log.info("pulling gas prices for {}", gasStationTitle);
@@ -129,7 +126,7 @@ public class GasStationService {
 
                 final List<BaseStation> stationList = gasTypesData.stream()
                         .map(data -> {
-                            final BaseStation station = createInstance(gasStationTitle);
+                            final BaseStation station = baseFactory.createStationInstance(gasStationTitle);
                             station.setGasType(stationModifier.adjustCorrectFieldTitleForDB(data.type()));
                             station.setPrice(getClearData(data.price()));
                             station.setLocation(getClearData(data.address()));
@@ -143,6 +140,7 @@ public class GasStationService {
                 errors.add(new Error(e));
             }
         }
+
         if (!errors.isEmpty()) {
             errorProvider.printReport(errors);
         }
@@ -157,7 +155,7 @@ public class GasStationService {
                     final BaseHistoryRepository<BaseHistory> repository = baseHistoryService.getHistoryRepository(gasStation.getTitle());
                     final Optional<BaseHistory> history = repository.findTodayPrice(LocalDate.now());
                     final Set<BaseStation> listOfPricesFromOneStation = latestStationData.get(gasStation);
-                    final BaseHistory baseHistory = history.orElse(createHistoryInstance(gasStation));
+                    final BaseHistory baseHistory = history.orElse(baseFactory.createHistoryInstance(gasStation));
 
                     listOfPricesFromOneStation.forEach(station -> {
                         final String gasType = station.getGasType();
@@ -197,6 +195,7 @@ public class GasStationService {
                 });
     }
 
+
     private void saveStationData(final BaseStation station, final String gasStationTitle) {
             final BaseStation savedStation = baseStationService.save(station, gasStationTitle);
             log.info("Gas Type - {} was saved to DB", station.getGasType());
@@ -207,40 +206,19 @@ public class GasStationService {
             });
     }
 
-    private Elements parsingWebSites(GasStations gasStations, Document document) throws ParsingException
+    private Elements parsingWebSites(final GasStations gasStations, final Document document) throws ParsingException
     {
-        Elements element = document.select(gasStations.getCssQuery());
+        final Elements element = document.select(gasStations.getCssQuery());
 
         if (element.isEmpty()) {
-            String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStations.getCssQuery(), gasStations.getTitle());
+            final String error = String.format("No data were found under cssQuery %s for gas station: %s", gasStations.getCssQuery(), gasStations.getTitle());
             throw new ParsingException(error);
         }
         return element;
     }
 
-    private BaseStation createInstance(final String title) {
-        return switch (title)
-                {
-                    case NESTE_TITLE ->  new Neste();
-                    case CIRCLE_WITHOUT_K_TITLE -> new CircleK();
-                    case VIADA_TITLE -> new Viada();
-                    case VIRSI_TITLE -> new Virsi();
-                    default -> throw new RuntimeException("Can't create instance of gas station");
-                };
-    }
 
-    private BaseHistory createHistoryInstance(GasStations title)
-    {
-        return switch (title)
-        {
-            case NESTE ->  new NesteHistory();
-            case CIRCLE -> new CircleHistory();
-            case VIADA -> new ViadaHistory();
-            case VIRSI -> new VirsiHistory();
-        };
-    }
-
-    private List<GasTypeDto> getGasTypesData(Elements elements, Modifier stationModifier, String gasStation) throws ParsingException {
+    private List<GasTypeDto> getGasTypesData(final Elements elements, final Modifier stationModifier, final String gasStation) throws ParsingException {
         final List<String> list = elements.stream().map(Element::text).collect(Collectors.toList());
         list.stream().findAny().orElseThrow(()-> new ParsingException("Jsoup elements are empty for " + gasStation));
         return stationModifier.getFullTypeData(list);
@@ -254,7 +232,7 @@ public class GasStationService {
         return gasStation == GasStations.VIADA;
     }
 
-    private String getViadaHtml(final String url) throws NoSuchAlgorithmException, KeyManagementException, IOException, InterruptedException {
+    private String getNoneSslHtml(final String url) throws NoSuchAlgorithmException, KeyManagementException, IOException, InterruptedException {
         TrustManager[] trustAll = new TrustManager[]{
                 new X509TrustManager() {
                     public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
@@ -277,15 +255,6 @@ public class GasStationService {
         final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return response.body();
-    }
-
-    public ModifierFactory getModifierFactory()
-    {
-        return modifierFactory;
-    }
-
-    public List<Error> getErrorReports() {
-        return errors;
     }
 
 }

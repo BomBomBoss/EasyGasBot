@@ -6,5 +6,5 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface IUserModifier {
 
-    String getOriginalTitle(Modifier modifier) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
+    String getOriginalTitle(final Modifier modifier) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException;
 }

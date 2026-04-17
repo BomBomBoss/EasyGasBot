@@ -1,27 +1,33 @@
 package org.easybot.enums;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
+@Getter
 public enum GasStations {
-    NESTE("/neste",
+    NESTE(1,
+            "/neste",
             "https://www.neste.lv/lv/content/degvielas-cenas",
             "neste",
             "table > tbody > tr > td"),
 
-    CIRCLE("/circle_k",
+    CIRCLE(2,
+            "/circle_k",
             "https://www.circlek.lv/privātpersonām/degvielas-cenas",
             "circle_k",
             "table > tbody > tr > td"),
 
-    VIADA("/viada",
+    VIADA(3,
+            "/viada",
             "https://www.viada.lv/zemakas-degvielas-cenas/",
             "viada",
             "table > tbody > tr > td"),
 
-    VIRSI("/virsi",
+    VIRSI(4,
+            "/virsi",
             "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas",
             "virsi",
             "div.prices-block.fuel-block");
@@ -30,12 +36,13 @@ public enum GasStations {
     private final String command;
     private final String url;
     private final String title;
-    private String cssQuery;
+    private final String cssQuery;
     private final String buttonId;
-    private long id;
+    private final long id;
 
 
-    GasStations(String command, String url, String title, String cssQuery) {
+    GasStations(final long id,  final String command, final String url, final String title, final String cssQuery) {
+        this.id = id;
         this.command = command;
         this.url = url;
         this.title = title;
@@ -43,56 +50,6 @@ public enum GasStations {
         this.buttonId = title.concat("_BUTTON");
     }
 
-    public String getCommand()
-    {
-        return command;
-    }
-
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public long getId()
-    {
-        return id;
-    }
-
-    public void setId(long id)
-    {
-        this.id = id;
-    }
-
-    public String getCssQuery()
-    {
-        return cssQuery;
-    }
-
-    public void setCssQuery(String cssQuery)
-    {
-        this.cssQuery = cssQuery;
-    }
-
-    public String getButtonId()
-    {
-        return buttonId;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "GasStationTitle{" +
-                "command='" + command + '\'' +
-                ", url='" + url + '\'' +
-                ", title='" + title + '\'' +
-                ", id=" + id +
-                '}';
-    }
 
     public static List<GasStations> getGasStationValues() {
         return List.of(GasStations.values());

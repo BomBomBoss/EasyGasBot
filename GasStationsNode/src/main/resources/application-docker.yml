@@ -1,0 +1,21 @@
+server:
+    port: 8082
+spring:
+    application:
+        admin:
+            enabled: true
+    datasource:
+        password: admin
+        url: jdbc:postgresql://localhost:5432/bossbotdb
+        username: admin
+        driver-class-name: org.postgresql.Driver
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+    jpa:
+        show-sql: true
+    rabbitmq:
+        host: rabbitmq
+        password: password
+        port: 5672
+        username: vlad

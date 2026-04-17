@@ -1,5 +1,6 @@
 package org.easybot.util;
 
+import lombok.Getter;
 import org.easybot.entity.enums.GasTypesName;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public abstract class GasTypeFormatter implements Modifier {
 
     protected String petrol95;
@@ -23,7 +25,8 @@ public abstract class GasTypeFormatter implements Modifier {
     protected Map<String, GasTypesName> typesNameMap;
     protected final Pattern pricePattern = Pattern.compile("\\s?(\\d\\.\\d{3})\\s?");
 
-    public GasTypeFormatter(String petrol95, String petrol95Plus, String petrol98, String petrol85, String diesel, String dieselPlus, String gasCNG, String gasLPG, String adBlue)
+    public GasTypeFormatter(final String petrol95, final String petrol95Plus, final String petrol98, final String petrol85,
+                            final String diesel, final String dieselPlus, final String gasCNG, final String gasLPG, final String adBlue)
     {
         this.petrol95 = petrol95;
         this.petrol95Plus = petrol95Plus;
@@ -37,7 +40,7 @@ public abstract class GasTypeFormatter implements Modifier {
         typesNameMap = init();
     }
 
-    Map<String, GasTypesName> init()
+    private Map<String, GasTypesName> init()
     {
         typesNameMap = new HashMap<>();
         typesNameMap.put(petrol95, GasTypesName.TYPE_95);
@@ -53,9 +56,6 @@ public abstract class GasTypeFormatter implements Modifier {
         return typesNameMap;
     }
 
-    public Map<String, GasTypesName> getTypesNameMap() {
-        return typesNameMap;
-    }
 
     public String adjustCorrectFieldTitleForDB(final String gasType) {
         final Optional<GasTypesName> type = typesNameMap.entrySet().stream()
@@ -77,48 +77,4 @@ public abstract class GasTypeFormatter implements Modifier {
         return false;
     }
 
-    public String getPetrol95()
-    {
-        return petrol95;
-    }
-
-    public String getPetrol98()
-    {
-        return petrol98;
-    }
-
-    public String getDiesel()
-    {
-        return diesel;
-    }
-
-    public String getDieselPlus()
-    {
-        return dieselPlus;
-    }
-
-    public String getPetrol95Plus()
-    {
-        return petrol95Plus;
-    }
-
-    public String getPetrol85()
-    {
-        return petrol85;
-    }
-
-    public String getGasCNG()
-    {
-        return gasCNG;
-    }
-
-    public String getGasLPG()
-    {
-        return gasLPG;
-    }
-
-    public String getAdBlue()
-    {
-        return adBlue;
-    }
 }
