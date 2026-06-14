@@ -20,16 +20,15 @@ import java.util.List;
 public class TelegramUserService {
 
     private final TelegramUserRepository telegramUserRepository;
-    private final TelegramAnswer telegramAnswer;
+
 
     @Transactional
-    public void resolveTelegramUserById(final UpdateWrapper wrapper)
-    {
+    public void resolveTelegramUserById(final UpdateWrapper wrapper, final TelegramAnswer telegramAnswer) {
         final User user = wrapper.user();
         final Long userId = user.getId();
         final Long chatId = wrapper.chatId();
 
-        telegramUserRepository.findByUserId(userId)
+         telegramUserRepository.findByUserId(userId)
                 .ifPresentOrElse(tUser -> {
                             tUser.resolveLocaleFromLanguageCode(tUser.getLanguageCode());
                             telegramAnswer.setTelegramUser(tUser);
@@ -60,8 +59,7 @@ public class TelegramUserService {
         return telegramUserRepository.findByUpdateTimeAfterOrderByUpdateTimeDesc(startDate);
     }
 
-    public List <TelegramUser> findAllUsers()
-    {
+    public List<TelegramUser> findAllUsers() {
         return telegramUserRepository.findAll();
     }
 }

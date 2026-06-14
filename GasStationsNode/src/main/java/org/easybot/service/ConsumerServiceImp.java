@@ -21,8 +21,12 @@ public class ConsumerServiceImp implements RabbitConsumer {
     @RabbitListener(queues = TEXT_MESSAGE_UPDATE)
     public void consumeTextMessage(final UpdateWrapper wrapper)
     {
-        log.info(COMMON_LOG_TEXT, TEXT_MESSAGE_UPDATE);
-        mainService.processTextMessage(wrapper);
+        try {
+            log.info(COMMON_LOG_TEXT, TEXT_MESSAGE_UPDATE);
+            mainService.processTextMessage(wrapper);
+        }  catch (Exception e) {
+            log.error("Error during consuming rabbit mq queue 'Text Message Update' with reason: '{}'", e.getMessage());
+        }
 
     }
 
@@ -30,8 +34,12 @@ public class ConsumerServiceImp implements RabbitConsumer {
     @RabbitListener(queues = CALL_BACK_QUERY)
     public void consumeCallBackQuery(final UpdateWrapper wrapper)
     {
-        log.info(COMMON_LOG_TEXT, CALL_BACK_QUERY);
-        mainService.processCallBackQuery(wrapper);
+        try {
+            log.info(COMMON_LOG_TEXT, CALL_BACK_QUERY);
+            mainService.processCallBackQuery(wrapper);
+        }  catch (Exception e) {
+            log.error("Error during consuming rabbit mq queue 'Call back query' with reason: '{}'", e.getMessage());
+        }
 
     }
 
@@ -45,7 +53,7 @@ public class ConsumerServiceImp implements RabbitConsumer {
             mainService.processUnsupportedUpdate(wrapper);
         }
         catch (Exception e) {
-            log.error("Error during consuming rabbit mq queue 'Not Supported Message' with reason {}", e.getMessage());
+            log.error("Error during consuming rabbit mq queue 'Not Supported Message' with reason: '{}'", e.getMessage());
         }
 
     }

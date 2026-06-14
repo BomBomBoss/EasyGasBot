@@ -26,16 +26,39 @@ public class CommonTexts {
             Бот, который расскажет, где в Риге самое дешёвое топливо 👌
             Разработчик - @BomBoss 🤘
                         """;
+
     public static final String BOT_SHORT_DESCRIPTION_EN = """
             Bot that will tell you where are the cheapest fuel is in Riga 👌
             Developer - @BomBoss 🤘
                             """;
+
     /************************ Admin text *****************************************************/
 
-    public static final String ADMIN_COMMAND_DISCLAIMER= """
+    public static final String ADMIN_COMMAND_DISCLAIMER = """
             Ты зашёл в режим God Mode.
             Давай глянем сколько там пользователей
             воспользовались ботом за
+            """;
+
+    public static final String STATISTICS_COMMAND_DISCLAIMER = """
+            Ты зашёл в режим Статистики.
+            Выбери когда было самое дешёвое топливо за
+            """;
+
+    public static final String STATISTICS_ANSWER = """
+            ⛽%s⛽
+            
+            *%s* - *%s*
+            💶 *%s* €
+            📅 *%s* (*%s*)
+            
+            *%s* - *%s*
+            💶 *%s* €
+            📅 *%s* (*%s*)
+            
+            *%s* - *%s*
+            💶 *%s* €
+            📅 *%s* (*%s*)
             """;
 
     /************************ Replaced Text *****************************************************/
@@ -89,6 +112,7 @@ public class CommonTexts {
     public static final String RESPONSE_ADDRESS_LABEL = "address_lbl";
     public static final String RESPONSE_PRICE_LABEL = "price_lbl";
     public static final String RESPONSE_NOT_SUPPORTED_UPDATE_LABEL = "not_supported_update_lbl";
+    public static final String RESPONSE_STATISTICS_LABEL = "statistics_lbl";
 
 
 }

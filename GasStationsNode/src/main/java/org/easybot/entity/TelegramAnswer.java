@@ -1,19 +1,12 @@
 package org.easybot.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.stereotype.Component;
+import lombok.Data;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-@Component
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
+@Data
 public class TelegramAnswer {
     private String text;
     private InlineKeyboardMarkup buttons;
@@ -22,8 +15,7 @@ public class TelegramAnswer {
     private TelegramUser telegramUser;
 
 
-    public SendMessage mapToSendMessage()
-    {
+    public SendMessage mapToSendMessage() {
         return SendMessage.builder()
                 .text(text)
                 .replyMarkup(buttons)
@@ -32,8 +24,7 @@ public class TelegramAnswer {
                 .build();
     }
 
-    public static SendMessage mapToErrorMessage(String text)
-    {
+    public static SendMessage mapToErrorMessage(final String text) {
         return SendMessage.builder()
                 .text(text)
                 .chatId("")
@@ -41,8 +32,7 @@ public class TelegramAnswer {
                 .build();
     }
 
-    public EditMessageText mapToEditedMessage()
-    {
+    public EditMessageText mapToEditedMessage() {
         return EditMessageText.builder()
                 .text(text)
                 .replyMarkup(buttons)

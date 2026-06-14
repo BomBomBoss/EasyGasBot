@@ -75,4 +75,8 @@ public enum GasStations {
         return Arrays.stream(values()).filter(station -> station.title.equalsIgnoreCase(title)).findFirst().orElseThrow();
     }
 
+    public static String gasStationTitle(final long id) {
+        return Arrays.stream(values()).filter(station -> station.id == id).map(GasStations::getTitle).map(title -> title.replace("_", " ")).findFirst().orElseThrow();
+    }
+
 }

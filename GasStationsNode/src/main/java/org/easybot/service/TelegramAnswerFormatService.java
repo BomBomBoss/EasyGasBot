@@ -14,18 +14,26 @@ import static org.easybot.CommonTexts.RESPONSE_ADDRESS_LABEL;
 import static org.easybot.CommonTexts.RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL;
 import static org.easybot.CommonTexts.RESPONSE_COMMAND_NOT_FOUND_LABEL;
 import static org.easybot.CommonTexts.RESPONSE_PRICE_LABEL;
+import static org.easybot.CommonTexts.RESPONSE_STATISTICS_LABEL;
 import static org.easybot.CommonTexts.START_COMMAND_PRICES_ADD;
+import static org.easybot.CommonTexts.STATISTICS_ANSWER;
 import static org.easybot.CommonTexts.TWO_NEW_LINES;
 import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
 import org.easybot.entity.TelegramUser;
+import org.easybot.entity.cheapest_price.CheapestHistoryPrice;
+import org.easybot.entity.enums.GasTypesName;
 import static org.easybot.entity.enums.GasTypesName.DIESEL;
 import static org.easybot.entity.enums.GasTypesName.TYPE_95;
 import static org.easybot.entity.enums.GasTypesName.TYPE_98;
 import org.easybot.entity.stations.BaseStation;
-import static org.easybot.enums.AdminCommands.ALL_TIME;
-import static org.easybot.enums.AdminCommands.ONE_DAY;
-import static org.easybot.enums.AdminCommands.ONE_WEEK;
-import static org.easybot.enums.AdminCommands.TWO_DAYS;
+import static org.easybot.enums.AdminCommands.ALL_TIME_PRICE;
+import static org.easybot.enums.AdminCommands.ALL_TIME_USERS;
+import static org.easybot.enums.AdminCommands.ONE_DAY_USERS;
+import static org.easybot.enums.AdminCommands.ONE_MONTH_PRICE;
+import static org.easybot.enums.AdminCommands.ONE_WEEK_PRICE;
+import static org.easybot.enums.AdminCommands.ONE_WEEK_USERS;
+import static org.easybot.enums.AdminCommands.TWO_DAYS_USERS;
+import static org.easybot.enums.AdminCommands.TWO_WEEKS_PRICE;
 import org.easybot.enums.BotCommands;
 import org.easybot.enums.GasStations;
 import static org.easybot.enums.GasStations.CIRCLE;
@@ -37,8 +45,13 @@ import static org.easybot.enums.Language.LV;
 import static org.easybot.enums.Language.RU;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -154,8 +167,28 @@ public class TelegramAnswerFormatService {
         return String.format("%s\nВсего пользователей: %s", listOfUsers, telegramUsers.size());
     }
 
+    public String resolvePriceStatistics(final List<CheapestHistoryPrice> cheapestHistoryPrices, final int daysRange, final Locale locale) {
+        final CheapestHistoryPrice cheapest95 = cheapestHistoryPrices.stream().filter(data -> TYPE_95.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
+        final CheapestHistoryPrice cheapest98 = cheapestHistoryPrices.stream().filter(data -> TYPE_98.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
+        final CheapestHistoryPrice cheapestDiesel = cheapestHistoryPrices.stream().filter(data -> DIESEL.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
+        final String header = messageResolver.getLocalisedText(RESPONSE_STATISTICS_LABEL, locale, String.valueOf(daysRange));
+
+        return STATISTICS_ANSWER.formatted(header,
+                GasTypesName.getGasTypeDescription(cheapest95.getGasTypeId()), GasStations.gasStationTitle(cheapest95.getBrandId()).toUpperCase(), cheapest95.getPrice(), getDateForUsers(cheapest95.getDate()), getDayOfWeek(cheapest95.getDate(), locale),
+                GasTypesName.getGasTypeDescription(cheapest98.getGasTypeId()), GasStations.gasStationTitle(cheapest98.getBrandId()).toUpperCase(), cheapest98.getPrice(), getDateForUsers(cheapest98.getDate()), getDayOfWeek(cheapest98.getDate(), locale),
+                GasTypesName.getGasTypeDescription(cheapestDiesel.getGasTypeId()), GasStations.gasStationTitle(cheapestDiesel.getBrandId()).toUpperCase(), cheapestDiesel.getPrice(), getDateForUsers(cheapestDiesel.getDate()), getDayOfWeek(cheapestDiesel.getDate(), locale));
+    }
+
     private String getUpdateTime(final LocalDateTime localDateTime) {
         return localDateTime != null ? localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy")) : "неизвестное время";
+    }
+
+    private String getDateForUsers(final LocalDate localDate) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) : "";
+    }
+
+    private String getDayOfWeek(final LocalDate localDate, final Locale locale) {
+        return localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, locale);
     }
 
     public String circleNameFormatter(final String title) {
@@ -187,12 +220,29 @@ public class TelegramAnswerFormatService {
         return map;
     }
 
-    public Map<String, String> initButtonsForAdmin() {
+    public Map<String, String> initButtonsForAdmin(final BotCommands commands) {
+        return switch (commands) {
+            case ADMIN -> initUserStatisticsButtons();
+            case STATISTICS -> initFuelStatisticsButtons();
+            default -> Collections.emptyMap();
+        };
+    }
+
+    private Map<String, String> initUserStatisticsButtons() {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(ONE_DAY.getButtonText(), ONE_DAY.getButtonId());
-        map.put(TWO_DAYS.getButtonText(), TWO_DAYS.getButtonId());
-        map.put(ONE_WEEK.getButtonText(), ONE_WEEK.getButtonId());
-        map.put(ALL_TIME.getButtonText(), ALL_TIME.getButtonId());
+        map.put(ONE_DAY_USERS.getButtonText(), ONE_DAY_USERS.getButtonId());
+        map.put(TWO_DAYS_USERS.getButtonText(), TWO_DAYS_USERS.getButtonId());
+        map.put(ONE_WEEK_USERS.getButtonText(), ONE_WEEK_USERS.getButtonId());
+        map.put(ALL_TIME_USERS.getButtonText(), ALL_TIME_USERS.getButtonId());
+        return map;
+    }
+
+    private Map<String, String> initFuelStatisticsButtons() {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(ONE_WEEK_PRICE.getButtonText(), ONE_WEEK_PRICE.getButtonId());
+        map.put(TWO_WEEKS_PRICE.getButtonText(), TWO_WEEKS_PRICE.getButtonId());
+        map.put(ONE_MONTH_PRICE.getButtonText(), ONE_MONTH_PRICE.getButtonId());
+        map.put(ALL_TIME_PRICE.getButtonText(), ALL_TIME_PRICE.getButtonId());
         return map;
     }
 }

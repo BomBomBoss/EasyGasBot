@@ -30,8 +30,7 @@ public abstract class BaseStation implements Comparable <BaseStation> {
    protected GasStationsBrands gasStationsBrands;
 
    @Override
-   public int compareTo(BaseStation station)
-   {
+   public int compareTo(BaseStation station) {
       double price1 = Double.parseDouble(price);
       double price2 = Double.parseDouble(station.getPrice());
 

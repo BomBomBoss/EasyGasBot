@@ -55,8 +55,8 @@ public class GasStationService {
     private final GasStationsRepository gasStationsRepository;
     private final BaseStationService baseStationService;
     private final BaseHistoryService baseHistoryService;
+    private final NotificationService notificationService;
     private final BaseFactory baseFactory;
-    private final StatisticsService statisticsService; ;
     private final ModifierFactory modifierFactory;
     private final List<Error> errors = new ArrayList<>();
     private final ErrorProvider errorProvider;
@@ -74,7 +74,7 @@ public class GasStationService {
     @Autowired
     public GasStationService(final GasStationsRepository gasStationsRepository,
                              final BaseStationService baseStationService,
-                             final StatisticsService statisticsService,
+                             final NotificationService notificationService,
                              final ModifierFactory modifierFactory,
                              final ErrorProvider errorProvider,
                              final BaseHistoryService baseHistoryService,
@@ -83,28 +83,47 @@ public class GasStationService {
         this.gasStationsRepository = gasStationsRepository;
         this.baseStationService = baseStationService;
         this.baseHistoryService = baseHistoryService;
-        this.statisticsService = statisticsService;
+        this.notificationService = notificationService;
         this.modifierFactory = modifierFactory;
         this.errorProvider = errorProvider;
         this.baseFactory = baseFactory;
     }
 
-    public List<GasStationsBrands> findAllBrands()
-    {
-        return gasStationsRepository.findAll();
-    }
-    public GasStationsBrands findById(final Long id)
-    {
+    public GasStationsBrands findById(final Long id) {
         return gasStationsRepository.findById(id).orElseThrow(() -> new RuntimeException("Can't find this {" + id + "} in table"));
     }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
-    public void updateTablesWithDataAndHistory()
-    {
+    public void updateTablesWithDataAndHistory() {
         updateStationData();
         updatePriceHistory();
         removeOldHistoryData();
     }
+
+    @Scheduled(cron = "0 0 2 * * *")
+    public void updateHistoryPrice() {
+        try {
+            log.info("Scheduled job: Updating history prices");
+            baseHistoryService.updateCheapestHistoryPrice();
+        } catch (Exception e) {
+            errors.add(new Error(e));
+            errorProvider.printReport(errors);
+        }
+    }
+
+//    @Scheduled(cron = "0 0 12 * * Sun", zone = "Europe/Riga")
+    @Scheduled(cron = "0 * * * * *", zone = "Europe/Riga")
+    public void sendWeeklyNotification() {
+        try {
+            log.info("Scheduled job: Preparing statistics notifications");
+            notificationService.prepareAndSendNotification();
+        }  catch (Exception e) {
+            errors.add(new Error(e));
+            errorProvider.printReport(errors);
+        }
+    }
+
+
 
     private void updateStationData() {
         log.info("Starting scheduled job to update station data");

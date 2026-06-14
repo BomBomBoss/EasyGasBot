@@ -2,8 +2,13 @@ package org.easybot.entity;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
-import lombok.Builder;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,8 +49,7 @@ public class TelegramUser {
     private Locale locale;
 
 
-    public void resolveLocaleFromLanguageCode(String languageCode)
-    {
+    public void resolveLocaleFromLanguageCode(String languageCode) {
         if (languageCode == null || languageCode.isEmpty())
         {
             setLocale(Locale.ENGLISH);

@@ -1,7 +1,11 @@
 package com.bosscorp.service;
 
 import com.bosscorp.model.TelegramBotEntity;
+import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
+import static org.easybot.RabbitQueue.CALL_BACK_QUERY;
+import static org.easybot.RabbitQueue.NOT_SUPPORTED_MESSAGE_UPDATE;
+import static org.easybot.RabbitQueue.TEXT_MESSAGE_UPDATE;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,21 +20,20 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Objects;
 
-import static org.easybot.RabbitQueue.*;
-
 @Service
 @Slf4j
 @Lazy
 public class TelegramBotService extends TelegramBotEntity implements UpdateService {
 
     private final RabbitTemplate rabbitTemplate;
+    private final RateLimiter rateLimiter;
 
     @Value("${user.is.admin}")
     private String adminId;
 
-    public TelegramBotService(RabbitTemplate rabbitTemplate)
-    {
+    public TelegramBotService(final RabbitTemplate rabbitTemplate, final RateLimiter rateLimiter) {
         this.rabbitTemplate = rabbitTemplate;
+        this.rateLimiter = rateLimiter;
     }
 
     @Override
@@ -62,8 +65,8 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
 
     public void sendResponseToClient(SendMessage sendMessage)
     {
-        try
-        {
+        try {
+            rateLimiter.acquire();
             execute(sendMessage);
         }
         catch (TelegramApiException e)

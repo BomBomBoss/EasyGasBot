@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db.changelog/changeset/create-price-history-all-stations.yaml
   - include:
       file: db.changelog/changeset/create-average-price-view.sql
+  - include:
+      file: db.changelog/changeset/create-cheapest-history-price-table.yaml
