@@ -1,8 +1,10 @@
-
+plugins {
+    id 'org.springframework.boot'
+}
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-amqp:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
     implementation 'com.google.guava:guava:33.6.0-jre'
 
     implementation project(":common-utils")
