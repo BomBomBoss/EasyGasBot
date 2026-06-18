@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.telegram;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.easybot.CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL;
@@ -18,6 +18,11 @@ import static org.easybot.enums.BotCommands.START;
 import static org.easybot.enums.BotCommands.STATION_BRANDS;
 import org.easybot.enums.GasStations;
 import org.easybot.enums.Language;
+import org.easybot.service.BaseHistoryService;
+import org.easybot.service.BaseStationService;
+import org.easybot.service.ProduceService;
+import org.easybot.service.TelegramButtonsFactory;
+import org.easybot.service.user.TelegramUserService;
 import org.easybot.util.Modifier;
 import org.easybot.util.ModifierFactory;
 import org.easybot.wrapper.UpdateWrapper;
@@ -35,7 +40,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class TelegramService implements MainService {
+public class TelegramMessageService implements MainService {
 
     private final ProduceService produceService;
     private final BaseStationService baseStationService;
@@ -46,13 +51,13 @@ public class TelegramService implements MainService {
     private final ModifierFactory modifierFactory;
     private BotCommands administrationCommand;
 
-    public TelegramService(final ProduceService produceService,
-                           final BaseStationService baseStationService,
-                           final BaseHistoryService baseHistoryService,
-                           final TelegramButtonsFactory telegramButtonsFactory,
-                           final TelegramUserService telegramUserService,
-                           final TelegramAnswerFormatService telegramAnswerFormatService,
-                           final ModifierFactory modifierFactory)
+    public TelegramMessageService(final ProduceService produceService,
+                                  final BaseStationService baseStationService,
+                                  final BaseHistoryService baseHistoryService,
+                                  final TelegramButtonsFactory telegramButtonsFactory,
+                                  final TelegramUserService telegramUserService,
+                                  final TelegramAnswerFormatService telegramAnswerFormatService,
+                                  final ModifierFactory modifierFactory)
     {
         this.produceService = produceService;
         this.baseStationService = baseStationService;
