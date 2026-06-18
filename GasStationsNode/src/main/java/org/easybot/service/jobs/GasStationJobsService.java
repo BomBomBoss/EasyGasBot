@@ -104,7 +104,7 @@ public class GasStationJobsService {
         removeOldHistoryData();
     }
 
-    @Scheduled(cron = "0 0 11 * * *")
+    @Scheduled(cron = "0 0 11 * * *", zone = "Europe/Riga")
     public void updateHistoryPrice() {
         try {
             log.info("Scheduled job: Updating history prices");
