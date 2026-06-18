@@ -30,7 +30,13 @@ public enum GasStations {
             "/virsi",
             "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas",
             "virsi",
-            "div.prices-block.fuel-block");
+            "div.prices-block.fuel-block"),
+
+    STRAUJUPITE(4,
+                  "/straujupite",
+                  "https://straujupite.lv/degvielas-cenas/",
+                  "straujupite",
+                  "section.straujupite-prices");
 
 
     private final String command;
@@ -71,9 +77,6 @@ public enum GasStations {
                 .findFirst();
     }
 
-    public static GasStations gasStations(final String title) {
-        return Arrays.stream(values()).filter(station -> station.title.equalsIgnoreCase(title)).findFirst().orElseThrow();
-    }
 
     public static String gasStationTitle(final long id) {
         return Arrays.stream(values()).filter(station -> station.id == id).map(GasStations::getTitle).map(title -> title.replace("_", " ")).findFirst().orElseThrow();

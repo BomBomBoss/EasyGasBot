@@ -89,6 +89,7 @@ public class CommonTexts {
     public static final String NESTE_TITLE = "neste";
     public static final String VIADA_TITLE = "viada";
     public static final String VIRSI_TITLE = "virsi";
+    public static final String STRAUJUPITE_TITLE = "straujupite";
     public static final String RIGA = "Rīga";
 
     public static final String LANGUAGE_RUS = "RUS " + "\uD83C\uDDF7\uD83C\uDDFA";
@@ -113,6 +114,7 @@ public class CommonTexts {
     public static final String RESPONSE_PRICE_LABEL = "price_lbl";
     public static final String RESPONSE_NOT_SUPPORTED_UPDATE_LABEL = "not_supported_update_lbl";
     public static final String RESPONSE_STATISTICS_LABEL = "statistics_lbl";
+    public static final String WEEKLY_NOTIFICATION_STATISTICS_LABEL = "weekly_statistics_lbl";
 
 
 }
