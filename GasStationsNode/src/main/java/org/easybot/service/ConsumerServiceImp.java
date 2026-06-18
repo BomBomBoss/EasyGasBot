@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import static org.easybot.RabbitQueue.CALL_BACK_QUERY;
 import static org.easybot.RabbitQueue.NOT_SUPPORTED_MESSAGE_UPDATE;
 import static org.easybot.RabbitQueue.TEXT_MESSAGE_UPDATE;
+import org.easybot.service.rabbit.RabbitConsumer;
+import org.easybot.service.telegram.MainService;
 import org.easybot.wrapper.UpdateWrapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;

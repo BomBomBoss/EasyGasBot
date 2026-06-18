@@ -115,8 +115,7 @@ public class GasStationJobsService {
         }
     }
 
-//    @Scheduled(cron = "0 0 12 * * *", zone = "Europe/Riga")
-    @Scheduled(cron = "0 * * * * *", zone = "Europe/Riga")
+    @Scheduled(cron = "0 0 12 * * *", zone = "Europe/Riga")
     public void sendWeeklyNotification() {
         try {
             log.info("Scheduled job: Preparing statistics notifications");

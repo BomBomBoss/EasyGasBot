@@ -30,13 +30,13 @@ public enum GasStations {
             "/virsi",
             "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas",
             "virsi",
-            "div.prices-block.fuel-block"),
+            "div.prices-block.fuel-block");
 
-    STRAUJUPITE(4,
-                  "/straujupite",
-                  "https://straujupite.lv/degvielas-cenas/",
-                  "straujupite",
-                  "section.straujupite-prices");
+//    STRAUJUPITE(4,
+//                  "/straujupite",
+//                  "https://straujupite.lv/degvielas-cenas/",
+//                  "straujupite",
+//                  "section.straujupite-prices");
 
 
     private final String command;
