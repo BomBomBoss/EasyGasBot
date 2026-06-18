@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.telegram;
 
 import org.easybot.wrapper.UpdateWrapper;
 
