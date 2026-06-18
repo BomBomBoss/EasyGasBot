@@ -30,7 +30,7 @@ import java.util.List;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class GasStationServiceTest {
+class GasStationJobsServiceTest {
 
     @Autowired
     GasStationsRepository gasStationsRepository;

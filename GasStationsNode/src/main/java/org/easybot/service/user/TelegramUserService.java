@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

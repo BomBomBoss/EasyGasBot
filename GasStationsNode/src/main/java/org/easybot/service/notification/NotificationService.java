@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,9 @@ import org.easybot.entity.TelegramUser;
 import org.easybot.entity.cheapest_price.CheapestHistoryPrice;
 import org.easybot.enums.AdminCommands;
 import org.easybot.repository.TelegramUserRepository;
+import org.easybot.service.BaseHistoryService;
+import org.easybot.service.ProduceService;
+import org.easybot.service.telegram.TelegramAnswerFormatService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -55,6 +58,7 @@ public class NotificationService {
                         })
                         .collect(Collectors.joining("\n\n\n"))
         );
+        localizedNotifications.replaceAll(telegramAnswerFormatService::addStatisticsNotificationHeader);
 
         allUsers.forEach(user -> {
             user.resolveLocaleFromLanguageCode(user.getLanguageCode());

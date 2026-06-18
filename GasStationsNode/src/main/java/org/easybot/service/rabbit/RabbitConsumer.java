@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.rabbit;
 
 import org.easybot.wrapper.UpdateWrapper;
 

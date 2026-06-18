@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.dto.Error;
@@ -14,6 +14,10 @@ import org.easybot.exceptions.ParsingException;
 import org.easybot.factory.BaseFactory;
 import org.easybot.repository.history.BaseHistoryRepository;
 import org.easybot.repository.stations.GasStationsRepository;
+import org.easybot.service.BaseHistoryService;
+import org.easybot.service.BaseStationService;
+import org.easybot.service.ErrorProvider;
+import org.easybot.service.notification.NotificationService;
 import org.easybot.util.Modifier;
 import org.easybot.util.ModifierFactory;
 import org.jsoup.Jsoup;
@@ -50,7 +54,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class GasStationService {
+public class GasStationJobsService {
 
     private final GasStationsRepository gasStationsRepository;
     private final BaseStationService baseStationService;
@@ -72,13 +76,13 @@ public class GasStationService {
     }
 
     @Autowired
-    public GasStationService(final GasStationsRepository gasStationsRepository,
-                             final BaseStationService baseStationService,
-                             final NotificationService notificationService,
-                             final ModifierFactory modifierFactory,
-                             final ErrorProvider errorProvider,
-                             final BaseHistoryService baseHistoryService,
-                             final BaseFactory baseFactory)
+    public GasStationJobsService(final GasStationsRepository gasStationsRepository,
+                                 final BaseStationService baseStationService,
+                                 final NotificationService notificationService,
+                                 final ModifierFactory modifierFactory,
+                                 final ErrorProvider errorProvider,
+                                 final BaseHistoryService baseHistoryService,
+                                 final BaseFactory baseFactory)
     {
         this.gasStationsRepository = gasStationsRepository;
         this.baseStationService = baseStationService;
@@ -111,7 +115,8 @@ public class GasStationService {
         }
     }
 
-    @Scheduled(cron = "0 0 12 * * *", zone = "Europe/Riga")
+//    @Scheduled(cron = "0 0 12 * * *", zone = "Europe/Riga")
+    @Scheduled(cron = "0 * * * * *", zone = "Europe/Riga")
     public void sendWeeklyNotification() {
         try {
             log.info("Scheduled job: Preparing statistics notifications");

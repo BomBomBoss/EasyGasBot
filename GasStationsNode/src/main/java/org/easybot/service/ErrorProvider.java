@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.easybot.dto.Error;
 import org.easybot.entity.TelegramAnswer;
+import org.easybot.service.telegram.TelegramAnswerFormatService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

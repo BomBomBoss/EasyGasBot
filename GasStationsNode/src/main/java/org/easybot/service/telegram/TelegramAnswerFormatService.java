@@ -1,4 +1,4 @@
-package org.easybot.service;
+package org.easybot.service.telegram;
 
 import lombok.RequiredArgsConstructor;
 import org.easybot.CommonTexts;
@@ -19,6 +19,7 @@ import static org.easybot.CommonTexts.START_COMMAND_PRICES_ADD;
 import static org.easybot.CommonTexts.STATISTICS_ANSWER;
 import static org.easybot.CommonTexts.TWO_NEW_LINES;
 import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
+import static org.easybot.CommonTexts.WEEKLY_NOTIFICATION_STATISTICS_LABEL;
 import org.easybot.entity.TelegramUser;
 import org.easybot.entity.cheapest_price.CheapestHistoryPrice;
 import org.easybot.entity.enums.GasTypesName;
@@ -43,6 +44,7 @@ import static org.easybot.enums.GasStations.VIRSI;
 import static org.easybot.enums.Language.EN;
 import static org.easybot.enums.Language.LV;
 import static org.easybot.enums.Language.RU;
+import org.easybot.service.MessageResolver;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -193,6 +195,10 @@ public class TelegramAnswerFormatService {
 
     public String circleNameFormatter(final String title) {
         return title.replace(CIRCLE_K_TITLE, CIRCLE_WITHOUT_K_TITLE);
+    }
+
+    public String addStatisticsNotificationHeader(final Locale locale, final String message) {
+        return messageResolver.getLocalisedText(WEEKLY_NOTIFICATION_STATISTICS_LABEL, locale).concat("\n\n\n\n").concat(message);
     }
 
     public Map<String, String> initButtonsForCheapestCommand() {
