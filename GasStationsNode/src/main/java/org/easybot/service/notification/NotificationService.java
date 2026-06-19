@@ -12,7 +12,6 @@ import org.easybot.service.ProduceService;
 import org.easybot.service.telegram.TelegramAnswerFormatService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +28,6 @@ public class NotificationService {
     private final TelegramAnswerFormatService telegramAnswerFormatService;
     private final ProduceService produceService;
     private final static Map<Locale, String> localizedNotifications;
-    private final static long ADMIN_ID = 393223422;
 
     static {
         localizedNotifications = new HashMap<>();
@@ -42,10 +40,7 @@ public class NotificationService {
     public void prepareAndSendNotification() {
         final TelegramAnswer telegramAnswer = new TelegramAnswer();
 
-        final TelegramUser admin = telegramUserRepository.findByUserId(ADMIN_ID).orElseThrow();
-        final List<TelegramUser> allUsers = Collections.singletonList(admin);
-
-//        final List<TelegramUser> allUsers = telegramUserRepository.findAll();
+        final List<TelegramUser> allUsers = telegramUserRepository.findAll();
         final List<Integer> daysRanges = AdminCommands.getPriceDaysRangeWithoutAllPeriod();
         localizedNotifications.replaceAll((key, value) ->
                 daysRanges.stream()
