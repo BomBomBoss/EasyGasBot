@@ -71,8 +71,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         }
         catch (TelegramApiException e)
         {
-            log.error("Error during sending response to client");
-            e.printStackTrace();
+            log.error("Error during sending response to client with reason {}", e.getMessage() );
         }
     }
 
@@ -84,8 +83,7 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         }
         catch (TelegramApiException e)
         {
-            log.error("Error during sending edited text response to client");
-            e.printStackTrace();
+            log.error("Error during sending edited text response to client with reason {}", e.getMessage());
         }
     }
 
