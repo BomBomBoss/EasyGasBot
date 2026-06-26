@@ -111,18 +111,20 @@ public class GasStationJobsService {
             baseHistoryService.updateCheapestHistoryPrice();
         } catch (Exception e) {
             errors.add(new Error(e));
-            errorProvider.printReport(errors);
+            errorProvider.printGeneralReport(errors);
         }
     }
 
-    @Scheduled(cron = "0 0 12 * * Sun", zone = "Europe/Riga")
+    @Scheduled(cron = "${job.notifications.cron}", zone = "Europe/Riga")
     public void sendWeeklyNotification() {
         try {
             log.info("Scheduled job: Preparing statistics notifications");
             notificationService.prepareAndSendNotification();
         }  catch (Exception e) {
             errors.add(new Error(e));
-            errorProvider.printReport(errors);
+            errorProvider.printGeneralReport(errors);
+        } finally {
+            errorProvider.printUsersErrorReport();
         }
     }
 
@@ -164,7 +166,7 @@ public class GasStationJobsService {
         }
 
         if (!errors.isEmpty()) {
-            errorProvider.printReport(errors);
+            errorProvider.printGeneralReport(errors);
         }
     }
 

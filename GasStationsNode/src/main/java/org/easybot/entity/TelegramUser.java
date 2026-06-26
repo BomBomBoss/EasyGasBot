@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 
 @Entity
@@ -50,8 +51,7 @@ public class TelegramUser {
 
 
     public void resolveLocaleFromLanguageCode(String languageCode) {
-        if (languageCode == null || languageCode.isEmpty())
-        {
+        if (languageCode == null || languageCode.isEmpty() || !List.of("ru", "lv", "en").contains(languageCode)) {
             setLocale(Locale.ENGLISH);
         }
         else

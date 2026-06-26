@@ -19,3 +19,6 @@ spring:
         password: password
         port: 5672
         username: vlad
+job:
+  notifications:
+    cron: "0 0 * * * *"

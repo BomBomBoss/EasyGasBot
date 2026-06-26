@@ -63,15 +63,14 @@ public class TelegramBotService extends TelegramBotEntity implements UpdateServi
         return NOT_SUPPORTED_MESSAGE_UPDATE;
     }
 
-    public void sendResponseToClient(SendMessage sendMessage)
-    {
+    public void sendResponseToClient(SendMessage sendMessage) {
         try {
             rateLimiter.acquire();
             execute(sendMessage);
         }
         catch (TelegramApiException e)
         {
-            log.error("Error during sending response to client with reason {}", e.getMessage() );
+            log.error("Error during sending response to client {} with reason {}", sendMessage.getChatId(), e.getMessage() );
         }
     }
 

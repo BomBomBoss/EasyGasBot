@@ -2,6 +2,7 @@ package org.easybot.service.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.easybot.entity.TelegramAnswer;
 import org.easybot.entity.TelegramUser;
 import org.easybot.entity.cheapest_price.CheapestHistoryPrice;
@@ -10,6 +11,7 @@ import org.easybot.repository.TelegramUserRepository;
 import org.easybot.service.BaseHistoryService;
 import org.easybot.service.ProduceService;
 import org.easybot.service.telegram.TelegramAnswerFormatService;
+import org.easybot.util.context.ErrorContext;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -28,6 +30,8 @@ public class NotificationService {
     private final TelegramAnswerFormatService telegramAnswerFormatService;
     private final ProduceService produceService;
     private final static Map<Locale, String> localizedNotifications;
+
+    private final ErrorContext errorContext;
 
     static {
         localizedNotifications = new HashMap<>();
@@ -48,20 +52,24 @@ public class NotificationService {
                             final List<CheapestHistoryPrice> cheapestHistoryPrices =
                                     baseHistoryService.getHistoryPriceByRange(days);
 
-                            return telegramAnswerFormatService
-                                    .resolvePriceStatistics(cheapestHistoryPrices, days, key);
+                           return cheapestHistoryPrices.isEmpty() ? StringUtils.EMPTY : telegramAnswerFormatService
+                                   .resolvePriceStatistics(cheapestHistoryPrices, days, key);
                         })
                         .collect(Collectors.joining("\n\n\n"))
         );
         localizedNotifications.replaceAll(telegramAnswerFormatService::addStatisticsNotificationHeader);
 
         allUsers.forEach(user -> {
-            user.resolveLocaleFromLanguageCode(user.getLanguageCode());
-            log.info("Sending price statistics notification to user {}", user.getFirstName());
-            telegramAnswer.setChatId(user.getChatId().toString());
-            telegramAnswer.setText(localizedNotifications.get(user.getLocale()));
-            produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
-
+            try {
+                user.resolveLocaleFromLanguageCode(user.getLanguageCode());
+                log.info("Sending price statistics notification to user {}", user.getFirstName());
+                telegramAnswer.setChatId(user.getChatId().toString());
+                telegramAnswer.setText(localizedNotifications.get(user.getLocale()));
+                produceService.produceSimpleAnswer(telegramAnswer.mapToSendMessage());
+            } catch (Exception e) {
+                final String errorMessageWithType = "Weekly notification error with reason: '%s'".formatted(e.getMessage());
+                errorContext.registerError(user.getChatId(), errorMessageWithType);
+            }
         });
     }
 
