@@ -1,11 +1,3 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot'
-}
-
-//group 'org.easybot'
-//version '1.0'
-
 repositories {
     mavenCentral()
 }

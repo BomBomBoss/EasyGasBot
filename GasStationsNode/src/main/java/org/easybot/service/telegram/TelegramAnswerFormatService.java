@@ -9,6 +9,7 @@ import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
 import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
 import static org.easybot.CommonTexts.EUR_SIGN_BOLD;
 import static org.easybot.CommonTexts.LANGUAGE_TO_SET_LABEL;
+import static org.easybot.CommonTexts.NESTE_TEMPORARILY_UNAVAILABLE_LABEL;
 import static org.easybot.CommonTexts.ONE_SPACE;
 import static org.easybot.CommonTexts.RESPONSE_ADDRESS_LABEL;
 import static org.easybot.CommonTexts.RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL;
@@ -110,6 +111,13 @@ public class TelegramAnswerFormatService {
         return result;
     }
 
+    public String appendNesteUnavailabilityNotice(final String text, final Locale locale) {
+        if (NESTE.isActive()) {
+            return text;
+        }
+        return text + TWO_NEW_LINES + messageResolver.getLocalisedText(NESTE_TEMPORARILY_UNAVAILABLE_LABEL, locale);
+    }
+
     private String getFormattedLocation(final Locale locale, final BaseStation station) {
         return patterns.stream()
                 .filter(pattern -> pattern.matcher(station.getLocation()).find())
@@ -126,7 +134,7 @@ public class TelegramAnswerFormatService {
     public String enrichStartCommand(final String firstName, final String messageKey, final Locale locale) {
         final String result = messageResolver.getLocalisedText(messageKey, locale, firstName);
         final StringBuilder sb = new StringBuilder(result + TWO_NEW_LINES);
-        for (GasStations gs : GasStations.values()) {
+        for (GasStations gs : GasStations.getGasStationValues()) {
             sb.append(gs.getCommand())
                     .append(ONE_SPACE)
                     .append(messageResolver.getLocalisedText(START_COMMAND_PRICES_ADD, locale))
@@ -211,7 +219,7 @@ public class TelegramAnswerFormatService {
 
     public Map<String, String> initButtonsForStationsBrands() {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(NESTE.getTitle(), NESTE.getButtonId());
+        if (NESTE.isActive()) map.put(NESTE.getTitle(), NESTE.getButtonId());
         map.put(CIRCLE.getTitle(), CIRCLE.getButtonId());
         map.put(VIRSI.getTitle(), VIRSI.getButtonId());
         map.put(VIADA.getTitle(), VIADA.getButtonId());

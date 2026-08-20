@@ -115,6 +115,7 @@ public class CommonTexts {
     public static final String RESPONSE_NOT_SUPPORTED_UPDATE_LABEL = "not_supported_update_lbl";
     public static final String RESPONSE_STATISTICS_LABEL = "statistics_lbl";
     public static final String WEEKLY_NOTIFICATION_STATISTICS_LABEL = "weekly_statistics_lbl";
+    public static final String NESTE_TEMPORARILY_UNAVAILABLE_LABEL = "neste_temporarily_unavailable_lbl";
 
 
 }

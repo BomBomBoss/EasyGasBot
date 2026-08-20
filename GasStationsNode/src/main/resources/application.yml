@@ -21,4 +21,4 @@ spring:
         username: vlad
 job:
   notifications:
-    cron: "0 * * * * *"
+    cron: "0 0 * * * *"

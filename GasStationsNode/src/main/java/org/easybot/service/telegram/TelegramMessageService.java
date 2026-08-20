@@ -134,7 +134,8 @@ public class TelegramMessageService implements MainService {
             final String dataWithoutButton = data.replace("_BUTTON", "").trim();
             final List<BaseStation> list = getGasStationPerType(dataWithoutButton);
             Collections.sort(list);
-            telegramAnswer.setText(telegramAnswerFormatService.formatAnswerText(list, true, locale));
+            final String formattedList = telegramAnswerFormatService.formatAnswerText(list, true, locale);
+            telegramAnswer.setText(telegramAnswerFormatService.appendNesteUnavailabilityNotice(formattedList, locale));
         }
 
         else if (Language.getSetOfLanguageButtonId().contains(data)) {

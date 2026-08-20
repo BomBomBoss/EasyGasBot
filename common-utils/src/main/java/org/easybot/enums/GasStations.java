@@ -8,29 +8,34 @@ import java.util.Optional;
 
 @Getter
 public enum GasStations {
+    // Neste stopped publishing fuel prices on their site; frozen until they resume (do not scrape/show/notify).
     NESTE(1,
             "/neste",
             "https://www.neste.lv/lv/content/degvielas-cenas",
             "neste",
-            "table > tbody > tr > td"),
+            "table > tbody > tr > td",
+            false),
 
     CIRCLE(2,
             "/circle_k",
             "https://www.circlek.lv/privātpersonām/degvielas-cenas",
             "circle_k",
-            "table > tbody > tr > td"),
+            "table > tbody > tr > td",
+            true),
 
     VIADA(3,
             "/viada",
             "https://www.viada.lv/zemakas-degvielas-cenas/",
             "viada",
-            "table > tbody > tr > td"),
+            "table > tbody > tr > td",
+            true),
 
     VIRSI(4,
             "/virsi",
             "https://www.virsi.lv/lv/privatpersonam/degviela/degvielas-un-elektrouzlades-cenas",
             "virsi",
-            "div.prices-block.fuel-block");
+            "div.prices-block.fuel-block",
+            true);
 
 //    STRAUJUPITE(4,
 //                  "/straujupite",
@@ -45,20 +50,24 @@ public enum GasStations {
     private final String cssQuery;
     private final String buttonId;
     private final long id;
+    private final boolean active;
 
 
-    GasStations(final long id,  final String command, final String url, final String title, final String cssQuery) {
+    GasStations(final long id, final String command, final String url, final String title, final String cssQuery, final boolean active) {
         this.id = id;
         this.command = command;
         this.url = url;
         this.title = title;
         this.cssQuery = cssQuery;
         this.buttonId = title.concat("_BUTTON");
+        this.active = active;
     }
 
 
     public static List<GasStations> getGasStationValues() {
-        return List.of(GasStations.values());
+        return Arrays.stream(GasStations.values())
+                .filter(GasStations::isActive)
+                .toList();
     }
     public static List<String> getGasStationButtonId()
     {
