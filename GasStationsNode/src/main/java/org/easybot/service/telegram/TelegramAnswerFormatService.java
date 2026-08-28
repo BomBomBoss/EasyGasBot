@@ -10,6 +10,7 @@ import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
 import static org.easybot.CommonTexts.EUR_SIGN_BOLD;
 import static org.easybot.CommonTexts.LANGUAGE_TO_SET_LABEL;
 import static org.easybot.CommonTexts.NESTE_TEMPORARILY_UNAVAILABLE_LABEL;
+import static org.easybot.CommonTexts.NO_PRICE_DATA_FOR_PERIOD_LABEL;
 import static org.easybot.CommonTexts.ONE_SPACE;
 import static org.easybot.CommonTexts.RESPONSE_ADDRESS_LABEL;
 import static org.easybot.CommonTexts.RESPONSE_ALL_RIGA_DUS_EQUALS_LABEL;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -178,10 +180,18 @@ public class TelegramAnswerFormatService {
     }
 
     public String resolvePriceStatistics(final List<CheapestHistoryPrice> cheapestHistoryPrices, final int daysRange, final Locale locale) {
-        final CheapestHistoryPrice cheapest95 = cheapestHistoryPrices.stream().filter(data -> TYPE_95.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
-        final CheapestHistoryPrice cheapest98 = cheapestHistoryPrices.stream().filter(data -> TYPE_98.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
-        final CheapestHistoryPrice cheapestDiesel = cheapestHistoryPrices.stream().filter(data -> DIESEL.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice()))).orElseThrow();
+        final Optional<CheapestHistoryPrice> cheapest95Opt = cheapestHistoryPrices.stream().filter(data -> TYPE_95.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice())));
+        final Optional<CheapestHistoryPrice> cheapest98Opt = cheapestHistoryPrices.stream().filter(data -> TYPE_98.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice())));
+        final Optional<CheapestHistoryPrice> cheapestDieselOpt = cheapestHistoryPrices.stream().filter(data -> DIESEL.getId().equals(data.getGasTypeId())).min(Comparator.comparing(data -> new BigDecimal(data.getPrice())));
         final String header = messageResolver.getLocalisedText(RESPONSE_STATISTICS_LABEL, locale, String.valueOf(daysRange));
+
+        if (cheapest95Opt.isEmpty() || cheapest98Opt.isEmpty() || cheapestDieselOpt.isEmpty()) {
+            return header + TWO_NEW_LINES + messageResolver.getLocalisedText(NO_PRICE_DATA_FOR_PERIOD_LABEL, locale);
+        }
+
+        final CheapestHistoryPrice cheapest95 = cheapest95Opt.get();
+        final CheapestHistoryPrice cheapest98 = cheapest98Opt.get();
+        final CheapestHistoryPrice cheapestDiesel = cheapestDieselOpt.get();
 
         return STATISTICS_ANSWER.formatted(header,
                 GasTypesName.getGasTypeDescription(cheapest95.getGasTypeId()), GasStations.gasStationTitle(cheapest95.getBrandId()).toUpperCase(), cheapest95.getPrice(), getDateForUsers(cheapest95.getDate()), getDayOfWeek(cheapest95.getDate(), locale),
