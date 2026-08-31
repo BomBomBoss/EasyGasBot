@@ -11,6 +11,7 @@ public enum BotCommands {
     START("/start", CommonTexts.START_COMMAND_DISCLAIMER_LABEL),
     CHEAPEST("/cheapest", CommonTexts.CHEAPEST_COMMAND_DISCLAIMER_LABEL),
     STATION_BRANDS("/brands", CommonTexts.STATION_BRANDS_DISCLAIMER_LABEL),
+    ELECTRO("/electro", CommonTexts.ELECTRO_COMMAND_DISCLAIMER_LABEL),
     HELP("/help", CommonTexts.HELP_DISCLAIMER_LABEL),
     LANGUAGE("/language", CommonTexts.LANGUAGE_COMMAND_DISCLAIMER_LABEL),
     ADMIN("/admin", CommonTexts.ADMIN_COMMAND_DISCLAIMER, true),

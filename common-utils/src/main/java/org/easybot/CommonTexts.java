@@ -19,6 +19,8 @@ public class CommonTexts {
     public static final String HELP_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":sos:" + " need help?");
     public static final String LANGUAGE_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":earth_africa:" + " выбор языка");
     public static final String LANGUAGE_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":earth_africa:" + " choose language");
+    public static final String ELECTRO_COMMAND_DESCRIPTION = EmojiParser.parseToUnicode(":zap:" + " зарядные станции Риги");
+    public static final String ELECTRO_COMMAND_DESCRIPTION_EN = EmojiParser.parseToUnicode(":zap:" + " Riga charging stations");
 
     /************************ Bot Short Description *****************************************************/
 
@@ -117,6 +119,10 @@ public class CommonTexts {
     public static final String WEEKLY_NOTIFICATION_STATISTICS_LABEL = "weekly_statistics_lbl";
     public static final String NESTE_TEMPORARILY_UNAVAILABLE_LABEL = "neste_temporarily_unavailable_lbl";
     public static final String NO_PRICE_DATA_FOR_PERIOD_LABEL = "no_price_data_for_period_lbl";
+    public static final String ELECTRO_COMMAND_DISCLAIMER_LABEL = "electro_command_disclaimer_lbl";
+    public static final String ELECTRO_POWER_LABEL = "electro_power_lbl";
+    public static final String ELECTRO_PRICE_PER_KWH_LABEL = "electro_price_per_kwh_lbl";
+    public static final String ELECTRO_UNSPECIFIED_DISTRICT_LABEL = "electro_unspecified_district_lbl";
 
 
 }

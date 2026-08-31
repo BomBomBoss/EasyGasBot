@@ -13,6 +13,7 @@ import org.easybot.entity.stations.BaseStation;
 import org.easybot.enums.AdminCommands;
 import org.easybot.enums.BotCommands;
 import static org.easybot.enums.BotCommands.CHEAPEST;
+import static org.easybot.enums.BotCommands.ELECTRO;
 import static org.easybot.enums.BotCommands.HELP;
 import static org.easybot.enums.BotCommands.START;
 import static org.easybot.enums.BotCommands.STATION_BRANDS;
@@ -20,6 +21,7 @@ import org.easybot.enums.GasStations;
 import org.easybot.enums.Language;
 import org.easybot.service.BaseHistoryService;
 import org.easybot.service.BaseStationService;
+import org.easybot.service.ChargingStationService;
 import org.easybot.service.ProduceService;
 import org.easybot.service.TelegramButtonsFactory;
 import org.easybot.service.user.TelegramUserService;
@@ -49,6 +51,7 @@ public class TelegramMessageService implements MainService {
     private final TelegramUserService telegramUserService;
     private final TelegramAnswerFormatService telegramAnswerFormatService;
     private final ModifierFactory modifierFactory;
+    private final ChargingStationService chargingStationService;
     private BotCommands administrationCommand;
 
     public TelegramMessageService(final ProduceService produceService,
@@ -57,7 +60,8 @@ public class TelegramMessageService implements MainService {
                                   final TelegramButtonsFactory telegramButtonsFactory,
                                   final TelegramUserService telegramUserService,
                                   final TelegramAnswerFormatService telegramAnswerFormatService,
-                                  final ModifierFactory modifierFactory)
+                                  final ModifierFactory modifierFactory,
+                                  final ChargingStationService chargingStationService)
     {
         this.produceService = produceService;
         this.baseStationService = baseStationService;
@@ -66,6 +70,7 @@ public class TelegramMessageService implements MainService {
         this.telegramUserService = telegramUserService;
         this.telegramAnswerFormatService = telegramAnswerFormatService;
         this.modifierFactory = modifierFactory;
+        this.chargingStationService = chargingStationService;
     }
 
     private final BiConsumer<UpdateWrapper, TelegramAnswer> adminConsumer = new BiConsumer<>() {
@@ -106,6 +111,7 @@ public class TelegramMessageService implements MainService {
                 telegramAnswer.setText(telegramAnswerFormatService.formatAnswerTextWithEmoji(STATION_BRANDS.getDisclaimer(), locale));
                 telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForStationsBrands()));
             }
+            case ELECTRO -> telegramAnswer.setText(telegramAnswerFormatService.resolveElectroStatistics(chargingStationService.findCheapestPerDistrict(), locale));
             case LANGUAGE -> {
                 telegramAnswer.setText(telegramAnswerFormatService.resolveSimpleLocalizedResponse(LANGUAGE_COMMAND_DISCLAIMER_LABEL, locale));
                 telegramAnswer.setButtons(telegramButtonsFactory.createInlineButtons(telegramAnswerFormatService.initButtonsForLanguage()));

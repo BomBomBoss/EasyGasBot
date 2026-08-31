@@ -37,6 +37,7 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         List<BotCommand> listOfCommandsRu = new ArrayList<>();
         listOfCommandsRu.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION));
         listOfCommandsRu.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION));
+        listOfCommandsRu.add(new BotCommand(ELECTRO.getCommand(), ELECTRO_COMMAND_DESCRIPTION));
         listOfCommandsRu.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION));
         listOfCommandsRu.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION));
 
@@ -45,6 +46,7 @@ public class TelegramBotEntity extends TelegramLongPollingBot {
         List<BotCommand> listOfCommandsEn = new ArrayList<>();
         listOfCommandsEn.add(new BotCommand(STATION_BRANDS.getCommand(), BRANDS_COMMAND_DESCRIPTION_EN));
         listOfCommandsEn.add(new BotCommand(CHEAPEST.getCommand(), CHEAPEST_COMMAND_DESCRIPTION_EN));
+        listOfCommandsEn.add(new BotCommand(ELECTRO.getCommand(), ELECTRO_COMMAND_DESCRIPTION_EN));
         listOfCommandsEn.add(new BotCommand(HELP.getCommand(), HELP_COMMAND_DESCRIPTION_EN));
         listOfCommandsEn.add(new BotCommand(LANGUAGE.getCommand(), LANGUAGE_COMMAND_DESCRIPTION_EN));
 

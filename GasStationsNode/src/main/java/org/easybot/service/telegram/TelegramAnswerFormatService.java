@@ -7,6 +7,10 @@ import static org.easybot.CommonTexts.ALL_STATIONS_2;
 import static org.easybot.CommonTexts.ALL_STATIONS_3;
 import static org.easybot.CommonTexts.CIRCLE_K_TITLE;
 import static org.easybot.CommonTexts.CIRCLE_WITHOUT_K_TITLE;
+import static org.easybot.CommonTexts.ELECTRO_COMMAND_DISCLAIMER_LABEL;
+import static org.easybot.CommonTexts.ELECTRO_POWER_LABEL;
+import static org.easybot.CommonTexts.ELECTRO_PRICE_PER_KWH_LABEL;
+import static org.easybot.CommonTexts.ELECTRO_UNSPECIFIED_DISTRICT_LABEL;
 import static org.easybot.CommonTexts.EUR_SIGN_BOLD;
 import static org.easybot.CommonTexts.LANGUAGE_TO_SET_LABEL;
 import static org.easybot.CommonTexts.NESTE_TEMPORARILY_UNAVAILABLE_LABEL;
@@ -22,6 +26,7 @@ import static org.easybot.CommonTexts.STATISTICS_ANSWER;
 import static org.easybot.CommonTexts.TWO_NEW_LINES;
 import static org.easybot.CommonTexts.UNABLE_TO_PROCEED_RESPONSE_LABEL;
 import static org.easybot.CommonTexts.WEEKLY_NOTIFICATION_STATISTICS_LABEL;
+import org.easybot.dto.ChargingDistrictSummary;
 import org.easybot.entity.TelegramUser;
 import org.easybot.entity.cheapest_price.CheapestHistoryPrice;
 import org.easybot.entity.enums.GasTypesName;
@@ -118,6 +123,47 @@ public class TelegramAnswerFormatService {
             return text;
         }
         return text + TWO_NEW_LINES + messageResolver.getLocalisedText(NESTE_TEMPORARILY_UNAVAILABLE_LABEL, locale);
+    }
+
+    public String resolveElectroStatistics(final List<ChargingDistrictSummary> data, final Locale locale) {
+        final StringBuilder sb = new StringBuilder(messageResolver.getLocalisedText(ELECTRO_COMMAND_DISCLAIMER_LABEL, locale))
+                .append(TWO_NEW_LINES);
+
+        final String unspecifiedDistrictLabel = messageResolver.getLocalisedText(ELECTRO_UNSPECIFIED_DISTRICT_LABEL, locale);
+        final String powerLabel = messageResolver.getLocalisedText(ELECTRO_POWER_LABEL, locale);
+        final String priceLabel = messageResolver.getLocalisedText(ELECTRO_PRICE_PER_KWH_LABEL, locale);
+
+        String previousDistrict = null;
+        int rank = 0;
+
+        for (ChargingDistrictSummary summary : data) {
+            final String district = Objects.isNull(summary.district()) ? unspecifiedDistrictLabel : summary.district();
+
+            if (!district.equals(previousDistrict)) {
+                sb.append(String.format("__%s__", district)).append(System.lineSeparator());
+                previousDistrict = district;
+                rank = 0;
+            }
+            rank++;
+
+            sb.append(rank).append(". ")
+                    .append(summary.stationName())
+                    .append(System.lineSeparator())
+                    .append(String.format("_%s_", summary.address()))
+                    .append(System.lineSeparator())
+                    .append(summary.connectorTypeLabel())
+                    .append(" • ")
+                    .append(powerLabel)
+                    .append(String.format("*%s*", summary.powerKw()))
+                    .append(" kW • ")
+                    .append(priceLabel)
+                    .append(String.format("*%s*", summary.pricePerKwh()))
+                    .append(" €/kWh")
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
+        }
+
+        return sb.toString();
     }
 
     private String getFormattedLocation(final Locale locale, final BaseStation station) {

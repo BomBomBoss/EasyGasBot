@@ -21,3 +21,7 @@ databaseChangeLog:
       file: db.changelog/changeset/create-cheapest-history-price-table.yaml
   - include:
       file: db.changelog/changeset/exclude-neste-from-average-price-view.sql
+  - include:
+      file: db.changelog/changeset/create-charging-station-table.yaml
+  - include:
+      file: db.changelog/changeset/create-charging-connector-table.yaml

@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_charging_connector_table
+      author: Vlad
+      changes:
+        - createTable:
+            tableName: charging_connector
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: charging_station_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_charging_connector_station
+                    references: charging_station(id)
+              - column:
+                  name: connector_type
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_label
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: power_kw
+                  type: numeric
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_per_kwh
+                  type: numeric
+              - column:
+                  name: connector_count
+                  type: int
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
